@@ -1,0 +1,63 @@
+services:
+  mariadb:
+    image: mariadb:11
+    container_name: mariadb
+    env_file:
+      - .env
+    environment:
+      MARIADB_DATABASE: ${DB_NAME}
+      MARIADB_USER: ${DB_USER}
+      MARIADB_PASSWORD: ${DB_PASSWORD}
+      MARIADB_ROOT_PASSWORD: ${DB_ROOT_PASSWORD}
+    volumes:
+      - mariadb_data:/var/lib/mysql
+    networks:
+      - transcendence
+    restart : unless-stopped
+    healthcheck:
+      test: ["CMD", "mariadb-admin", "ping", "-h", "localhost", "-p${DB_ROOT_PASSWORD}"]
+      interval: 2s
+      timeout: 5s
+      retries: 20
+
+  backend:
+    build: ./backend
+    container_name: backend
+    env_file:
+      - .env
+    environment:
+      DB_HOST: mariadb
+      DB_PORT: 3306
+      DB_NAME: ${DB_NAME}
+      DB_USER: ${DB_USER}
+      DB_PASSWORD : ${DB_PASSWORD}
+      PORT: 3001
+    depends_on:
+      mariadb:
+        condition: service_healthy
+    networks:
+      - transcendence
+    restart: unless_stopped
+    #volumes:
+      #- ./backend:/app
+
+  nginx:
+    build:
+      context: .
+      dockerfile: nginx/Dockerfile
+    container_name: nginx
+    restart: unless-stopped
+    depends_on:
+      - backend
+    ports:
+      - "${NGINX_PORT:-8080}:80"
+    networks:
+      - transcendence
+
+volumes:
+  mariadb_data:
+
+networks:
+  transcendence:
+    name: transcendence
+
