@@ -4,12 +4,12 @@ FROM node:20-alpine AS frontend_builder
 WORKDIR /frontend
 
 COPY ../frontend/package*.json ./
-RUN npm ci IC <= a remplacer
-#RUN npm install --omit=dev
+#RUN npm ci IC <= a remplacer
+# RUN npm install --omit=dev
 
 COPY frontend ./
 
-RUN npm run build
+# RUN npm run build
 
 #nouveau conteneur propre sans node
 FROM nginx:1.27-alpine

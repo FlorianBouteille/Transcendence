@@ -183,7 +183,7 @@ function addPlatforms(scene)
     stair_left(Platforms);
     middle_way(Platforms);
     Platforms.push(new Platform(scene, new THREE.Vector3(37, 6.5, 0), 10, 1, 10));
-    let longPlatOne = new Platform(scene, new THREE.Vector3(78, 6.5, 0), 70, 1, 5);
+    let longPlatOne = new Platform(scene, new THREE.Vector3(78, 6.5, 0), 70, 1, 4.5);
     //longPlatOne.enableJump = false;
     Platforms.push(longPlatOne);
     dodgeBlocks(Platforms);
@@ -281,11 +281,10 @@ gui.add(mouse, 'sensitivity', 0.1, 8, 0.1).name('mousePower');
 // Animate
 const clock = new THREE.Clock()
 
-player.checkPoint = checkPoints[0].mesh.position.clone();
-
+//player.checkPoint = checkPoints[0].mesh.position.clone();
+player.currentPlatform = platforms[0];
 const tick = () =>
 {
-    console.log(player.mesh.position.y)
     const deltaTime = clock.getDelta()
     const elapsedTime = clock.getElapsedTime();
 

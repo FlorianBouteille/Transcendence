@@ -81,8 +81,6 @@ export class Player {
 
     move(direction, deltaTime, platforms) 
     {
-        //this.box.min.copy(this.localBox.min).add(this.mesh.position)
-        //this.box.max.copy(this.localBox.max).add(this.mesh.position)
         if (direction.length() === 0) return
 
         direction.normalize()
@@ -131,7 +129,6 @@ export class Player {
                     break
                 }
             }
-
             if (canMoveZ) {
                 this.mesh.position.z += direction.z
                 this.box.min.copy(this.localBox.min).add(this.mesh.position)
@@ -237,6 +234,18 @@ export class Player {
         this.box.min.copy(this.localBox.min).add(this.mesh.position)
         this.box.max.copy(this.localBox.max).add(this.mesh.position)
 
+        if (wasGrounded && this.currentPlatform) 
+        {
+            const platformBox = this.currentPlatform.getBox()
+            if (this.box.min.x > platformBox.max.x || 
+                this.box.max.x < platformBox.min.x ||
+                this.box.min.z > platformBox.max.z || 
+                this.box.max.z < platformBox.min.z) 
+            {
+                this.isGrounded = false
+            }
+        }
+
         // Seulement vérifier les atterrissages si on était en l'air
         if (!wasGrounded) 
         {
@@ -289,7 +298,7 @@ export class Player {
             const platformBox = platform.getBox()
             const deltaPlatform = platform.mesh.position.clone().sub(platform.previousPosition)
             
-            if (deltaPlatform.length() < 0.0001) continue
+            if (deltaPlatform.length() < 0.001) continue
 
             const futureBox = this.box.clone()
             futureBox.translate(deltaPlatform.clone().negate())

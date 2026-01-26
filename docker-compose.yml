@@ -37,22 +37,22 @@ services:
         condition: service_healthy
     networks:
       - transcendence
-    restart: unless_stopped
+    restart: unless-stopped
     #volumes:
       #- ./backend:/app
 
-  nginx:
-    build:
-      context: .
-      dockerfile: nginx/Dockerfile
-    container_name: nginx
-    restart: unless-stopped
-    depends_on:
-      - backend
-    ports:
-      - "${NGINX_PORT:-8080}:80"
-    networks:
-      - transcendence
+  # nginx:
+  #   build:
+  #     context: .
+  #     dockerfile: nginx/Dockerfile
+  #   container_name: nginx
+  #   restart: unless-stopped
+  #   depends_on:
+  #     - backend
+  #   ports:
+  #     - "${NGINX_PORT:-8080}:80"
+  #   networks:
+  #     - transcendence
 
 volumes:
   mariadb_data:
