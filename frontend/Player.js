@@ -160,7 +160,6 @@ export class Player {
 
         if (this.currentAction && this.currentAction._clip === clip) return
 
-        console.log('new animation !');
         const newAction = this.actions[name];
         newAction.loop = THREE.LoopRepeat
         newAction.reset()
