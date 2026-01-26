@@ -32,15 +32,14 @@ services:
       DB_USER: ${DB_USER}
       DB_PASSWORD : ${DB_PASSWORD}
       PORT: 3001
+   # ports:
+   #   - "3001:3001"
     depends_on:
       mariadb:
         condition: service_healthy
     networks:
       - transcendence
-    restart: unless_stopped
-    #volumes:
-      #- ./backend:/app
-
+    restart: unless-stopped
   nginx:
     build:
       context: .

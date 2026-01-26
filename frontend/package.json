@@ -1,0 +1,7 @@
+{
+  "name": "frontend",
+  "type": "module",
+  "scripts": {
+    "build": "echo 'Build step'"
+  }
+}
