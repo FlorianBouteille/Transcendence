@@ -2,6 +2,15 @@
   "name": "frontend",
   "type": "module",
   "scripts": {
-    "build": "echo 'Build step'"
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "three": "^0.160.0",
+    "lil-gui": "^0.19.0"
+  },
+  "devDependencies": {
+    "vite": "^5.0.0"
   }
 }

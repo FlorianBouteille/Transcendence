@@ -24,7 +24,7 @@ export class Player {
         this.boxHelper = new THREE.Box3Helper(this.box, 0xff0000);
         scene.add(this.boxHelper);
 
-        loader.load('/character.glb', (gltf) => 
+        loader.load('static/character.glb', (gltf) => 
         {
             this.visual = gltf.scene
             this.visual.scale.set(1, 1, 1) // à ajuster
