@@ -51,7 +51,6 @@ function initGameServer(socketIo) {
 
 function gameLoop() {
 	Object.values(players).forEach(player => { })
-	// console.log('Envoi état:', GameState.players.length, 'joueur(s)');
 
 	const GameState = {
 		players: Object.values(players)
