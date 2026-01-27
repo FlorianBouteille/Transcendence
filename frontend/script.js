@@ -34,6 +34,25 @@ const canvas = document.querySelector('canvas.webgl')
 // Scene
 const scene = new THREE.Scene()
 
+const remotePlayers = {};  // Stocke les meshes des joueurs distants
+
+socket.on('gameState', (state) => {
+	state.players.forEach(playerData => {
+		// Si le joueur n'a pas de mesh → créer
+		if (!remotePlayers[playerData.id]) {
+			const remotePlayer = new RemotePlayer(scene, canvas, playerData.color);
+			remotePlayers[playerData.id] = remotePlayer;
+			scene.add(remotePlayer.mesh);
+		}
+
+		// Mettre à jour
+		const remotePlayer = remotePlayers[playerData.id];
+		remotePlayer.mesh.position.x = playerData.x;
+		remotePlayer.mesh.position.y = playerData.y;
+		remotePlayer.mesh.position.z = playerData.z;
+	});
+});
+
 //scene.add(gui);
 
 const mouse =
@@ -244,7 +263,7 @@ function onKey(event) {
 	// Envoyer l'input au serveur
 	socket.emit('playerInput', {
 		key: event.code,
-		pressed: (event.type === 'keydown')
+		pressed: (event.type === 'keydown'),
 	});
 }
 
