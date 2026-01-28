@@ -1,6 +1,7 @@
 import express from "express";
 import http from "http";
 import { Server } from "socket.io";
+import { addPlayer, removePlayer, updatePlayerInput, initGameServer } from './gameServer.js';
 // import { WebSocketServer } from "ws";
 
 const app = express();
@@ -16,22 +17,12 @@ const io = new Server(server, {
 	},
 	path: "/ws"
 });
-// const wss = new WebSocketServer({ server, path: "/ws" });
 
-// wss.on("connection", (ws) => {
-// 	ws.send(JSON.stringify({ type: "hello", msg: "ws connected" }));
+initGameServer(io);
 
-// 	ws.on("message", (data) => {
-// 		ws.send(JSON.stringify({ type: "echo", data: data.toString() }));
-// 	});
-// });
 io.on("connection", (socket) => {
-	console.log("Un joueur s'est connecté:", socket.id);
+	addPlayer(socket.id);
 
-	// Envoyer un message de bienvenue
-	socket.emit('welcome', { message: 'Connexion réussie!' });
-
-	// Écouter un événement "test" depuis le client
 	socket.on('test', (data) => {
 		console.log('Message reçu du client:', data);
 		socket.emit('response', { echo: data });
@@ -39,12 +30,13 @@ io.on("connection", (socket) => {
 
 	// Recevoir les inputs du joueur
 	socket.on('playerInput', (data) => {
-		console.log(`Joueur ${socket.id} - Touche:`, data.key, 'Pressée:', data.pressed);
+		updatePlayerInput(socket.id, data.key, data.pressed);
 	});
+
 
 	// Déconnexion
 	socket.on('disconnect', () => {
-		console.log('Un joueur s\'est déconnecté:', socket.id);
+		removePlayer(socket.id);
 	});
 });
 
