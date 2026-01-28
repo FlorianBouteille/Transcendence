@@ -131,6 +131,20 @@ body {
     right: 32px;
 }
 
+/*DEBUT ALREADY PAGE*/
+
+
+.already-page .nav-link {
+    color: #7a2cff;
+    text-shadow: 0 0 10px rgba(0, 255, 65, 0.8);
+}
+
+.already-page .nav-link:hover {
+    color: #00FF41;
+    text-shadow: 0 0 18px rgba(0, 255, 65, 0.4);
+}
+/*FIN PAGE ALREADY*/
+
 @media (max-width: 600px) {
     .nav-link {
         font-size: 0.8rem;
