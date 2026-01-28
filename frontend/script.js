@@ -38,14 +38,13 @@ const remotePlayers = {};  // Stocke les meshes des joueurs distants
 
 socket.on('gameState', (state) => {
 	state.players.forEach(playerData => {
-		// Si le joueur n'a pas de mesh → créer
+		if (playerData.id === socket.id) return; //pour pas s afficher en remote
 		if (!remotePlayers[playerData.id]) {
 			const remotePlayer = new RemotePlayer(scene, canvas, playerData.color);
 			remotePlayers[playerData.id] = remotePlayer;
 			scene.add(remotePlayer.mesh);
 		}
 
-		// Mettre à jour
 		const remotePlayer = remotePlayers[playerData.id];
 		remotePlayer.mesh.position.x = playerData.x;
 		remotePlayer.mesh.position.y = playerData.y;

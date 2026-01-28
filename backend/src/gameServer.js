@@ -19,7 +19,7 @@ function addPlayer(id) {
 		vx: 0,
 		vy: 0,
 		vz: 0,
-		color: '#ff0000',
+		color: Math.round((Math.random() * 0xffffff)),
 		keys: {
 			w: false,
 			a: false,
@@ -50,7 +50,12 @@ function initGameServer(socketIo) {
 
 
 function gameLoop() {
-	Object.values(players).forEach(player => { })
+	Object.values(players).forEach(player => {
+		// - gravity, jumpForce, speed
+		// 	- Box3 pour les collisions
+		// 	- updatePhysics()
+		// 	- move() avec collision detection
+	})
 
 	const GameState = {
 		players: Object.values(players)
