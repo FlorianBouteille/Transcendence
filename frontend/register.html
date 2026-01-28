@@ -1,18 +1,40 @@
 <!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Textures</title>
-    <title>ft_transcendence</title>
-    <link rel="stylesheet" href="./style.css">
-</head>
-<body>
+<html lang="fr">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Register | ft_transcendence</title>
+        <link rel="stylesheet" href="./style.css" />
+    </head>
+    <body>
+        <main class="landing register-page">
+            <a class="nav-link bottom-left" href="index.html">retour</a>
 
-    <main class="landing">
-        <a class="nav-link top-right" href="register.html">Register</a>
-        <a class="nav-link bottom-left" href="index.html">retour</a>
-    </main>
-</body>
-</html>
+            <section class="register-card" aria-labelledby="register-title">
+                <h1 id="register-title" class="register-title">Register your account</h1>
+                <form class="register-form" autocomplete="on">
+                    <label class="register-field">
+                        <span>Username</span>
+                        <input type="text" name="username" placeholder="Enter a username..." required />
+               <!--     </label>
+                    <label class="register-field">
+                        <span>Email address</span>
+                        <input type="email" name="email" placeholder="Enter your email address..." required />
+                    </label> -->
+                    <label class="register-field">
+                        <span>Password</span>
+                        <input type="password" name="password" placeholder="Enter your password..." required />
+                    </label>
+                    <label class="register-field">
+                        <span>Confirm Password</span>
+                        <input type="password" name="confirmPassword" placeholder="Enter your password again..." required />
+                    </label>
+                    
+                    <button class="register-submit" type="submit">Sign up</button>
+                </form>
+            </section>
+            <p class="register-footer">Already have an account ? <a href="already.html">Sign in !</a>
+            </p>
+        </main>
+    </body>
 </html>

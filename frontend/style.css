@@ -1,3 +1,5 @@
+/*DEBUT PAGE ACCUEIL*/
+
 *,
 *::before,
 *::after {
@@ -138,6 +140,101 @@ body {
         transform: translateY(-20px);
     }
 }
+/*FIN PAGE ACCUEIL*/
+
+
+/*debut page register*/
+.register-page {
+    padding: clamp(24px, 5vw, 56px);
+}
+
+.register-card {
+    width: min(460px, 92vw);
+    background: rgba(255,  0.92);
+    border-radius: 22px;
+    padding: clamp(24px, 4vw, 36px);
+    box-shadow: 0 18px 40px rgba(44, 18, 74, 0.25);
+    border: 2px solid rgba(255, 255, 255, 0.8);
+}
+
+.register-title {
+    text-align: center;
+    font-size: clamp(1.4rem, 2.8vw, 1.8rem);
+    font-weight: 700;
+    color: #1b0b2e;
+    letter-spacing: 0.06em;
+    margin-bottom: 20px;
+}
+
+.register-form {
+    display: grid;
+    gap: 14px;
+}
+
+.register-field {
+    display: grid;
+    gap: 6px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: #3a275f;
+}
+
+.register-field input {
+    height: 40px;
+    border-radius: 8px;
+    border: 1px solid rgba(27, 11, 46, 0.15);
+    padding: 0 12px;
+    font-size: 0.95rem;
+    background: #a8ace1;
+    color: #1b0b2e;
+}
+
+.register-field input:focus {
+    outline: 2px solid rgba(0, 255, 65, 0.4);
+    background: #fff;
+}
+
+.register-submit {
+    margin-top: 10px;
+    height: 44px;
+    border: none;
+    border-radius: 10px;
+    background: linear-gradient(135deg, #2ea84e, #50d96b);
+    color: #fff;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    cursor: pointer;
+    box-shadow: 0 10px 24px rgba(0, 255, 65, 0.4);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.register-submit:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 14px 30px rgba(46, 168, 78, 0.45);
+}
+
+.register-footer {
+    margin-top: 10px;
+    text-align: center;
+    font-size: 0.85rem;
+    color: #3a275f;
+}
+
+
+.register-footer a {
+    color: #2a7bdc;
+    font-weight: 700;
+    text-decoration: none;
+}
+
+.register-footer a:hover {
+    text-decoration: underline;
+}
+/*FIN PAGE REGISTER*/
+
+
+/*DEBUT PAGE SCORE*/
 
 .history-page {
     padding: clamp(24px, 4vw, 48px);
@@ -266,3 +363,4 @@ body {
         justify-self: start;
     }
 }
+/*FIN PAGE SCORE*/

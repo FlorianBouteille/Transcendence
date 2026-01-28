@@ -8,4 +8,9 @@
 - Fichier en html et style en CSS
 
 
+## PAGE REGISTER
+
+- LOGIN, EMAIL, PASSWORD, CONFIRM PASSWORD
+- Sign up 
+- *Emplacement* Message erreur
 
