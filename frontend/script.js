@@ -6,6 +6,7 @@ import { Coin } from './coin.js'
 import { Platform } from './Platform.js'
 import { PeriodicPlatform } from './PeriodicPlatform.js'
 import { LinearPlatform } from './LinearPlatform.js'
+import { BouncyPlatform } from './BouncyPlatform.js'
 import { checkPoint } from './CheckPoint.js'
 import { randomColor } from './utils.js'
 import { Vector2 } from 'three'
@@ -149,14 +150,14 @@ function middle_way(Platforms) {
 	movingPlatforms.push(rightSlider);
 }
 
-function dodgeBlockLine(Platforms, posZ) {
-	for (let i = 0; i < 4; i++) {
-		let delay = Math.round(Math.random() * i * 4);
+function dodgeBlockLine(Platforms, posZ, amount, addDelay) {
+	for (let i = 0; i < amount; i++) {
+		let delay = Math.round(Math.random() * i * 4) + addDelay;
 		let pauseTime = 0;
 		let speed = Math.round(Math.random() * 3) + 6;
 		let newPlat = new LinearPlatform(
 			scene,
-			new THREE.Vector3(100, 8, posZ),
+			new THREE.Vector3(110, 8, posZ),
 			new THREE.Vector3(45, 8, posZ),
 			1, 3, 1,
 			speed,
@@ -168,11 +169,77 @@ function dodgeBlockLine(Platforms, posZ) {
 	}
 }
 function dodgeBlocks(Platforms) {
-	dodgeBlockLine(Platforms, -1.5);
-	dodgeBlockLine(Platforms, 0);
-	dodgeBlockLine(Platforms, 1.5);
+	dodgeBlockLine(Platforms, -1.5, 4, 1);
+	dodgeBlockLine(Platforms, 0, 4, 2);
+	dodgeBlockLine(Platforms, 1.5, 4, 3);
 
 }
+
+function climbUp(platforms)
+{
+	platforms.push(new BouncyPlatform(scene, new THREE.Vector3(115, 8, 0), 3, 0.5, 3, 12));
+	platforms.push(new BouncyPlatform(scene, new THREE.Vector3(119, 12.5, -0.7), 2.6, 0.5, 2.6, 12));
+	platforms.push(new BouncyPlatform(scene, new THREE.Vector3(123, 17, 0.8), 2.3, 0.5, 2.3, 12));
+	platforms.push(new BouncyPlatform(scene, new THREE.Vector3(121, 21.5, 3), 2, 0.5, 2, 12));
+	platforms.push(new BouncyPlatform(scene, new THREE.Vector3(116, 26, 3.8), 1.8, 0.5, 1.8, 12));
+	platforms.push(new BouncyPlatform(scene, new THREE.Vector3(108, 26, 5), 1.7, 0.5, 1.7, 12));
+	platforms.push(new BouncyPlatform(scene, new THREE.Vector3(99, 26, 3.2), 1.6, 0.5, 1.6, 12));
+	platforms.push(new BouncyPlatform(scene, new THREE.Vector3(91, 26, 5.5), 1.5, 0.5, 1.5, 12));
+	platforms.push(new BouncyPlatform(scene, new THREE.Vector3(83, 26, 2.2), 1.4, 0.5, 1.4, 12));
+	platforms.push(new BouncyPlatform(scene, new THREE.Vector3(75, 26, 6), 1.3, 0.5, 1.3, 12));
+	platforms.push(new BouncyPlatform(scene, new THREE.Vector3(67, 26, 1.4), 1.2, 0.5, 1.2, 12));
+	platforms.push(new Platform(scene, new THREE.Vector3(60, 30, 1.4), 8, 0.5, 8));
+}
+
+function copyAndMovePlatform(platform, moveX, moveY, moveZ)
+{
+	let newPlat = platform.copy();
+	newPlat.basePosition.x += moveX;
+	newPlat.basePosition.y += moveY;
+	newPlat.basePosition.z += moveZ;
+	return (newPlat);
+	platforms.push(newPlat);
+	movingPlatforms.push(newPlat);
+}
+
+function elevators(platforms)
+{
+	let elevator = new PeriodicPlatform(
+		scene, 
+		new THREE.Vector3(50, 30, 1.4),
+		4, 0.5, 4,
+		new THREE.Vector3(0, 6, 0),
+		new THREE.Vector3(0, 2, 0),
+		new THREE.Vector3(0, 2, 0)
+	);
+	platforms.push(elevator);
+	movingPlatforms.push(elevator);
+	let elevator2 = copyAndMovePlatform(elevator, -4, 6, 4);
+	elevator2.phase.y += 2;
+	platforms.push(elevator2);
+	movingPlatforms.push(elevator2);
+	let elevator2b = copyAndMovePlatform(elevator, -4, 6, -4);
+	elevator2b.phase.y += 1;
+	platforms.push(elevator2b);
+	movingPlatforms.push(elevator2b);
+	let elevator3 = copyAndMovePlatform(elevator2, -4, 7, -4);
+	elevator3.phase.y += 2;
+	platforms.push(elevator3);
+	movingPlatforms.push(elevator3);
+	let elevator4 = copyAndMovePlatform(elevator3, -6, 8, 4);
+	elevator4.phase.y += 2;
+	platforms.push(elevator4);
+	movingPlatforms.push(elevator4);
+	let elevator4b = copyAndMovePlatform(elevator3, -6, 8, -4);
+	elevator4b.phase.y -= 2;
+	platforms.push(elevator4b);
+	movingPlatforms.push(elevator4b);
+	let elevator5 = copyAndMovePlatform(elevator4, -4, 7, -4);
+	elevator5.phase.y += 1;
+	platforms.push(elevator5);
+	movingPlatforms.push(elevator5);
+}
+
 function addPlatforms(scene) {
 	let Platforms = new Array();
 	Platforms.push(new Platform(scene, new THREE.Vector3(0, 0, 0), 10, 1, 10))
@@ -184,6 +251,8 @@ function addPlatforms(scene) {
 	//longPlatOne.enableJump = false;
 	Platforms.push(longPlatOne);
 	dodgeBlocks(Platforms);
+	climbUp(Platforms);
+	elevators(Platforms);
 	return (Platforms)
 }
 
@@ -197,8 +266,14 @@ scene.add(grid);
 
 const checkPoint1 = new checkPoint(37, 7.5, 0);
 scene.add(checkPoint1.mesh);
+const checkPoint2 = new checkPoint(112, 8, 0);
+scene.add(checkPoint2.mesh);
+const checkPoint3 = new checkPoint(60, 30.5, 1.4);
+scene.add(checkPoint3.mesh);
 let checkPoints = new Array();
 checkPoints.push(checkPoint1);
+checkPoints.push(checkPoint2);
+checkPoints.push(checkPoint3);
 
 const platforms = addPlatforms(scene);
 // Sizes
@@ -281,7 +356,7 @@ gui.add(mouse, 'sensitivity', 0.1, 8, 0.1).name('mousePower');
 // Animate
 const clock = new THREE.Clock()
 
-//player.checkPoint = checkPoints[0].mesh.position.clone();
+player.checkPoint = checkPoints[2].mesh.position.clone();
 player.currentPlatform = platforms[0];
 const tick = () => {
 	const deltaTime = clock.getDelta()
