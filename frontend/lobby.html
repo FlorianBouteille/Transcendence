@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lobby - Transcendence</title>
+    <link rel="stylesheet" href="./style.css">
+</head>
+<body>
+    <div class="lobby-container">
+        <div class="lobby-box">
+            <h1>🎮 Game Lobby</h1>
+            
+            <div class="lobby-status">
+                <p id="status-text">Waiting for players...</p>
+            </div>
+            
+            <div class="players-list" id="players-list">
+            </div>
+            
+            <button id="ready-btn" class="ready-button">READY</button>
+            
+            <div id="countdown" class="countdown hidden"></div>
+        </div>
+    </div>
+    
+    <script type="module" src="./lobby.js"></script>
+</body>
+</html>

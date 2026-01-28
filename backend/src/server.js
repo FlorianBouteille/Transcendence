@@ -1,7 +1,7 @@
 import express from "express";
 import http from "http";
 import { Server } from "socket.io";
-import { addPlayer, removePlayer, updatePlayerInput, initGameServer } from './gameServer.js';
+import { addPlayer, removePlayer, updatePlayerInput, initGameServer, setPlayerReady, everyOneLoaded, updatePosition } from './gameServer.js';
 // import { WebSocketServer } from "ws";
 
 const app = express();
@@ -28,13 +28,30 @@ io.on("connection", (socket) => {
 		socket.emit('response', { echo: data });
 	});
 
-	// Recevoir les inputs du joueur
 	socket.on('playerInput', (data) => {
 		updatePlayerInput(socket.id, data.key, data.pressed);
 	});
 
+	socket.on('playerReady', () => {
+		if (setPlayerReady(socket.id) == true)
+		{
+			io.emit('start', 'ok');  // io.emit pour envoyer à TOUS les clients
+		}
+	});
 
-	// Déconnexion
+	socket.on('gameLoaded', () => {
+		console.log(`📩 Reçu gameLoaded de ${socket.id}`);
+		if (everyOneLoaded(socket.id) == true)
+		{
+			const timestamp = Date.now();
+			io.emit('startClock', timestamp);
+		}
+	});
+
+	socket.on('playerPosition', (position) => {
+		updatePosition(socket.id, position);
+	});
+
 	socket.on('disconnect', () => {
 		removePlayer(socket.id);
 	});

@@ -1,7 +1,7 @@
 import * as THREE from 'three'
 import GUI from 'lil-gui'
 import { LocalPlayer } from './LocalPlayer.js'
-import { RemotePlayer } from './AiPlayer.js'
+import { RemotePlayer } from './RemotePlayer.js'
 import { Coin } from './coin.js'
 import { Platform } from './Platform.js'
 import { PeriodicPlatform } from './PeriodicPlatform.js'
@@ -24,6 +24,7 @@ socket.on('connect_error', (error) => {
 	console.error('❌ Erreur de connexion:', error);
 });
 
+
 const gui = new GUI({
 	width: 300,
 	title: "tweak shit here"
@@ -41,15 +42,16 @@ socket.on('gameState', (state) => {
 	state.players.forEach(playerData => {
 		if (playerData.id === socket.id) return; //pour pas s afficher en remote
 		if (!remotePlayers[playerData.id]) {
-			const remotePlayer = new RemotePlayer(scene, canvas, playerData.color);
+			const remotePlayer = new RemotePlayer(scene, new THREE.Vector3(0, 2, 0), playerData.color);
 			remotePlayers[playerData.id] = remotePlayer;
 			scene.add(remotePlayer.mesh);
 		}
 
+		// Mettre à jour la position directement
 		const remotePlayer = remotePlayers[playerData.id];
-		remotePlayer.mesh.position.x = playerData.x;
-		remotePlayer.mesh.position.y = playerData.y;
-		remotePlayer.mesh.position.z = playerData.z;
+		remotePlayer.setPosition(playerData.x, playerData.y, playerData.z, playerData.rotation);
+		remotePlayer.isGrounded = playerData.isGrounded;
+		remotePlayer.isJumping = playerData.isJumping;
 	});
 });
 
@@ -277,6 +279,20 @@ function addPlatforms(scene) {
 // Objects
 const player = new LocalPlayer(scene, canvas, randomColor());
 scene.add(player.mesh);
+
+setInterval(() => {
+	console.log(player.mesh.rotation.y);
+	console.log(player.mesh.position.y);
+	socket.emit('playerPosition', {
+		x: player.mesh.position.x,
+		y: player.mesh.position.y,
+		z: player.mesh.position.z,
+		rotation: player.mesh.rotation.y,
+		isGrounded: player.isGrounded,
+		isJumping: player.isJumping
+	});
+}, 50)
+
 const grid = new THREE.GridHelper(50, 50);
 scene.add(grid);
 
@@ -371,27 +387,87 @@ playerGui.add(player, 'jumpForce', 1, 20, 0.5).name('jump Force');
 playerGui.add(player, 'gravity', 1, 20, 0.5).name('gravity');
 gui.add(mouse, 'sensitivity', 0.1, 8, 0.1).name('mousePower');
 
+let timeOffset = 0; // Différence entre temps serveur et temps local
+let clockStarted = false;
+
+function syncClockWithServer() {
+	const samples = [];
+	let samplesReceived = 0;
+
+	// Faire 3 mesures pour calculer une moyenne
+	for (let i = 0; i < 3; i++) {
+		const t0 = Date.now(); // Temps local avant la requête
+		socket.emit('requestServerTime');
+		
+		socket.once('serverTime', (serverTime) => {
+			const t1 = Date.now(); // Temps local après réception
+			const roundTripTime = t1 - t0;
+			const estimatedServerTimeWhenReceived = serverTime + (roundTripTime / 2);
+			const offset = estimatedServerTimeWhenReceived - t1; // Différence serveur - client
+			
+			samples.push(offset);
+			samplesReceived++;
+			
+			// Quand on a toutes les mesures, calculer la moyenne
+			if (samplesReceived === 3) {
+				timeOffset = samples.reduce((a, b) => a + b, 0) / samples.length;
+				clockStarted = true;
+			}
+		});
+		
+		// Attendre un peu entre chaque mesure
+		setTimeout(() => {}, i * 50);
+	}
+}
+
+// Lancer la synchronisation au démarrage
+syncClockWithServer();
+
 // Animate
-const clock = new THREE.Clock()
 
 player.checkPoint = checkPoints[2].mesh.position.clone();
 player.currentPlatform = platforms[0];
-const tick = () => {
-	const deltaTime = clock.getDelta()
-	const elapsedTime = clock.getElapsedTime();
+socket.emit('gameLoaded');
 
+const clock = new THREE.Clock(false);
+let gameStartTimeStamp = null;
+
+socket.on('startClock', (timestamp) => 
+{
+	gameStartTimeStamp = timestamp;
+	console.log('🚀 Tous les joueurs prêts, démarrage à timestamp:', gameStartTimeStamp);
+	clock.start();
+	tick();
+});
+
+const tick = () => {
+	// Attendre que l'horloge soit synchronisée
+	if (!clockStarted) {
+		window.requestAnimationFrame(tick);
+		return;
+	}
+	
+	const deltaTime = clock.getDelta();
+	
+	const currentServerTime = Date.now() + timeOffset;
+	const elapsedTime = (currentServerTime - gameStartTimeStamp) / 1000;
 	for (let i = 0; i < movingPlatforms.length; i++) {
 		movingPlatforms[i].update(elapsedTime);
 	}
+	
+	// Mettre à jour le joueur local
 	player.update(deltaTime, keys, platforms);
+	
+	// Mettre à jour tous les joueurs distants (interpolation + animation)
+	Object.values(remotePlayers).forEach(remotePlayer => {
+		remotePlayer.update(deltaTime);
+	});
+	
 	for (let i = 0; i < checkPoints.length; i++) {
 		if (checkPoints[i].getBox().intersectsBox(player.getBox())) {
 			player.checkPoint = checkPoints[i].mesh.position.clone();
 		}
 	}
-	// Render
 	renderer.render(scene, player.camera)
 	window.requestAnimationFrame(tick)
 }
-
-tick()

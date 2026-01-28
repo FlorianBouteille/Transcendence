@@ -1,5 +1,3 @@
-
-
 const players = {};
 
 let io;
@@ -26,9 +24,19 @@ function addPlayer(id) {
 			s: false,
 			d: false,
 			space: false
-		}
+		},
+		ready: false,
+		loaded: false
 	};
 	console.log('Joueur ajouté:', id);
+	broadcastLobbyState();
+}
+
+function broadcastLobbyState()
+{
+	io.emit('lobbyUpdate', {
+		players: Object.values(players)
+	});
 }
 
 function updatePlayerInput(id, key, pressed) {
@@ -41,13 +49,61 @@ function updatePlayerInput(id, key, pressed) {
 	if (key === 'Space') players[id].keys.space = pressed, console.log(id, 'pressed SPACE');
 }
 
+function setPlayerReady(id) 
+{
+	if (!players[id]) return;
+	players[id].ready = true;
+	for (const player of Object.values(players))
+	{
+		if (player.ready === false)
+			return (false);
+	}
+	return (true);
+}
+
+function everyOneLoaded(id)
+{
+	if (!players[id]) return false;
+	
+	players[id].loaded = true;
+	
+	for (const player of Object.values(players))
+	{
+		if (player.loaded === false)
+		{
+			return false;
+		}
+	}
+	
+	console.log('Tous les joueurs ont chargé !');
+	return true;
+}
+
+function updatePosition(id, position)
+{
+	if (!players[id]) return ;
+	players[id].x = position.x;
+	players[id].y = position.y;
+	players[id].z = position.z;
+	players[id].rotation = position.rotation;
+	players[id].isGrounded = position.isGrounded;
+	players[id].isJumping = position.isJumping;
+}
+
 function initGameServer(socketIo) {
 	io = socketIo;
 	console.log('Game Server initialisé');
 
+	// Synchronisation du temps avec les clients
+	io.on('connection', (socket) => {
+		socket.on('requestServerTime', () => {
+			socket.emit('serverTime', Date.now());
+		});
+	});
+
 	setInterval(gameLoop, 16);
 }
-
+ 
 
 function gameLoop() {
 	Object.values(players).forEach(player => {
@@ -64,4 +120,4 @@ function gameLoop() {
 }
 
 
-export { addPlayer, removePlayer, updatePlayerInput, initGameServer };
+export { addPlayer, removePlayer, updatePlayerInput, initGameServer, setPlayerReady, everyOneLoaded, updatePosition};
