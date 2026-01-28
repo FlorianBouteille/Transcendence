@@ -267,10 +267,16 @@ export class Player {
 
                     if (playerBottomBefore >= platformTop - this.tolerance && playerBottomAfter <= platformTop + this.tolerance)
                     {
-                        this.velocityY = 0
+                        this.velocityY = platform.bounceStrength;
+                        console.log(this.velocityY);
                         this.mesh.position.y = platformTop + this.halfHeight
                         this.box.min.copy(this.localBox.min).add(this.mesh.position)
                         this.box.max.copy(this.localBox.max).add(this.mesh.position)
+                        if (platform.bounceStrength > 0)
+                        {
+                            this.jump();
+                            break ;
+                        }
                         this.isGrounded = true
                         this.isJumping = false
                         break

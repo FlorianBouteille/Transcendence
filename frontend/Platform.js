@@ -17,6 +17,7 @@ export class Platform {
         this.isActive = true
         this.isStatic = true
         this.enableJump = true
+        this.bounceStrength = 0
     }
 
     copy() 
