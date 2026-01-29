@@ -1,10 +1,19 @@
 // Fonction pour générer un material aléatoire (retourne juste un nom, pas l'objet Three.js)
 function getRandomBlockMaterial() {
 	const rand = Math.random();
-	if (rand < 0.25) return 'blockred';
-	if (rand < 0.5) return 'blockgreen';
-	if (rand < 0.75) return 'blockblue';
-	return 'scifimetal';
+	if (rand < 0.25) return 'fabricpaddedblue';
+	if (rand < 0.5) return 'fabricpaddedgreen';
+	if (rand < 0.75) return 'fabricpaddedyellow';
+	return 'fabricpaddedred';
+}
+
+function getRandomRubberMaterial()
+{
+	const rand = Math.random();
+	if (rand < 0.25) return 'rubberfloorblue';
+	if (rand < 0.5) return 'rubberfloorgreen';
+	if (rand < 0.75) return 'rubberflooryellow';
+	return 'rubberfloorred';
 }
 
 const players = {};
@@ -33,7 +42,7 @@ function generateStairRight(platforms) {
 			position: pos,
 			size: { x: 3, y: 0.5, z: 3 },
 			color: colo,
-			material: getRandomBlockMaterial()
+			material: getRandomRubberMaterial()
 		});
 	});
 }
@@ -57,7 +66,7 @@ function generateStairLeft(platforms) {
 			position: pos,
 			size: { x: 3, y: 0.5, z: 3 },
 			color: colo,
-			material: getRandomBlockMaterial()
+			material: getRandomRubberMaterial()
 		});
 	});
 }
@@ -229,8 +238,8 @@ function generateBouncyPlatform(platforms) {
 			position: bounce[i],
 			size: siz[i],
 			strenght: 12,
-			color: colo
-
+			color: colo,
+			material: getRandomRubberMaterial()
 		});
 	}
 }
@@ -331,7 +340,6 @@ function generateElevator(platforms) {
 
 }
 
-
 function generateAllPlatforms() {
 	const platforms = [];
 
@@ -366,7 +374,7 @@ function generateAllPlatforms() {
 		position: { x: 78, y: 6.5, z: 0 },
 		size: { x: 70, y: 1, z: 4.5 },
 		color: colo,
-		material: getRandomBlockMaterial()
+		material: 'scifimetal'
 	});
 
 	generateDodgeBlocks(platforms);
