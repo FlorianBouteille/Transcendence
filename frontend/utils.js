@@ -11,3 +11,13 @@ export function randomColor(colorA, colorB)
     }
     return(Math.round((Math.random() * 0xffffff)));
 }
+export function getRandomBlockMaterial(materials)
+{
+    const rand = Math.random();
+    if (rand < 0.33)
+        return (materials.blockred);
+    if (rand < 0.66)
+        return (materials.blockgreen);
+    else 
+        return (materials.blockblue);
+}

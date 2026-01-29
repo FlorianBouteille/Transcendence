@@ -11,7 +11,7 @@ export class Player {
         this.mesh.position.copy(position)
         this.mesh.position.y += 1;
         this.currentPlatform;
-        this.checkPoint = new THREE.Vector3(0, 2, 0);
+        this.checkPoint = new THREE.Vector3(0, 1.5, 0);
 
         this.localBox = new THREE.Box3(
             new THREE.Vector3(-0.3, -1, -0.3),
@@ -268,7 +268,6 @@ export class Player {
                     if (playerBottomBefore >= platformTop - this.tolerance && playerBottomAfter <= platformTop + this.tolerance)
                     {
                         this.velocityY = platform.bounceStrength;
-                        console.log(this.velocityY);
                         this.mesh.position.y = platformTop + this.halfHeight
                         this.box.min.copy(this.localBox.min).add(this.mesh.position)
                         this.box.max.copy(this.localBox.max).add(this.mesh.position)

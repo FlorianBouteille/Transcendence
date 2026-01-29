@@ -8,12 +8,12 @@ import { PeriodicPlatform } from './PeriodicPlatform.js'
 import { LinearPlatform } from './LinearPlatform.js'
 import { BouncyPlatform } from './BouncyPlatform.js'
 import { checkPoint } from './CheckPoint.js'
-import { randomColor } from './utils.js'
+import { randomColor, getRandomBlockMaterial } from './utils.js'
 import { Vector2 } from 'three'
-// import { rand } from 'three/tsl'
-// import { Vector3 } from 'three/webgpu'
 import { connectWS } from './src/network/socket.js'
+import { materials } from './materials.js'
 
+//importation des textures :
 const socket = connectWS();
 
 socket.on('connect', () => {
@@ -49,7 +49,7 @@ socket.on('gameState', (state) => {
 
 		// Mettre à jour la position directement
 		const remotePlayer = remotePlayers[playerData.id];
-		remotePlayer.setPosition(playerData.x, playerData.y, playerData.z, playerData.rotation);
+		remotePlayer.setPosition(playerData.x, playerData.y, playerData.z, playerData.rotation, playerData.isMoving);
 		remotePlayer.isGrounded = playerData.isGrounded;
 		remotePlayer.isJumping = playerData.isJumping;
 	});
@@ -84,20 +84,6 @@ window.addEventListener('keydown', (event) => {
 		gui.show(gui._hidden);
 })
 
-const loadingManager = new THREE.LoadingManager()
-loadingManager.onStart = () => {
-	console.log('loading started')
-}
-loadingManager.onLoad = () => {
-	console.log('loading finished')
-}
-loadingManager.onProgress = () => {
-	console.log('loading progressing')
-}
-loadingManager.onError = () => {
-	console.log('loading error')
-}
-
 function placeMarker(posX, posZ, theColor) {
 	const material = new THREE.MeshBasicMaterial({ color: theColor });
 	const geo = new THREE.BoxGeometry(1, 2, 1);
@@ -110,21 +96,21 @@ function placeMarker(posX, posZ, theColor) {
 const coins = new Array();
 let movingPlatforms = new Array();
 
-function stair_right(Platforms) {
-	Platforms.push(new Platform(scene, new THREE.Vector3(8, 1.19, 8), 3, 0.5, 3));
-	Platforms.push(new Platform(scene, new THREE.Vector3(13, 2.3, 11), 3, 0.5, 3));
-	Platforms.push(new Platform(scene, new THREE.Vector3(18, 3.4, 13), 3, 0.5, 3));
-	Platforms.push(new Platform(scene, new THREE.Vector3(24, 4.5, 13), 3, 0.5, 3));
-	Platforms.push(new Platform(scene, new THREE.Vector3(29, 5.6, 11), 3, 0.5, 3));
-	Platforms.push(new Platform(scene, new THREE.Vector3(34, 6.7, 8), 3, 0.5, 3));
+function stair_right(Platforms, materials) {
+	Platforms.push(new Platform(scene, new THREE.Vector3(8, 1.19, 8), 3, 0.5, 3, getRandomBlockMaterial(materials)));
+	Platforms.push(new Platform(scene, new THREE.Vector3(13, 2.3, 11), 3, 0.5, 3, getRandomBlockMaterial(materials)));
+	Platforms.push(new Platform(scene, new THREE.Vector3(18, 3.4, 13), 3, 0.5, 3, getRandomBlockMaterial(materials)));
+	Platforms.push(new Platform(scene, new THREE.Vector3(24, 4.5, 13), 3, 0.5, 3, getRandomBlockMaterial(materials)));
+	Platforms.push(new Platform(scene, new THREE.Vector3(29, 5.6, 11), 3, 0.5, 3, getRandomBlockMaterial(materials)));
+	Platforms.push(new Platform(scene, new THREE.Vector3(34, 6.7, 8), 3, 0.5, 3, getRandomBlockMaterial(materials)));
 }
-function stair_left(Platforms) {
-	Platforms.push(new Platform(scene, new THREE.Vector3(8, 1.2, -8), 3, 0.5, 3));
-	Platforms.push(new Platform(scene, new THREE.Vector3(13, 2.3, -11), 3, 0.5, 3));
-	Platforms.push(new Platform(scene, new THREE.Vector3(18, 3.4, -13), 3, 0.5, 3));
-	Platforms.push(new Platform(scene, new THREE.Vector3(24, 4.5, -13), 3, 0.5, 3));
-	Platforms.push(new Platform(scene, new THREE.Vector3(29, 5.6, -11), 3, 0.5, 3));
-	Platforms.push(new Platform(scene, new THREE.Vector3(34, 6.7, -8), 3, 0.5, 3));
+function stair_left(Platforms, materials) {
+	Platforms.push(new Platform(scene, new THREE.Vector3(8, 1.2, -8), 3, 0.5, 3, getRandomBlockMaterial(materials)));
+	Platforms.push(new Platform(scene, new THREE.Vector3(13, 2.3, -11), 3, 0.5, 3, getRandomBlockMaterial(materials)));
+	Platforms.push(new Platform(scene, new THREE.Vector3(18, 3.4, -13), 3, 0.5, 3, getRandomBlockMaterial(materials)));
+	Platforms.push(new Platform(scene, new THREE.Vector3(24, 4.5, -13), 3, 0.5, 3, getRandomBlockMaterial(materials)));
+	Platforms.push(new Platform(scene, new THREE.Vector3(29, 5.6, -11), 3, 0.5, 3, getRandomBlockMaterial(materials)));
+	Platforms.push(new Platform(scene, new THREE.Vector3(34, 6.7, -8), 3, 0.5, 3, getRandomBlockMaterial(materials)));
 }
 
 function middle_way(Platforms) {
@@ -195,7 +181,7 @@ function dodgeBlocks(Platforms) {
 
 }
 
-function climbUp(platforms)
+function climbUp(platforms, materials)
 {
 	platforms.push(new BouncyPlatform(scene, new THREE.Vector3(115, 8, 0), 3, 0.5, 3, 12));
 	platforms.push(new BouncyPlatform(scene, new THREE.Vector3(119, 12.5, -0.7), 2.6, 0.5, 2.6, 12));
@@ -208,7 +194,7 @@ function climbUp(platforms)
 	platforms.push(new BouncyPlatform(scene, new THREE.Vector3(83, 26, 2.2), 1.4, 0.5, 1.4, 12));
 	platforms.push(new BouncyPlatform(scene, new THREE.Vector3(75, 26, 6), 1.3, 0.5, 1.3, 12));
 	platforms.push(new BouncyPlatform(scene, new THREE.Vector3(67, 26, 1.4), 1.2, 0.5, 1.2, 12));
-	platforms.push(new Platform(scene, new THREE.Vector3(60, 30, 1.4), 8, 0.5, 8));
+	platforms.push(new Platform(scene, new THREE.Vector3(60, 30, 1.4), 8, 0.5, 8, getRandomBlockMaterial(materials)));
 }
 
 function copyAndMovePlatform(platform, moveX, moveY, moveZ)
@@ -218,8 +204,6 @@ function copyAndMovePlatform(platform, moveX, moveY, moveZ)
 	newPlat.basePosition.y += moveY;
 	newPlat.basePosition.z += moveZ;
 	return (newPlat);
-	platforms.push(newPlat);
-	movingPlatforms.push(newPlat);
 }
 
 function elevators(platforms)
@@ -260,18 +244,18 @@ function elevators(platforms)
 	movingPlatforms.push(elevator5);
 }
 
-function addPlatforms(scene) {
+function addPlatforms(scene, materials) {
 	let Platforms = new Array();
-	Platforms.push(new Platform(scene, new THREE.Vector3(0, 0, 0), 10, 1, 10))
-	stair_right(Platforms);
-	stair_left(Platforms);
+	Platforms.push(new Platform(scene, new THREE.Vector3(0, 0, 0), 10, 1, 10, getRandomBlockMaterial(materials)))
+	stair_right(Platforms, materials);
+	stair_left(Platforms, materials);
 	middle_way(Platforms);
-	Platforms.push(new Platform(scene, new THREE.Vector3(37, 6.5, 0), 10, 1, 10));
-	let longPlatOne = new Platform(scene, new THREE.Vector3(78, 6.5, 0), 70, 1, 4.5);
+	Platforms.push(new Platform(scene, new THREE.Vector3(37, 6.5, 0), 10, 1, 10, getRandomBlockMaterial(materials)));
+	let longPlatOne = new Platform(scene, new THREE.Vector3(78, 6.5, 0), 70, 1, 4.5, materials.scifimetal);
 	//longPlatOne.enableJump = false;
 	Platforms.push(longPlatOne);
 	dodgeBlocks(Platforms);
-	climbUp(Platforms);
+	climbUp(Platforms, materials);
 	elevators(Platforms);
 	return (Platforms)
 }
@@ -281,15 +265,14 @@ const player = new LocalPlayer(scene, canvas, randomColor());
 scene.add(player.mesh);
 
 setInterval(() => {
-	console.log(player.mesh.rotation.y);
-	console.log(player.mesh.position.y);
 	socket.emit('playerPosition', {
 		x: player.mesh.position.x,
 		y: player.mesh.position.y,
 		z: player.mesh.position.z,
 		rotation: player.mesh.rotation.y,
 		isGrounded: player.isGrounded,
-		isJumping: player.isJumping
+		isJumping: player.isJumping,
+		isMoving: player.isMoving
 	});
 }, 50)
 
@@ -309,7 +292,7 @@ checkPoints.push(checkPoint1);
 checkPoints.push(checkPoint2);
 checkPoints.push(checkPoint3);
 
-const platforms = addPlatforms(scene);
+const platforms = addPlatforms(scene, materials);
 // Sizes
 
 window.addEventListener('resize', () => {
@@ -334,7 +317,7 @@ const keys =
 	d: false,
 	space: false
 }
-const light = new THREE.HemisphereLight(0xffffff, 0x00000, 10);
+const light = new THREE.HemisphereLight(0xffffff, 0x00000, 2);
 scene.add(light);
 // Camera
 
@@ -351,10 +334,10 @@ function onKey(event) {
 		keys.space = (event.type === 'keydown')
 
 	// Envoyer l'input au serveur
-	socket.emit('playerInput', {
-		key: event.code,
-		pressed: (event.type === 'keydown'),
-	});
+	// socket.emit('playerInput', {
+	// 	key: event.code,
+	// 	pressed: (event.type === 'keydown'),
+	// });
 }
 
 window.addEventListener('keydown', onKey)
@@ -425,7 +408,6 @@ syncClockWithServer();
 
 // Animate
 
-player.checkPoint = checkPoints[2].mesh.position.clone();
 player.currentPlatform = platforms[0];
 socket.emit('gameLoaded');
 

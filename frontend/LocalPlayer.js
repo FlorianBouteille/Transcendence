@@ -74,6 +74,9 @@ export class LocalPlayer extends Player {
             directions.x -= 1;
         }
 
+        // Détecter si le joueur est en mouvement
+        this.isMoving = move.length() > 0;
+
         if (keys.space) this.jump()
 
         if (this.mixer) this.mixer.update(deltaTime)

@@ -8,16 +8,21 @@ export class RemotePlayer extends Player {
         this.lastDirection = new THREE.Vector3(0, 0, 0);
     }
 
-    setPosition(x, y, z, rotation) {
+    setPosition(x, y, z, rotation, isMoving = true) {
         const direction = new THREE.Vector3();
         direction.set(x - this.mesh.position.x, y - this.mesh.position.y, z - this.mesh.position.z);
         
+        // Stocker l'état de mouvement reçu du serveur
+        this.isMoving = isMoving;
+        
+        // Ne mettre à jour lastDirection que si on a un mouvement significatif
         if (direction.length() > 0.01) {
             this.lastDirection = direction.normalize();
-            
-            // Calculer et appliquer la rotation en fonction de la direction
             const angle = Math.atan2(direction.x, direction.z) - Math.PI/2;
             this.mesh.rotation.y = angle;
+        } else if (!isMoving) {
+            // Si pas de mouvement ET pas d'input, on force l'idle
+            this.lastDirection.set(0, 0, 0);
         }
         
         // Mettre à jour la position
@@ -30,10 +35,7 @@ export class RemotePlayer extends Player {
         if (this.isJumping) {
             // Animation de saut
             this.updateAnimation(this.lastDirection, deltaTime);
-        } else if (!this.isGrounded) {
-            // Animation de chute
-            this.updateAnimation(this.lastDirection, deltaTime);
-        } else if (this.lastDirection && this.lastDirection.length() > 0) {
+        } else if (this.isMoving && this.lastDirection && this.lastDirection.length() > 0) {
             // Animation de marche/course
             this.updateAnimation(this.lastDirection, deltaTime);
         } else {

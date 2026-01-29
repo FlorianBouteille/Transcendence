@@ -2,15 +2,19 @@ import * as THREE from 'three'
 import {randomColor } from './utils.js'
 
 export class Platform {
-    constructor(scene, position, sizeX, sizeY, sizeZ) {
+    constructor(scene, position, sizeX, sizeY, sizeZ, theMaterial) {
         const geometry = new THREE.BoxGeometry(sizeX, sizeY, sizeZ)
-        const material = new THREE.MeshStandardMaterial({ color: randomColor() })
+        let material;
+        if (arguments.length == 6)
+            material = theMaterial;
+        else
+            material = new THREE.MeshStandardMaterial({ color: randomColor() })
+        if (!theMaterial)
         material.roughness = 0.7
         material.metalness = 0.4
         this.mesh = new THREE.Mesh(geometry, material)
         this.mesh.position.copy(position)
         scene.add(this.mesh)
-
         this.box = new THREE.Box3().setFromObject(this.mesh)
         this.basePosition = this.mesh.position.clone()
         this.previousPosition = this.mesh.position.clone()

@@ -13,9 +13,12 @@ const server = http.createServer(app);
 
 const io = new Server(server, {
 	cors: {
-		origin: "*",  // Pour l'instant on autorise tout (dev only)
+		origin: "*",
+		methods: ["GET", "POST"],
+		credentials: true
 	},
-	path: "/ws"
+	path: "/ws",
+	transports: ['websocket', 'polling']
 });
 
 initGameServer(io);
@@ -28,9 +31,9 @@ io.on("connection", (socket) => {
 		socket.emit('response', { echo: data });
 	});
 
-	socket.on('playerInput', (data) => {
-		updatePlayerInput(socket.id, data.key, data.pressed);
-	});
+	// socket.on('playerInput', (data) => {
+	// 	updatePlayerInput(socket.id, data.key, data.pressed);
+	// });
 
 	socket.on('playerReady', () => {
 		if (setPlayerReady(socket.id) == true)

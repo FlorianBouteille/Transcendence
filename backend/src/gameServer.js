@@ -88,6 +88,7 @@ function updatePosition(id, position)
 	players[id].rotation = position.rotation;
 	players[id].isGrounded = position.isGrounded;
 	players[id].isJumping = position.isJumping;
+	players[id].isMoving = position.isMoving;
 }
 
 function initGameServer(socketIo) {
