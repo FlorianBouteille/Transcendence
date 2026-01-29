@@ -1,29 +1,78 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Lobby - Transcendence</title>
-    <link rel="stylesheet" href="./style.css">
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Lobby - Transcendence</title>
+	<link rel="stylesheet" href="./style.css">
 </head>
+
 <body>
-    <div class="lobby-container">
-        <div class="lobby-box">
-            <h1>🎮 Game Lobby</h1>
-            
-            <div class="lobby-status">
-                <p id="status-text">Waiting for players...</p>
-            </div>
-            
-            <div class="players-list" id="players-list">
-            </div>
-            
-            <button id="ready-btn" class="ready-button">READY</button>
-            
-            <div id="countdown" class="countdown hidden"></div>
-        </div>
-    </div>
-    
-    <script type="module" src="./lobby.js"></script>
+	<main class="landing lobby-page">
+		<div class="lobby-container">
+
+			<!-- ========== MENU PRINCIPAL ========== -->
+			<div id="main-menu" class="lobby-box">
+				<h1>🎮 Transcendence</h1>
+				<div class="menu-buttons">
+					<button id="solo-btn" class="menu-button">🎯 Solo Play</button>
+					<button id="random-btn" class="menu-button">🎲 Random Match</button>
+					<button id="private-btn" class="menu-button">🔒 Private Room</button>
+				</div>
+			</div>
+
+			<!-- ========== CHOIX PRIVATE ========== -->
+			<div id="private-choice" class="lobby-box hidden">
+				<h2>Private Room</h2>
+				<div class="menu-buttons">
+					<button id="create-room-btn" class="menu-button">Create Room</button>
+					<button id="join-room-btn" class="menu-button">Join Room</button>
+					<button id="back-btn-1" class="back-button">← Back</button>
+				</div>
+			</div>
+
+			<!-- ========== REJOINDRE UNE ROOM ========== -->
+			<div id="join-room-section" class="lobby-box hidden">
+				<h2>Enter Room Code</h2>
+				<input type="text" id="room-code-input" class="code-input" placeholder="ABC123" maxlength="6">
+				<div class="menu-buttons">
+					<button id="confirm-join-btn" class="menu-button">Join</button>
+					<button id="back-btn-2" class="back-button">← Back</button>
+				</div>
+			</div>
+
+			<!-- ========== ROOM CRÉÉE / REJOINTE ========== -->
+			<div id="room-view" class="lobby-box hidden">
+				<h2>Room: <span id="room-code">------</span></h2>
+				<p class="copy-hint" id="copy-hint">Click code to copy</p>
+
+				<div class="lobby-status">
+					<p id="status-text">Waiting for players...</p>
+					<p>Players: <span id="player-count">1</span> / 8</p>
+				</div>
+
+				<div class="players-list" id="players-list"></div>
+
+				<button id="start-game-btn" class="ready-button hidden">START GAME</button>
+				<button id="ready-btn" class="ready-button hidden">READY</button>
+				<button id="leave-room-btn" class="back-button">Leave Room</button>
+			</div>
+
+			<!-- ========== FILE D'ATTENTE RANDOM ========== -->
+			<div id="queue-view" class="lobby-box hidden">
+				<h2>🔍 Searching for players...</h2>
+				<div class="lobby-status">
+					<p>Players in queue: <span id="queue-count">1</span></p>
+					<div class="loading-spinner"></div>
+				</div>
+				<button id="cancel-queue-btn" class="back-button">Cancel</button>
+			</div>
+
+		</div>
+	</main>
+
+	<script type="module" src="./lobby.js"></script>
 </body>
+
 </html>

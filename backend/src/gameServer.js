@@ -7,13 +7,11 @@ function getRandomBlockMaterial() {
 	return 'scifimetal';
 }
 
-const players = {};
-const gamePlatforms = [];
-let gameStartTime = Date.now();
-let platformIdCounter = 0;
-
 let io;
-
+const gameInstances = {};
+let platformIdCounter = 0;
+const waitingPlayer = [];
+let lastRandomRoom = 0;
 
 function generateStairRight(platforms) {
 	const stairs = [
@@ -385,9 +383,16 @@ function generateAllPlatforms() {
 	return platforms;
 }
 
-function removePlayer(id) {
-	delete players[id];
+function removePlayer(id, roomID) {
+	if (!roomID || !gameInstances[roomID]) return;
+	delete gameInstances[roomID].players[id];
 	console.log('Joueur retire: ', id);
+
+	// Si la room est vide, la supprimer
+	if (Object.keys(gameInstances[roomID].players).length === 0) {
+		delete gameInstances[roomID];
+		console.log(`🗑️ Room ${roomID} supprimée (vide)`);
+	}
 }
 
 
@@ -395,8 +400,13 @@ function generateColor() {
 	return (Math.round((Math.random() * 0xffffff)));
 }
 
-function addPlayer(id) {
-	players[id] =
+function addPlayer(id, roomID) {
+
+	if (!gameInstances[roomID]) {
+		console.log('Room: ', roomID, 'dosent exist')
+		return;
+	}
+	gameInstances[roomID].players[id] =
 	{
 		id: id,
 		x: 0,
@@ -417,66 +427,54 @@ function addPlayer(id) {
 		loaded: false
 	};
 	console.log('Joueur ajouté:', id);
-	broadcastLobbyState();
 }
 
-function broadcastLobbyState()
-{
-	io.emit('lobbyUpdate', {
-		players: Object.values(players)
-	});
-}
 
-function updatePlayerInput(id, key, pressed) {
-	if (!players[id]) return;
 
-	if (key === 'KeyW') players[id].keys.w = pressed, console.log(id, 'pressed W');
-	if (key === 'KeyA') players[id].keys.a = pressed, console.log(id, 'pressed A');
-	if (key === 'KeyS') players[id].keys.s = pressed, console.log(id, 'pressed S');
-	if (key === 'KeyD') players[id].keys.d = pressed, console.log(id, 'pressed D');
-	if (key === 'Space') players[id].keys.space = pressed, console.log(id, 'pressed SPACE');
-}
+// function updatePlayerInput(id, key, pressed) {
+// 	if (!players[id]) return;
 
-function setPlayerReady(id) 
-{
-	if (!players[id]) return;
-	players[id].ready = true;
-	for (const player of Object.values(players))
-	{
-		if (player.ready === false)
-			return (false);
-	}
-	return (true);
-}
+// 	if (key === 'KeyW') players[id].keys.w = pressed, console.log(id, 'pressed W');
+// 	if (key === 'KeyA') players[id].keys.a = pressed, console.log(id, 'pressed A');
+// 	if (key === 'KeyS') players[id].keys.s = pressed, console.log(id, 'pressed S');
+// 	if (key === 'KeyD') players[id].keys.d = pressed, console.log(id, 'pressed D');
+// 	if (key === 'Space') players[id].keys.space = pressed, console.log(id, 'pressed SPACE');
+// }
 
-function everyOneLoaded(id)
-{
-	if (!players[id]) return false;
-	
-	players[id].loaded = true;
-	
-	for (const player of Object.values(players))
-	{
-		if (player.loaded === false)
-		{
+// function setPlayerReady(id) {
+// 	if (!players[id]) return;
+// 	players[id].ready = true;
+// 	for (const player of Object.values(players)) {
+// 		if (player.ready === false)
+// 			return (false);
+// 	}
+// 	return (true);
+// }
+
+function everyOneLoaded(id, roomID) {
+	if (!gameInstances[roomID] || !gameInstances[roomID].players[id]) return false;
+
+	gameInstances[roomID].players[id].loaded = true;
+
+	for (const player of Object.values(gameInstances[roomID].players)) {
+		if (player.loaded === false) {
 			return false;
 		}
 	}
-	
+
 	console.log('Tous les joueurs ont chargé !');
 	return true;
 }
 
-function updatePosition(id, position)
-{
-	if (!players[id]) return ;
-	players[id].x = position.x;
-	players[id].y = position.y;
-	players[id].z = position.z;
-	players[id].rotation = position.rotation;
-	players[id].isGrounded = position.isGrounded;
-	players[id].isJumping = position.isJumping;
-	players[id].isMoving = position.isMoving;
+function updatePosition(id, roomID, position) {
+	if (!gameInstances[roomID] || !gameInstances[roomID].players[id]) return;
+	gameInstances[roomID].players[id].x = position.x;
+	gameInstances[roomID].players[id].y = position.y;
+	gameInstances[roomID].players[id].z = position.z;
+	gameInstances[roomID].players[id].rotation = position.rotation;
+	gameInstances[roomID].players[id].isGrounded = position.isGrounded;
+	gameInstances[roomID].players[id].isJumping = position.isJumping;
+	gameInstances[roomID].players[id].isMoving = position.isMoving;
 }
 
 function initGameServer(socketIo) {
@@ -489,29 +487,115 @@ function initGameServer(socketIo) {
 			socket.emit('serverTime', Date.now());
 		});
 	});
-	gamePlatforms.push(...generateAllPlatforms());
-	console.log('Plateform initialise');
 	setInterval(gameLoop, 16);
 }
- 
+
 
 function gameLoop() {
-	const elapsedTime = (Date.now() - gameStartTime) / 1000;
+	Object.entries(gameInstances).forEach(([roomId, game]) => {
+		const elapsedTime = (Date.now() - game.startTime) / 1000;
 
-	Object.values(players).forEach(player => {
-		// - gravity, jumpForce, speed
-		// 	- Box3 pour les collisions
-		// 	- updatePhysics()
-		// 	- move() avec collision detection
-	})
+		const GameState = {
+			players: Object.values(game.players),
+			platforms: game.platforms,
+			elapsedTime: elapsedTime
+		};
 
-	const GameState = {
-		players: Object.values(players),
-		platforms: gamePlatforms,
-		elapsedTime: elapsedTime
-	};
-	io.emit('gameState', GameState);
+		io.to(roomId).emit('gameState', GameState);
+	});
+}
+function sleep(ms) {
+	return new Promise(resolve => setTimeout(resolve, ms));
 }
 
 
-export { addPlayer, removePlayer, updatePlayerInput, initGameServer, setPlayerReady, everyOneLoaded, updatePosition};
+function initLobbyHandler(socket, io) {
+
+	socket.on('solo', () => {
+		const roomID = 'SOLO_' + socket.id;
+		gameInstances[roomID] =
+		{
+			players: {},
+			platforms: generateAllPlatforms(),
+			startTime: Date.now(),
+			type: 'solo',
+		};
+		socket.emit('gameStarted', { roomId: roomID });
+		console.log('New solo player on roomID:', roomID);
+	});
+
+
+	socket.on('joinRandom', () => {
+		waitingPlayer.push(socket.id);
+		if (waitingPlayer.length >= 2) {
+			const roomID = 'RANDOM_' + socket.id;
+			const addedPlayer = waitingPlayer.slice(0, 8);
+			gameInstances[roomID] = {
+				players: {},
+				platforms: generateAllPlatforms(),
+				startTime: Date.now(),
+				type: 'random'
+			};
+
+			addedPlayer.forEach(playerId => {
+				const playerSocket = io.sockets.sockets.get(playerId);
+				if (playerSocket) {
+					playerSocket.emit('gameStarted', { roomId: roomID });
+				}
+			});
+			waitingPlayer.splice(0, addedPlayer.length);
+		}
+	});
+
+	// socket.on('joinRandom', () => {
+	// 	waitingPlayer.push(socket.id);
+	// 	if (lastRandomRoom === 0 || gameInstances[lastRandomRoom].hasStarted) {
+	// 		const roomID = 'RANDOM_' + socket.id;
+	// 		lastRandomRoom = roomID;
+	// 		const addedPlayer = waitingPlayer.slice(0, 8);
+	// 		gameInstances[roomID] = {
+	// 			players: {},
+	// 			platforms: generateAllPlatforms(),
+	// 			startTime: Date.now(),
+	// 			type: 'random',
+	// 			hasStarted: flase
+	// 		}
+	// 		if (waitingPlayer.length >= 2) {
+	// 			addedPlayer.forEach(playerId => {
+	// 				const playerSocket = io.sockets.sockets.get(playerId);
+	// 				if (playerSocket) {
+	// 					playerSocket.emit('gameStarted', { roomId: roomID });
+	// 				}
+	// 			});
+	// 			waitingPlayer.splice(0, addedPlayer.length);
+
+	// 		}
+	// 		else {
+
+	// 		}
+	// 	}
+	// });
+
+
+
+	socket.on('joinRoom', (roomID) => {
+		if (!gameInstances[roomID]) {
+			console.log('❌ Room inexistante:', roomID);
+			socket.emit('roomNotFound');
+			return;
+		}
+		socket.roomID = roomID;
+		socket.join(roomID);
+		addPlayer(socket.id, roomID);
+		console.log(`✅ ${socket.id} a rejoint la room ${roomID}`);
+
+		socket.emit('roomJoined', {
+			roomID: roomID,
+			platforms: gameInstances[roomID].platforms
+		});
+	});
+}
+
+
+
+export { addPlayer, removePlayer, initGameServer, everyOneLoaded, updatePosition, initLobbyHandler };

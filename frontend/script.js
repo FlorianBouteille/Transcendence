@@ -13,6 +13,13 @@ import { Vector2 } from 'three'
 import { connectWS } from './src/network/socket.js'
 import { materials } from './materials.js'
 
+const urlParams = new URLSearchParams(window.location.search);
+const roomId = urlParams.get('room');
+
+if (!roomId) {
+	window.location.href = 'lobby.html';
+}
+
 //importation des textures :
 const socket = connectWS();
 let platformsFromBack = [];
@@ -21,10 +28,16 @@ let platformsCreated = false
 
 socket.on('connect', () => {
 	console.log('✅ Connecté au serveur');
+	socket.emit('joinRoom', roomId);
 });
 
 socket.on('connect_error', (error) => {
 	console.error('❌ Erreur de connexion:', error);
+});
+
+socket.on('roomNotFound', () => {
+	console.log('❌ Room introuvable, redirection vers le lobby');
+	window.location.href = 'lobby.html';
 });
 
 
@@ -41,15 +54,13 @@ const scene = new THREE.Scene()
 
 const remotePlayers = {};  // Stocke les meshes des joueurs distants
 
-function getMaterial(name)
-{
+function getMaterial(name) {
 	return materials[name];
 }
 function createPlatforms(platformsData) {
 	platformsData.forEach(data => {
 		let platform;
-		if (data.type === 'static')
-		{
+		if (data.type === 'static') {
 			console.log('material = ' + data.material);
 			platform = new Platform(scene, new THREE.Vector3(data.position.x, data.position.y, data.position.z), data.size.x, data.size.y, data.size.z);
 		}
@@ -222,8 +233,7 @@ function dodgeBlocks(Platforms) {
 
 }
 
-function climbUp(platforms, materials)
-{
+function climbUp(platforms, materials) {
 	platforms.push(new BouncyPlatform(scene, new THREE.Vector3(115, 8, 0), 3, 0.5, 3, 12));
 	platforms.push(new BouncyPlatform(scene, new THREE.Vector3(119, 12.5, -0.7), 2.6, 0.5, 2.6, 12));
 	platforms.push(new BouncyPlatform(scene, new THREE.Vector3(123, 17, 0.8), 2.3, 0.5, 2.3, 12));
@@ -421,41 +431,47 @@ function syncClockWithServer() {
 	for (let i = 0; i < 3; i++) {
 		const t0 = Date.now(); // Temps local avant la requête
 		socket.emit('requestServerTime');
-		
+
 		socket.once('serverTime', (serverTime) => {
 			const t1 = Date.now(); // Temps local après réception
 			const roundTripTime = t1 - t0;
 			const estimatedServerTimeWhenReceived = serverTime + (roundTripTime / 2);
 			const offset = estimatedServerTimeWhenReceived - t1; // Différence serveur - client
-			
+
 			samples.push(offset);
 			samplesReceived++;
-			
+
 			// Quand on a toutes les mesures, calculer la moyenne
 			if (samplesReceived === 3) {
 				timeOffset = samples.reduce((a, b) => a + b, 0) / samples.length;
 				clockStarted = true;
 			}
 		});
-		
+
 		// Attendre un peu entre chaque mesure
-		setTimeout(() => {}, i * 50);
+		setTimeout(() => { }, i * 50);
 	}
 }
 
 // Lancer la synchronisation au démarrage
 syncClockWithServer();
 
-// Animate
+player.currentPlatform = null;
 
-player.currentPlatform = platforms[0];
-socket.emit('gameLoaded');
+// Attendre la confirmation que la room est jointe
+socket.on('roomJoined', (data) => {
+	console.log('✅ Room jointe, création des plateformes');
+	if (data.platforms) {
+		createPlatforms(data.platforms);
+		platformsCreated = true;
+	}
+	socket.emit('gameLoaded');
+});
 
 const clock = new THREE.Clock(false);
 let gameStartTimeStamp = null;
 
-socket.on('startClock', (timestamp) => 
-{
+socket.on('startClock', (timestamp) => {
 	gameStartTimeStamp = timestamp;
 	console.log('🚀 Tous les joueurs prêts, démarrage à timestamp:', gameStartTimeStamp);
 	clock.start();
@@ -468,23 +484,23 @@ const tick = () => {
 		window.requestAnimationFrame(tick);
 		return;
 	}
-	
+
 	const deltaTime = clock.getDelta();
-	
+
 	const currentServerTime = Date.now() + timeOffset;
 	const elapsedTime = (currentServerTime - gameStartTimeStamp) / 1000;
 	for (let i = 0; i < movingPlatformsFromBack.length; i++) {
 		movingPlatformsFromBack[i].update(elapsedTime);
 	}
 
-	
+
 	// Mettre à jour le joueur local
-	
+
 	// Mettre à jour tous les joueurs distants (interpolation + animation)
 	Object.values(remotePlayers).forEach(remotePlayer => {
 		remotePlayer.update(deltaTime);
 	});
-	
+
 	player.update(deltaTime, keys, platformsFromBack);
 	for (let i = 0; i < checkPoints.length; i++) {
 		if (checkPoints[i].getBox().intersectsBox(player.getBox())) {
