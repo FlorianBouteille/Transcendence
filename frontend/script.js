@@ -8,13 +8,16 @@ import { PeriodicPlatform } from './PeriodicPlatform.js'
 import { LinearPlatform } from './LinearPlatform.js'
 import { BouncyPlatform } from './BouncyPlatform.js'
 import { checkPoint } from './CheckPoint.js'
-import { randomColor, getRandomBlockMaterial } from './utils.js'
+import { randomColor } from './utils.js'
 import { Vector2 } from 'three'
 import { connectWS } from './src/network/socket.js'
 import { materials } from './materials.js'
 
 //importation des textures :
 const socket = connectWS();
+let platformsFromBack = [];
+let movingPlatformsFromBack = [];
+let platformsCreated = false
 
 socket.on('connect', () => {
 	console.log('✅ Connecté au serveur');
@@ -38,7 +41,45 @@ const scene = new THREE.Scene()
 
 const remotePlayers = {};  // Stocke les meshes des joueurs distants
 
+function getMaterial(name)
+{
+	return materials[name];
+}
+function createPlatforms(platformsData) {
+	platformsData.forEach(data => {
+		let platform;
+		if (data.type === 'static')
+		{
+			console.log('material = ' + data.material);
+			platform = new Platform(scene, new THREE.Vector3(data.position.x, data.position.y, data.position.z), data.size.x, data.size.y, data.size.z);
+		}
+		else if (data.type === 'periodic') {
+			platform = new PeriodicPlatform(scene, new THREE.Vector3(data.position.x, data.position.y, data.position.z), data.size.x, data.size.y, data.size.z, new THREE.Vector3(data.amplitude.x, data.amplitude.y, data.amplitude.z), new THREE.Vector3(data.speed.x, data.speed.y, data.speed.z), new THREE.Vector3(data.phase.x, data.phase.y, data.phase.z));
+			movingPlatformsFromBack.push(platform);
+		}
+		else if (data.type === 'linear') {
+			platform = new LinearPlatform(scene, new THREE.Vector3(data.positionA.x, data.positionA.y, data.positionA.z), new THREE.Vector3(data.positionB.x, data.positionB.y, data.positionB.z), data.size.x, data.size.y, data.size.z, data.travelTime, data.delay, data.pauseTime, data.finalStayTime);
+			movingPlatformsFromBack.push(platform);
+		}
+		else if (data.type === 'bouncy')
+			platform = new BouncyPlatform(scene, new THREE.Vector3(data.position.x, data.position.y, data.position.z), data.size.x, data.size.y, data.size.z, data.strenght);
+		if (platform) {
+			platform.mesh.material.color.setHex(data.color);
+			platformsFromBack.push(platform);
+			console.log('Platform type: ', data.type, 'push!');
+		}
+	});
+}
+
 socket.on('gameState', (state) => {
+	if (state.platforms)
+		console.log('Reçu gameState, platforms:', state.platforms?.length);  // ← Ajoute ça
+
+	if (!platformsCreated && state.platforms) {
+		createPlatforms(state.platforms);
+		platformsCreated = true;
+	}
+
 	state.players.forEach(playerData => {
 		if (playerData.id === socket.id) return; //pour pas s afficher en remote
 		if (!remotePlayers[playerData.id]) {
@@ -197,8 +238,7 @@ function climbUp(platforms, materials)
 	platforms.push(new Platform(scene, new THREE.Vector3(60, 30, 1.4), 8, 0.5, 8, getRandomBlockMaterial(materials)));
 }
 
-function copyAndMovePlatform(platform, moveX, moveY, moveZ)
-{
+function copyAndMovePlatform(platform, moveX, moveY, moveZ) {
 	let newPlat = platform.copy();
 	newPlat.basePosition.x += moveX;
 	newPlat.basePosition.y += moveY;
@@ -206,10 +246,9 @@ function copyAndMovePlatform(platform, moveX, moveY, moveZ)
 	return (newPlat);
 }
 
-function elevators(platforms)
-{
+function elevators(platforms) {
 	let elevator = new PeriodicPlatform(
-		scene, 
+		scene,
 		new THREE.Vector3(50, 30, 1.4),
 		4, 0.5, 4,
 		new THREE.Vector3(0, 6, 0),
@@ -292,7 +331,8 @@ checkPoints.push(checkPoint1);
 checkPoints.push(checkPoint2);
 checkPoints.push(checkPoint3);
 
-const platforms = addPlatforms(scene, materials);
+// const platforms = addPlatforms(scene);
+const platforms = '';
 // Sizes
 
 window.addEventListener('resize', () => {
@@ -433,18 +473,19 @@ const tick = () => {
 	
 	const currentServerTime = Date.now() + timeOffset;
 	const elapsedTime = (currentServerTime - gameStartTimeStamp) / 1000;
-	for (let i = 0; i < movingPlatforms.length; i++) {
-		movingPlatforms[i].update(elapsedTime);
+	for (let i = 0; i < movingPlatformsFromBack.length; i++) {
+		movingPlatformsFromBack[i].update(elapsedTime);
 	}
+
 	
 	// Mettre à jour le joueur local
-	player.update(deltaTime, keys, platforms);
 	
 	// Mettre à jour tous les joueurs distants (interpolation + animation)
 	Object.values(remotePlayers).forEach(remotePlayer => {
 		remotePlayer.update(deltaTime);
 	});
 	
+	player.update(deltaTime, keys, platformsFromBack);
 	for (let i = 0; i < checkPoints.length; i++) {
 		if (checkPoints[i].getBox().intersectsBox(player.getBox())) {
 			player.checkPoint = checkPoints[i].mesh.position.clone();

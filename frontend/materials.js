@@ -142,3 +142,13 @@ function setMaterialColorFilter(material, color, intensity = 0.2) {
 // Exemples d'utilisation :
 // setMaterialColorTint(materials.scifimetal, 0x8888ff) // teinte bleue forte (écrase les couleurs)
 // setMaterialColorFilter(materials.scifimetal, 0x4444ff, 0.1) // léger filtre bleu (intensity entre 0 et 1)
+export function getRandomBlockMaterial(materials)
+{
+    const rand = Math.random();
+    if (rand < -1.33)
+        return (materials.blockred);
+    if (rand < -1.66)
+        return (materials.blockgreen);
+    else 
+        return (materials.blockblue);
+}
