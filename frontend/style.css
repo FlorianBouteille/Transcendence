@@ -1,3 +1,5 @@
+/*DEBUT PAGE ACCUEIL*/
+
 *,
 *::before,
 *::after {
@@ -139,6 +141,21 @@ body {
 	right: 1025px;
 }
 
+/*DEBUT ALREADY PAGE*/
+
+
+.already-page .nav-link {
+	color: #7a2cff;
+	text-shadow: 0 0 10px rgba(0, 255, 65, 0.8);
+}
+
+.already-page .nav-link:hover {
+	color: #00FF41;
+	text-shadow: 0 0 18px rgba(0, 255, 65, 0.4);
+}
+
+/*FIN PAGE ALREADY*/
+
 @media (max-width: 600px) {
 	.nav-link {
 		font-size: 0.8rem;
@@ -254,3 +271,234 @@ body {
 	background: rgba(90, 74, 130, 0.35);
 	border-radius: 6px;
 }
+
+.hero {
+	transform: translateY(-20px);
+}
+
+/*FIN PAGE ACCUEIL*/
+
+
+/*debut page register*/
+.register-page {
+	padding: clamp(24px, 5vw, 56px);
+}
+
+.register-card {
+	width: min(460px, 92vw);
+	background: rgba(255, 0.92);
+	border-radius: 22px;
+	padding: clamp(24px, 4vw, 36px);
+	box-shadow: 0 18px 40px rgba(44, 18, 74, 0.25);
+	border: 2px solid rgba(255, 255, 255, 0.8);
+}
+
+.register-title {
+	text-align: center;
+	font-size: clamp(1.4rem, 2.8vw, 1.8rem);
+	font-weight: 700;
+	color: #1b0b2e;
+	letter-spacing: 0.06em;
+	margin-bottom: 20px;
+}
+
+.register-form {
+	display: grid;
+	gap: 14px;
+}
+
+.register-field {
+	display: grid;
+	gap: 6px;
+	font-size: 0.85rem;
+	font-weight: 600;
+	color: #3a275f;
+}
+
+.register-field input {
+	height: 40px;
+	border-radius: 8px;
+	border: 1px solid rgba(27, 11, 46, 0.15);
+	padding: 0 12px;
+	font-size: 0.95rem;
+	background: #a8ace1;
+	color: #1b0b2e;
+}
+
+.register-field input:focus {
+	outline: 2px solid rgba(0, 255, 65, 0.4);
+	background: #fff;
+}
+
+.register-submit {
+	margin-top: 10px;
+	height: 44px;
+	border: none;
+	border-radius: 10px;
+	background: linear-gradient(135deg, #2ea84e, #50d96b);
+	color: #fff;
+	font-weight: 700;
+	letter-spacing: 0.08em;
+	text-transform: uppercase;
+	cursor: pointer;
+	box-shadow: 0 10px 24px rgba(0, 255, 65, 0.4);
+	transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.register-submit:hover {
+	transform: translateY(-2px);
+	box-shadow: 0 14px 30px rgba(46, 168, 78, 0.45);
+}
+
+.register-footer {
+	margin-top: 10px;
+	text-align: center;
+	font-size: 0.85rem;
+	color: #3a275f;
+}
+
+
+.register-footer a {
+	color: #2a7bdc;
+	font-weight: 700;
+	text-decoration: none;
+}
+
+.register-footer a:hover {
+	text-decoration: underline;
+}
+
+/*FIN PAGE REGISTER*/
+
+
+/*DEBUT PAGE SCORE*/
+
+.history-page {
+	padding: clamp(24px, 4vw, 48px);
+}
+
+.history-board {
+	width: min(900px, 90vw);
+	padding: clamp(24px, 4vw, 42px);
+	border-radius: 28px;
+	background: linear-gradient(135deg, rgba(255, 255, 255, 0.8), rgba(255, 255, 255, 0.45));
+	box-shadow: 0 18px 40px rgba(44, 18, 74, 0.35);
+	position: relative;
+	overflow: hidden;
+}
+
+.history-board::before {
+	content: "";
+	position: absolute;
+	inset: 12px;
+	border-radius: 30px;
+	border: 4px solid rgba(76, 238, 95, 0.8);
+	background: linear-gradient(120deg, rgba(255, 94, 204, 0.25), rgba(64, 236, 255, 0.18));
+	mix-blend-mode: screen;
+	pointer-events: none;
+}
+
+.history-board::after {
+	content: "";
+	position: absolute;
+	inset: -40% -20% auto auto;
+	width: 300px;
+	height: 300px;
+	background: radial-gradient(circle, rgba(255, 248, 128, 0.55), transparent 60%);
+	opacity: 0.8;
+	pointer-events: none;
+}
+
+.history-header {
+	position: relative;
+	z-index: 1;
+	display: flex;
+	flex-direction: column;
+	gap: 8px;
+	margin-bottom: 24px;
+	text-align: center;
+}
+
+.history-kicker {
+	font-size: 1.2 rem;
+	letter-spacing: 0.3em;
+	text-transform: uppercase;
+	color: #68F527;
+	text-shadow: 0 2px rgba(255, 79, 216, 0.35);
+	font-weight: 700;
+}
+
+.history-title {
+	font-size: clamp(1.8rem, 3vw, 2.8rem);
+	letter-spacing: 0.12em;
+	text-transform: uppercase;
+	font-family: "Bungee", "Luckiest Guy", Impact, sans-serif;
+	color: #ff4fd8;
+	text-shadow: 0 3px 0 #ffea5a, 0 10px 24px rgba(255, 79, 216, 0.35);
+}
+
+.history-table {
+	position: relative;
+	z-index: 1;
+	display: grid;
+	gap: 12px;
+}
+
+#history-body {
+	display: grid;
+	gap: 12px;
+}
+
+.history-row {
+	display: grid;
+	grid-template-columns: 0.5fr 1.2fr 1fr 0.7fr;
+	gap: 12px;
+	align-items: center;
+	padding: 14px 18px;
+	border-radius: 16px;
+	background: rgba(255, 255, 255, 0.7);
+	font-size: 1rem;
+	font-weight: 600;
+	color: #251442;
+	box-shadow: inset 0 0 0 2px rgba(255, 255, 255, 0.7);
+}
+
+.history-row--head {
+	text-transform: uppercase;
+	letter-spacing: 0.18em;
+	font-size: 0.78rem;
+	background: linear-gradient(90deg, rgba(255, 71, 201, 0.65), rgba(73, 255, 240, 0.55));
+	color: #1b0b2e;
+}
+
+.history-row span:last-child {
+	justify-self: end;
+	font-variant-numeric: tabular-nums;
+}
+
+.history-rank {
+	justify-self: center;
+	font-weight: 700;
+	color: #1b0b2e;
+}
+
+@media (max-width: 700px) {
+	.history-board {
+		width: min(95vw, 520px);
+	}
+
+	.history-row {
+		grid-template-columns: 1fr;
+		text-align: left;
+	}
+
+	.history-rank {
+		justify-self: start;
+	}
+
+	.history-row span:last-child {
+		justify-self: start;
+	}
+}
+
+/*FIN PAGE SCORE*/
