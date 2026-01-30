@@ -3,4 +3,5 @@ import { authRoutes } from "./auth.route.js";
 
 export const routes = Router();
 
-routes.use("/auth", authRoutes);
+// Routes montees directement sur /api pas /api/auth
+routes.use(authRoutes);

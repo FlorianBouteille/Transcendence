@@ -12,16 +12,15 @@
 
             <section class="register-card" aria-labelledby="register-title">
                 <h1 id="register-title" class="register-title">Register your account</h1>
-                <form class="register-form" autocomplete="on">
+                <form class="register-form" id="registerForm" autocomplete="on">
                     <label class="register-field">
                         <span>Username</span>
                         <input type="text" id="username" name="username" placeholder="Enter a username..." required />
                     </label>
-                    <!--
                     <label class="register-field">
                         <span>Email address</span>
                         <input type="email" id="email" name="email" placeholder="Enter your email address..." required />
-                    </label> -->
+                    </label>
                     <label class="register-field">
                         <span>Password</span>
                         <input type="password" id="password" name="password" placeholder="Enter your password..." required />
@@ -30,13 +29,47 @@
                         <span>Confirm Password</span>
                         <input type="password" id="confirmPassword" name="confirmPassword" placeholder="Enter your password again..." required />
                     </label>
-                    
+
                     <button class="register-submit" type="submit">Sign up</button>
+					<p id="message"></p>
                 </form>
             </section>
             <p class="register-footer">Already have an account ? <a href="already.html">Sign in !</a>
             </p>
         </main>
+
+		<script>
+			document.getElementById('registerForm').addEventListener('submit', async (e) => {
+				e.preventDefault();
+
+				const username = document.getElementById('username').value;
+				const email = document.getElementById('email').value;
+				const password = document.getElementById('password').value;
+				const confirmPassword = document.getElementById('confirmPassword').value;
+				const message = document.getElementById('message');
+
+				try {
+					const response = await fetch('/api/register', {
+						method: 'POST',
+						headers: {'Content-Type' : 'application/json'},
+						body: JSON.stringify({username, email, password, confirmPassword})
+					});
+
+					const data = await response.json();
+
+					if (response.ok) {
+						message.textContent = `Inscription reussie! Bienvenue ${data.user.email}`;
+						message.style.color = 'green';
+					} else {
+						message.textContent = data.error;
+						message.style.color = 'red';
+					}
+				} catch (err) {
+					message.textContent = 'Erreur de connexion au serveur';
+					message.style.color = 'red';
+				}
+			});
+		</script>
     </body>
 </html>
 
