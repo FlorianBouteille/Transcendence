@@ -7,23 +7,24 @@
     <link rel="stylesheet" href="./style.css">
 </head>
 <body>
-    <div class="lobby-container">
-        <div class="lobby-box">
-            <h1>🎮 Game Lobby</h1>
-            
+    <main class="landing lobby-page">
+        <a class="nav-link bottom-left" href="index.html">retour</a>
+
+        <section class="lobby-card" aria-labelledby="lobby-title">
+            <h2 id="lobby-title" class="lobby-title">Game Lobby</h2>
+
             <div class="lobby-status">
                 <p id="status-text">Waiting for players...</p>
             </div>
-            
-            <div class="players-list" id="players-list">
-            </div>
-            
+
+            <div class="players-list" id="players-list"></div>
+
             <button id="ready-btn" class="ready-button">READY</button>
-            
+
             <div id="countdown" class="countdown hidden"></div>
-        </div>
-    </div>
-    
+        </section>
+    </main>
+
     <script type="module" src="./lobby.js"></script>
 </body>
 </html>
