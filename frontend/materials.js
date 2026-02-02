@@ -114,7 +114,7 @@ const blockYellowMaterial = new THREE.MeshStandardMaterial({
 })
 
 const blockGreenMaterial = new THREE.MeshStandardMaterial({
-	map: blockWhiteTexture.clone(),
+	map: blockGreenTexture,
 	aoMap: blockAmbientTexture,
 	aoMapIntensity: 1,
 	normalMap: blockNormalTexture,
@@ -122,12 +122,12 @@ const blockGreenMaterial = new THREE.MeshStandardMaterial({
 	roughnessMap: blockRoughnessTexture,
 	roughness: 0.7,
 	metalness: 0.1,
-	emissive: new THREE.Color(0x139BF1),
-	emissiveIntensity: 1
+	// emissive: new THREE.Color(0x139BF1),
+	// emissiveIntensity: 1
 })
 
 const blockBlueMaterial = new THREE.MeshStandardMaterial({
-	map: blockWhiteTexture.clone(),
+	map: blockBlueTexture,
 	aoMap: blockAmbientTexture,
 	aoMapIntensity: 1,
 	normalMap: blockNormalTexture,
@@ -135,8 +135,21 @@ const blockBlueMaterial = new THREE.MeshStandardMaterial({
 	roughnessMap: blockRoughnessTexture,
 	roughness: 0.7,
 	metalness: 0.1,
-	emissive: new THREE.Color(0x11D8C5),
-	emissiveIntensity: 1
+	// emissive: new THREE.Color(0x11D8C5),
+	// emissiveIntensity: 1
+})
+
+const blockRedMaterial = new THREE.MeshStandardMaterial({
+	map: blockRedTexture,
+	aoMap: blockAmbientTexture,
+	aoMapIntensity: 1,
+	normalMap: blockNormalTexture,
+	normalScale: new THREE.Vector2(1.5, 1.5),
+	roughnessMap: blockRoughnessTexture,
+	roughness: 0.7,
+	metalness: 0.1,
+	// emissive: new THREE.Color(0x11D8C5),
+	// emissiveIntensity: 1
 })
 
 const blockOrangeMaterial = new THREE.MeshStandardMaterial({
@@ -166,6 +179,18 @@ const blockPinkMaterial = new THREE.MeshStandardMaterial({
 })
 
 const scifiMetalMaterial = new THREE.MeshStandardMaterial({
+	map: scifiColorTexture,
+	aoMap: scifiAoTexture,
+	aoMapIntensity: 1,
+	normalMap: scifiNormalTexture,
+	normalScale: new THREE.Vector2(2, 2),
+	roughnessMap: scifiRoughnessTexture,
+	metalnessMap: scifiMetallicTexture,
+	metalness: 1,
+	roughness: 0.2
+})
+
+const scifiMetalMaterial2 = new THREE.MeshStandardMaterial({
 	map: scifiColorTexture,
 	aoMap: scifiAoTexture,
 	aoMapIntensity: 1,
@@ -224,6 +249,36 @@ const fabricPaddedBlueMaterial = new THREE.MeshStandardMaterial({
 	color: new THREE.Color(0x6666ff)
 })
 
+const normalRed = new THREE.MeshStandardMaterial({
+	color: new THREE.Color(0xff0000),
+	roughness: 0.5, 
+	metalness: 0.1
+})
+
+const normalBlue = new THREE.MeshStandardMaterial({
+	color: new THREE.Color(0x0000ff),
+	roughness: 0.5, 
+	metalness: 0.5
+})
+
+const normalGreen = new THREE.MeshStandardMaterial({
+	color: new THREE.Color(0x00ff00),
+	roughness: 0.5, 
+	metalness: 0.5
+})
+
+const normalYellow = new THREE.MeshStandardMaterial({
+	color: new THREE.Color(0x00ff00),
+	roughness: 0.5, 
+	metalness: 0.5
+})
+
+const normalWhite = new THREE.MeshStandardMaterial({
+	color: new THREE.Color(0xffffff),
+	roughness: 0.9, 
+	metalness: 0.1
+})
+
 const fabricPaddedYellowMaterial = new THREE.MeshStandardMaterial({
 	map: fabricColorTexture.clone(),
 	aoMap: fabricAoTexture,
@@ -247,9 +302,19 @@ const rubberFloorRedMaterial = new THREE.MeshStandardMaterial({
 	metalness: 0.0,
 	color: new THREE.Color(0xff6666),
 	emissive: new THREE.Color(0xff6666),
-	emissiveIntensity: 0.1
+	emissiveIntensity: 0.2
 })
 
+const rubberFloorMaterial = new THREE.MeshStandardMaterial({
+	map: rubberColorTexture.clone(),
+	aoMap: rubberAoTexture,
+	aoMapIntensity: 1,
+	normalMap: rubberNormalTexture,
+	normalScale: new THREE.Vector2(1.5, 1.5),
+	roughnessMap: rubberRoughnessTexture,
+	roughness: 0.9,
+	metalness: 0.2,
+})
 const rubberFloorGreenMaterial = new THREE.MeshStandardMaterial({
 	map: rubberColorTexture.clone(),
 	aoMap: rubberAoTexture,
@@ -261,7 +326,7 @@ const rubberFloorGreenMaterial = new THREE.MeshStandardMaterial({
 	metalness: 0.0,
 	color: new THREE.Color(0x66ff66),
 	emissive: new THREE.Color(0x66ff66),
-	emissiveIntensity: 0.1
+	emissiveIntensity: 0.3
 })
 
 const rubberFloorBlueMaterial = new THREE.MeshStandardMaterial({
@@ -275,7 +340,7 @@ const rubberFloorBlueMaterial = new THREE.MeshStandardMaterial({
 	metalness: 0.0,
 	color: new THREE.Color(0x6666ff),
 	emissive: new THREE.Color(0x6666ff),
-	emissiveIntensity: 0.1
+	emissiveIntensity: 0.3
 })
 
 const rubberFloorYellowMaterial = new THREE.MeshStandardMaterial({
@@ -289,25 +354,33 @@ const rubberFloorYellowMaterial = new THREE.MeshStandardMaterial({
 	metalness: 0.0,
 	color: new THREE.Color(0xffff66),
 	emissive: new THREE.Color(0xffff66),
-	emissiveIntensity: 0.1
+	emissiveIntensity: 0.3
 })
 
-setScifiTextureRepeat(10, 2);
+setScifiTextureRepeat(1, 1);
 setBlockTexturesRepeat(1, 1);
 // Map de materials disponibles
 export const materials = {
+	normalred: normalRed,
+	normalblue: normalBlue,
+	normalgreen: normalGreen,
+	normalyellow: normalYellow,
+	normalwhite: normalWhite,
 	blockgreen: blockGreenMaterial,
+	blockred: blockRedMaterial,
 	blockblue: blockBlueMaterial,
 	blockyellow: blockYellowMaterial,
 	blockorange: blockOrangeMaterial,
 	blockpink: blockPinkMaterial,
 	blockwhite: blockWhiteMaterial,
 	scifimetal: scifiMetalMaterial,
+	scifimetal2: scifiMetalMaterial2,
 	fabricpadded: fabricPaddedMaterial,
 	fabricpaddedred: fabricPaddedRedMaterial,
 	fabricpaddedgreen: fabricPaddedGreenMaterial,
 	fabricpaddedblue: fabricPaddedBlueMaterial,
 	fabricpaddedyellow: fabricPaddedYellowMaterial,
+	rubberfloor: rubberFloorMaterial,
 	rubberfloorred: rubberFloorRedMaterial,
 	rubberfloorgreen: rubberFloorGreenMaterial,
 	rubberfloorblue: rubberFloorBlueMaterial,

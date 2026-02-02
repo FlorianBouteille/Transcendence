@@ -7,6 +7,7 @@ import { Platform } from './Platform.js'
 import { PeriodicPlatform } from './PeriodicPlatform.js'
 import { LinearPlatform } from './LinearPlatform.js'
 import { BouncyPlatform } from './BouncyPlatform.js'
+import { Crown } from './crown.js'
 import { checkPoint } from './CheckPoint.js'
 import { randomColor } from './utils.js'
 import { Vector2 } from 'three'
@@ -40,6 +41,8 @@ const canvas = document.querySelector('canvas.webgl')
 const scene = new THREE.Scene()
 scene.background = environmentMap;
 scene.environment = environmentMap;
+//const light = new THREE.HemisphereLight(0xffffff, 0xffffff, 5);
+//scene.add(light);
 
 const remotePlayers = {};  // Stocke les meshes des joueurs distants
 
@@ -55,22 +58,23 @@ function createPlatforms(platformsData) {
 			platform = new Platform(scene, new THREE.Vector3(data.position.x, data.position.y, data.position.z), data.size.x, data.size.y, data.size.z, materials[data.material]);
 		}
 		else if (data.type === 'periodic') {
-			platform = new PeriodicPlatform(scene, new THREE.Vector3(data.position.x, data.position.y, data.position.z), data.size.x, data.size.y, data.size.z, new THREE.Vector3(data.amplitude.x, data.amplitude.y, data.amplitude.z), new THREE.Vector3(data.speed.x, data.speed.y, data.speed.z), new THREE.Vector3(data.phase.x, data.phase.y, data.phase.z));
+			platform = new PeriodicPlatform(scene, new THREE.Vector3(data.position.x, data.position.y, data.position.z), data.size.x, data.size.y, data.size.z, new THREE.Vector3(data.amplitude.x, data.amplitude.y, data.amplitude.z), new THREE.Vector3(data.speed.x, data.speed.y, data.speed.z), new THREE.Vector3(data.phase.x, data.phase.y, data.phase.z), materials[data.material]);
 			movingPlatformsFromBack.push(platform);
 		}
 		else if (data.type === 'linear') {
-			platform = new LinearPlatform(scene, new THREE.Vector3(data.positionA.x, data.positionA.y, data.positionA.z), new THREE.Vector3(data.positionB.x, data.positionB.y, data.positionB.z), data.size.x, data.size.y, data.size.z, data.travelTime, data.delay, data.pauseTime, data.finalStayTime);
+			platform = new LinearPlatform(scene, new THREE.Vector3(data.positionA.x, data.positionA.y, data.positionA.z), new THREE.Vector3(data.positionB.x, data.positionB.y, data.positionB.z), data.size.x, data.size.y, data.size.z, data.travelTime, data.delay, data.pauseTime, data.finalStayTime, materials[data.material]);
 			movingPlatformsFromBack.push(platform);
 		}
 		else if (data.type === 'bouncy')
 			platform = new BouncyPlatform(scene, new THREE.Vector3(data.position.x, data.position.y, data.position.z), data.size.x, data.size.y, data.size.z, data.strenght, materials[data.material]);
 		if (platform) {
-			platform.mesh.material.color.setHex(data.color);
+			//platform.mesh.material.color.setHex(data.color);
 			platformsFromBack.push(platform);
 			console.log('Platform type: ', data.type, 'push!');
 		}
 	});
 }
+
 
 socket.on('gameState', (state) => {
 	if (state.platforms)
@@ -154,10 +158,16 @@ const checkPoint2 = new checkPoint(112, 8, 0);
 scene.add(checkPoint2.mesh);
 const checkPoint3 = new checkPoint(60, 30.5, 1.4);
 scene.add(checkPoint3.mesh);
+const checkPoint4 = new checkPoint(25, 58, 0);
+scene.add(checkPoint4.mesh);
+const checkPoint5 = new checkPoint(-55, 69, 0);
+scene.add(checkPoint5.mesh);
 let checkPoints = new Array();
 checkPoints.push(checkPoint1);
 checkPoints.push(checkPoint2);
 checkPoints.push(checkPoint3);
+checkPoints.push(checkPoint4);
+checkPoints.push(checkPoint5);
 
 // const platforms = addPlatforms(scene);
 const platforms = '';
@@ -185,8 +195,6 @@ const keys =
 	d: false,
 	space: false
 }
-const light = new THREE.HemisphereLight(0xffffff, 0x00000, 8);
-scene.add(light);
 // Camera
 
 function onKey(event) {
@@ -221,22 +229,17 @@ renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2))
 
 // GUI 
 // const playerGui = gui.addFolder('Player');
-// const platformsGui = gui.addFolder('Plateformes')
-// for (let i = 0; i < platforms.length; i++) {
-// 	const platformFolder = platformsGui.addFolder('Plateforme $(i)')
-// 	{
-// 		platformFolder.add(platforms[i].mesh.position, 'x', -200, 200, 1).name('posX');
-// 		platformFolder.add(platforms[i].mesh.position, 'z', -200, 200, 1).name('posZ');
-// 		platformFolder.add(platforms[i].mesh.scale, 'x', -200, 200, 1).name('sizeX');
-// 		platformFolder.add(platforms[i].mesh.scale, 'z', -200, 200, 1).name('sizeZ');
-// 	}
-// }
-
-// gui.add(light, 'intensity', 0, 130, 1).name('light intensity')
-// playerGui.add(player, 'speed', 2, 15, 0.5).name('Speed');
-// playerGui.add(player, 'jumpForce', 1, 20, 0.5).name('jump Force');
-// playerGui.add(player, 'gravity', 1, 20, 0.5).name('gravity');
-// gui.add(mouse, 'sensitivity', 0.1, 8, 0.1).name('mousePower');
+const platformsGui = gui.addFolder('Plateformes')
+console.log('nb de plateformes : ' + platformsFromBack.length);
+for (let i = 0; i < platformsFromBack.length; i++) {
+	const platformFolder = platformsGui.addFolder('Plateforme $(i)')
+	{
+		platformFolder.add(platformsFromBack[i].mesh.position, 'x', -200, 200, 1).name('posX');
+		platformFolder.add(platformsFromBack[i].mesh.position, 'z', -200, 200, 1).name('posZ');
+		platformFolder.add(platformsFromBack[i].mesh.scale, 'x', -200, 200, 1).name('sizeX');
+		platformFolder.add(platformsFromBack[i].mesh.scale, 'z', -200, 200, 1).name('sizeZ');
+	}
+}
 
 let timeOffset = 0; // Différence entre temps serveur et temps local
 let clockStarted = false;
@@ -271,6 +274,7 @@ function syncClockWithServer() {
 	}
 }
 
+
 // Lancer la synchronisation au démarrage
 syncClockWithServer();
 
@@ -281,7 +285,10 @@ socket.emit('gameLoaded');
 
 const clock = new THREE.Clock(false);
 let gameStartTimeStamp = null;
+let crown = new Crown(-83, 100, 0);
+scene.add(crown.mesh);
 
+player.checkPoint = checkPoints[4].mesh.position.clone();
 socket.on('startClock', (timestamp) => 
 {
 	gameStartTimeStamp = timestamp;
@@ -318,6 +325,10 @@ const tick = () => {
 		if (checkPoints[i].getBox().intersectsBox(player.getBox())) {
 			player.checkPoint = checkPoints[i].mesh.position.clone();
 		}
+	}
+	if (crown.getBox().intersectsBox(player.getBox()))
+	{
+		console.log('You won the game !');
 	}
 	renderer.render(scene, player.camera)
 	window.requestAnimationFrame(tick)
