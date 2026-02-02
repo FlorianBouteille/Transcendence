@@ -5,7 +5,7 @@ export class Platform {
     constructor(scene, position, sizeX, sizeY, sizeZ, theMaterial) {
         const geometry = new THREE.BoxGeometry(sizeX, sizeY, sizeZ)
         let material;
-        if (arguments.length == 6)
+        if (theMaterial && theMaterial != undefined)
             material = theMaterial;
         else
             material = new THREE.MeshStandardMaterial({ color: randomColor() })
