@@ -692,3 +692,40 @@ body {
 }
 
 /*FIN PAGE SCORE*/
+
+/* ============== NOTIFICATION TOAST ============== */
+.notification {
+	position: fixed;
+	top: 20px;
+	left: 50%;
+	transform: translateX(-50%) translateY(-100px);
+	background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+	color: white;
+	padding: 16px 32px;
+	border-radius: 12px;
+	box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+	font-weight: 600;
+	font-size: 16px;
+	z-index: 10000;
+	transition: all 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+	opacity: 0;
+	pointer-events: none;
+}
+
+.notification.show {
+	transform: translateX(-50%) translateY(0);
+	opacity: 1;
+	pointer-events: auto;
+}
+
+.notification.error {
+	background: linear-gradient(135deg, #ff6b6b 0%, #ee5a6f 100%);
+}
+
+.notification.success {
+	background: linear-gradient(135deg, #56ab2f 0%, #a8e063 100%);
+}
+
+.notification.warning {
+	background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+}

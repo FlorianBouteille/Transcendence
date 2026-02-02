@@ -25,11 +25,16 @@
 			<!-- ========== CHOIX PRIVATE ========== -->
 			<div id="private-choice" class="lobby-box hidden">
 				<h2>Private Room</h2>
-				<div class="menu-buttons">
+
+				<!-- 🆕 Ajouter un input pour créer avec un code custom -->
+				<div class="create-room-section">
+					<input type="text" id="custom-room-code" class="code-input"
+						placeholder="Enter custom code (optional)" maxlength="6">
 					<button id="create-room-btn" class="menu-button">Create Room</button>
-					<button id="join-room-btn" class="menu-button">Join Room</button>
-					<button id="back-btn-1" class="back-button">← Back</button>
 				</div>
+
+				<button id="join-room-btn" class="menu-button">Join Room</button>
+				<button id="back-btn-1" class="back-button">← Back</button>
 			</div>
 
 			<!-- ========== REJOINDRE UNE ROOM ========== -->
@@ -45,23 +50,24 @@
 			<!-- ========== ROOM CRÉÉE / REJOINTE ========== -->
 			<div id="room-view" class="lobby-box hidden">
 				<h2>Room: <span id="room-code">------</span></h2>
-				<p class="copy-hint" id="copy-hint">Click code to copy</p>
 
 				<div class="lobby-status">
 					<p id="status-text">Waiting for players...</p>
 					<p>Players: <span id="player-count">1</span> / 8</p>
+					<p id="game-countdown" class="hidden" style="font-size: 2em; color: #00ff00;">Starting in: <span
+							id="countdown-seconds">5</span></p>
 				</div>
 
 				<div class="players-list" id="players-list"></div>
 
 				<button id="start-game-btn" class="ready-button hidden">START GAME</button>
-				<button id="ready-btn" class="ready-button hidden">READY</button>
+				<button id="ready-btn" class="ready-button">READY</button>
 				<button id="leave-room-btn" class="back-button">Leave Room</button>
 			</div>
-
 			<!-- ========== FILE D'ATTENTE RANDOM ========== -->
 			<div id="queue-view" class="lobby-box hidden">
 				<h2>🔍 Searching for players...</h2>
+				<div id="countdown-timer">10</div>
 				<div class="lobby-status">
 					<p>Players in queue: <span id="queue-count">1</span></p>
 					<div class="loading-spinner"></div>
@@ -71,6 +77,11 @@
 
 		</div>
 	</main>
+
+	<!-- Notification Toast -->
+	<div id="notification" class="notification hidden">
+		<span id="notification-message"></span>
+	</div>
 
 	<script type="module" src="./lobby.js"></script>
 </body>

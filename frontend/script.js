@@ -26,6 +26,9 @@ let platformsFromBack = [];
 let movingPlatformsFromBack = [];
 let platformsCreated = false
 
+
+
+
 socket.on('connect', () => {
 	console.log('✅ Connecté au serveur');
 	socket.emit('joinRoom', roomId);
