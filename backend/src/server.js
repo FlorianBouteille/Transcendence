@@ -1,7 +1,7 @@
 import express from "express";
 import http from "http";
 import { Server } from "socket.io";
-import { addPlayer, removePlayer, updatePlayerInput, initGameServer, setPlayerReady, everyOneLoaded, updatePosition } from './gameServer.js';
+import { removePlayer, initGameServer, everyOneLoaded, updatePosition, initLobbyHandler } from './gameServer.js';
 // import { WebSocketServer } from "ws";
 
 const app = express();
@@ -24,39 +24,29 @@ const io = new Server(server, {
 initGameServer(io);
 
 io.on("connection", (socket) => {
-	addPlayer(socket.id);
+	initLobbyHandler(socket, io);
 
-	socket.on('test', (data) => {
-		console.log('Message reçu du client:', data);
-		socket.emit('response', { echo: data });
-	});
 
-	// socket.on('playerInput', (data) => {
-	// 	updatePlayerInput(socket.id, data.key, data.pressed);
+	// socket.on('playerReady', () => {
+	// 	if (setPlayerReady(socket.id) == true) {
+	// 		io.emit('start', 'ok');
+	// 	}
 	// });
-
-	socket.on('playerReady', () => {
-		if (setPlayerReady(socket.id) == true)
-		{
-			io.emit('start', 'ok');  // io.emit pour envoyer à TOUS les clients
-		}
-	});
 
 	socket.on('gameLoaded', () => {
 		console.log(`📩 Reçu gameLoaded de ${socket.id}`);
-		if (everyOneLoaded(socket.id) == true)
-		{
+		if (everyOneLoaded(socket.id, socket.roomID) == true) {
 			const timestamp = Date.now();
-			io.emit('startClock', timestamp);
+			io.to(socket.roomID).emit('startClock', timestamp);
 		}
 	});
 
 	socket.on('playerPosition', (position) => {
-		updatePosition(socket.id, position);
+		updatePosition(socket.id, socket.roomID, position);
 	});
 
 	socket.on('disconnect', () => {
-		removePlayer(socket.id);
+		removePlayer(socket.id, socket.roomID);
 	});
 });
 
