@@ -153,6 +153,7 @@ socket.on('gameCountdown', ({ seconds }) => {
 });
 //=========RANDOM=========
 document.getElementById('random-btn').onclick = () => {
+	socket.emit('joinRandom');
 	showView('queue-view');
 };
 document.getElementById('cancel-queue-btn').onclick = () => {
