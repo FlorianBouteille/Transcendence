@@ -54,15 +54,13 @@ const crownBtn = document.getElementById('crown');
 const surviveBtn = document.getElementById('survive');
 let gameType;
 
-crownBtn.onclick = () =>
-{
+crownBtn.onclick = () => {
 	surviveBtn.classList.remove('active');
 	crownBtn.classList.add('active');
 	gameType = 'crown'
 }
 
-surviveBtn.onclick = () =>
-{
+surviveBtn.onclick = () => {
 	crownBtn.classList.remove('active');
 	surviveBtn.classList.add('active');
 	gameType = 'survive'
@@ -87,7 +85,7 @@ socket.on('gameStarted', ({ roomId }) => {
 
 //=========ROOM-PRIVATE=========
 document.getElementById('private-btn').onclick = () => {
-	document.getElementById('custom-room-code').value = ''; // Clear input
+	document.getElementById('custom-room-code').value = '';
 	showView('private-choice');
 };
 document.getElementById('room-code').addEventListener('click', () => {
@@ -110,10 +108,7 @@ document.getElementById('back-btn-1').onclick = () => {
 
 //----------CREATE ROOM----------
 document.getElementById('create-room-btn').onclick = () => {
-	if (!gameType) {
-		showNotification('Please select a game type first!', 'warning');
-		return;
-	}
+
 	let roomCode = document.getElementById('custom-room-code').value.trim().toUpperCase();
 	if (roomCode.length === 0)
 		roomCode = Math.random().toString(36).substring(2, 8).toUpperCase();
@@ -178,6 +173,11 @@ socket.on('gameCountdown', ({ seconds }) => {
 		countdownElement.classList.remove('hidden');
 		secondsElement.textContent = seconds;
 	}
+	const readyBtn = document.getElementById('ready-btn');
+	readyBtn.classList.add('hidden');
+
+	const startBtn = document.getElementById('start-game-btn');
+	startBtn.classList.add('hidden');
 });
 //=========RANDOM=========
 document.getElementById('random-btn').onclick = () => {
@@ -185,11 +185,13 @@ document.getElementById('random-btn').onclick = () => {
 		showNotification('Please select a game type first!', 'warning');
 		return;
 	}
+	document.getElementById('game-choice').classList.add('hidden');
 	socket.emit('joinRandom', { gameType });
 	showView('queue-view');
 };
 document.getElementById('cancel-queue-btn').onclick = () => {
 	socket.emit('leaveQueue');
+	document.getElementById('game-choice').classList.remove('hidden');
 	showView('main-menu');
 };
 
