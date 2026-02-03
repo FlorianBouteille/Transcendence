@@ -123,28 +123,27 @@ document.getElementById('registerForm').addEventListener('submit', async (e) => 
     const password = document.getElementById('password').value;
     const confirmPassword = document.getElementById('confirmPassword').value;
     const message = document.getElementById('message');
-    
+
     try {
         const response = await fetch('/api/register', {
             method: 'POST',
             headers: {'Content-Type' : 'application/json'},
             body: JSON.stringify({username, email, password, confirmPassword})
         });
-        
+
         const data = await response.json();
-        
+
         if (response.ok) {
-                window.location.href = 'lobby.html';
-        } else {
-
-                window.location.href = 'error.html';
-
-        }
-    } catch (err) {
-
-            window.location.href = 'error.html';
-
-    }
+			message.textContent = `Inscription reussie! Bienvenue ${data.user.email}`;
+			message.style.color = 'green';
+		} else {
+			message.textContent = data.error;
+			message.style.color = 'red';
+					}
+		} catch (err) {
+			message.textContent = 'Erreur de connexion au serveur';
+			message.style.color = 'red';
+		}
 });
 </script>
 </body>

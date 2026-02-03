@@ -12,12 +12,12 @@
 
 	<main class="landing">
 		<a class="nav-link top-left" href="leaderboard.html">Top games</a>
-		<!--<a class="nav-link top-right" href="register.html">REGISTER</a>-->
+		<a class="nav-link top-right" href="register.html" id="auth-link">REGISTER</a>
 
 		<section class="hero">
 		<!--	<p class="hero-title">ft_transcendence</p> -->
 			<h1 class="alien-title">ft_transcendence</h1>
-			<a class="hero-cta" href="register.html">PLAY</a>
+			<button type="submit" class="hero-cta" id="play" >PLAY</button>
 		</section>
 
 		<a class="nav-link bottom-left" href="last_games.html">Last Games</a>
@@ -25,8 +25,31 @@
 		<a class="nav-link bottom-mid-right" href="terms-of-service.html">Terms</a>
 		<a class="nav-link bottom-right" href="team.html">Team</a>
 	</main>
+
+<script>
+	document.addEventListener('DOMContentLoaded', () => {
+		const existingToken = localStorage.getItem('token');
+		const playBtn = document.getElementById('play');
+		const authLink = document.getElementById('auth-link');
+
+		if (existingToken) {
+			authLink.textContent = 'DISCONNECT';
+			authLink.href = '#';
+			authLink.addEventListener('click', (e) => {
+				e.preventDefault();
+				localStorage.removeItem('token');
+				localStorage.removeItem('user');
+				window.location.reload();
+			});
+		}
+
+		playBtn.addEventListener('click', () => {
+			window.location.href = existingToken ? 'lobby.html' : 'register.html';
+		});
+	});
+</script>
+
 </body>
 
 </html>
 
-</html>

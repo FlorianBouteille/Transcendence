@@ -9,7 +9,7 @@ async function start() {
 		const sequelize = await db.connect();
 
 		// 2 Initialize models and optionally synchronize tables
-		db.models = await db.initModels(sequelize, {sync: true});
+		db.models = await db.initModels(sequelize, {sync: true, alter:true});
 
 		// 3 Create the Express app
 		const app = createApp();
