@@ -148,7 +148,6 @@ function gameLoop() {
 
 		const GameState = {
 			players: Object.values(game.players),
-			platforms: game.platforms,
 			elapsedTime: elapsedTime,
 			...(game.gameMode ? game.gameMode.getGameState(game) : {})
 		};
@@ -189,6 +188,7 @@ function initLobbyHandler(socket, io) {
 		gameInstances[roomID] = {
 			players: {},
 			platforms: gameMode.generatePlatforms(),
+			checkpoints: gameMode.generateCheckpoints(),
 			startTime: Date.now(),
 			type: 'solo',
 			gameType: gameType,
@@ -213,6 +213,7 @@ function initLobbyHandler(socket, io) {
 			gameInstances[roomID] = {
 				players: {},
 				platforms: gameMode.generatePlatforms(),
+				checkpoints: gameMode.generateCheckpoints(),
 				startTime: Date.now(),
 				type: 'random',
 				gameType: gameType,
@@ -259,6 +260,7 @@ function initLobbyHandler(socket, io) {
 		gameInstances[roomID] = {
 			players: {},
 			platforms: gameMode.generatePlatforms(),
+			checkpoints: gameMode.generateCheckpoints(),
 			startTime: Date.now(),
 			type: 'private',
 			gameType: gameType,
@@ -370,6 +372,7 @@ function initLobbyHandler(socket, io) {
 			gameInstances[roomID].gameType = gameType;
 			gameInstances[roomID].gameMode = gameMode;
 			gameInstances[roomID].platforms = gameMode.generatePlatforms();
+			gameInstances[roomID].checkpoints = gameMode.generateCheckpoints();
 			gameInstances[roomID].gameState = gameMode.initGameState();
 		}
 
@@ -437,7 +440,9 @@ function initLobbyHandler(socket, io) {
 
 		socket.emit('roomJoined', {
 			roomID: roomID,
-			platforms: gameInstances[roomID].platforms
+			platforms: gameInstances[roomID].platforms,
+			checkpoints: gameInstances[roomID].checkpoints,
+			gameType: gameInstances[roomID].gameType
 		});
 
 		if (gameInstances[roomID].type === 'random' && gameInstances[roomID].expectedPlayers) {

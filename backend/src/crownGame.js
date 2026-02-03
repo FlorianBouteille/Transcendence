@@ -460,4 +460,24 @@ function generateCrownPlatforms(platformIdCounter) {
 	return platforms;
 }
 
-export { generateCrownPlatforms };
+function generateCheckpoints()
+{
+    let checkpoints = []
+    let positions = [
+        {x: 37, y: 7.5, z: 0},
+        {x: 112, y: 8, z: 0},
+        {x: 60, y: 30.5, z: 1.44},
+        {x: 25, y: 58, z: 0},
+        {x: -55, y: 69, z: 0}
+    ]
+    for (let i = 0; i < positions.length; i++)
+    {
+        checkpoints.push({
+            posX : positions[i].x,
+            posY : positions[i].y,
+            posZ : positions[i].z
+        })
+    }
+    return checkpoints;
+}
+export { generateCrownPlatforms, generateCheckpoints };

@@ -1,6 +1,6 @@
 import * as THREE from 'three'
 
-export class checkPoint
+export class CheckPoint
 {
     constructor(posX, posY, posZ)
     {

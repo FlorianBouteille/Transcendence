@@ -15,69 +15,150 @@ function getRandomBlockMaterial() {
 // Fonction principale qui génère les plateformes du mode Survive
 function generateSurvivePlatforms(platformIdCounter) {
 	const platforms = [];
-
+    let pauseFactor = 8;
+    let delayFactor = 5;
+    let speedFactor = 2;
 	// Plateforme de départ
-	platforms.push({
-		id: platformIdCounter.value++,
-		type: 'static',
-		position: { x: 0, y: 0, z: 0 },
-		size: { x: 15, y: 1, z: 15 },
-		color: generateColor(),
-		material: 'scifimetal'
-	});
-
-	// Plateforme centrale instable
-	platforms.push({
-		id: platformIdCounter.value++,
-		type: 'periodic',
-		position: { x: 20, y: 5, z: 0 },
-		size: { x: 8, y: 0.5, z: 8 },
-		amplitude: { x: 0, y: 3, z: 0 },
-		speed: { x: 0, y: 1.5, z: 0 },
-		phase: { x: 0, y: 0, z: 0 },
-		color: generateColor(),
-		material: getRandomBlockMaterial()
-	});
-
-	// Plateformes en cercle qui bougent
-	const numCirclePlatforms = 8;
-	const circleRadius = 15;
-	for (let i = 0; i < numCirclePlatforms; i++) {
-		const angle = (i / numCirclePlatforms) * Math.PI * 2;
-		platforms.push({
-			id: platformIdCounter.value++,
-			type: 'periodic',
-			position: { 
-				x: 40 + Math.cos(angle) * circleRadius, 
-				y: 10, 
-				z: Math.sin(angle) * circleRadius 
-			},
-			size: { x: 4, y: 0.5, z: 4 },
-			amplitude: { x: 0, y: 5, z: 0 },
-			speed: { x: 0, y: 1, z: 0 },
-			phase: { x: 0, y: i * 0.3, z: 0 },
-			color: generateColor(),
-			material: getRandomBlockMaterial()
-		});
-	}
-
-	// Zone finale avec petites plateformes
-	for (let i = 0; i < 12; i++) {
-		platforms.push({
-			id: platformIdCounter.value++,
-			type: 'static',
-			position: { 
-				x: 60 + (i % 4) * 5, 
-				y: 15 + Math.floor(i / 4) * 3, 
-				z: -5 + (i % 3) * 5 
-			},
-			size: { x: 3, y: 0.5, z: 3 },
-			color: generateColor(),
-			material: 'scifimetal'
-		});
-	}
-
-	return platforms;
+    for (let i = 0; i < 4; i++)
+    {
+        platforms.push({
+            id: platformIdCounter++,
+            type: 'disapearing',
+            position: { x: i * 5, y: 0, z: 0 },
+            size: { x: 4, y: 1, z: 4 },
+            duration: 3 + Math.random() * 2,
+            life: 4 + Math.random() * 4,
+            death: 1 + Math.random() * 2,
+            color: generateColor(),
+            material: 'transparent'
+        })
+        platforms.push({
+            id: platformIdCounter++,
+            type: 'disapearing',
+            position: { x: i * 5, y: 0, z: 5 },
+            size: { x: 4, y: 1, z: 4 },
+            duration: 3 + Math.random() * 2,
+            life: 4 + Math.random() * 4,
+            death: 1 + Math.random() * 2,
+            color: generateColor(),
+            material: 'transparent'
+        })
+        platforms.push({
+            id: platformIdCounter++,
+            type: 'disapearing',
+            position: { x: i * 5, y: 0, z: -5 },
+            size: { x: 4, y: 1, z: 4 },
+            duration: 3 + Math.random() * 2,
+            life: 4 + Math.random() * 4,
+            death: 1 + Math.random() * 2,
+            color: generateColor(),
+            material: 'transparent'
+        })
+        platforms.push({
+            id: platformIdCounter++,
+            type: 'linear',
+            positionA: { x: i * 5, y: 1, z: -20 },
+            positionB: { x: i * 5, y: 1, z: 35 },
+            size: { x: 4, y: 0.5, z: 1},
+            delay: delayFactor + Math.random() * delayFactor,
+            pauseTime: pauseFactor + Math.random() * pauseFactor,
+            travelTime: 4 + Math.random() * speedFactor, 
+            finalStayTime: 0,
+        })
+        platforms.push({
+            id: platformIdCounter++,
+            type: 'linear',
+            positionA: { x: i * 5, y: 3, z: -20 },
+            positionB: { x: i * 5, y: 3, z: 35 },
+            size: { x: 4, y: 0.5, z: 1},
+            delay: delayFactor + Math.random() * delayFactor,
+            pauseTime: pauseFactor + Math.random() * pauseFactor,
+            travelTime: 4 + Math.random() * speedFactor, 
+            finalStayTime: 0,
+        })
+        platforms.push({
+            id: platformIdCounter++,
+            type: 'linear',
+            positionA: { x: i * 5 - 20, y: 3, z: i * 5 - 5 },
+            positionB: { x: i * 5 + 35, y: 3, z: i * 5 - 5 },
+            size: { x: 1, y: 0.5, z: 4},
+            delay: delayFactor + Math.random() * delayFactor,
+            pauseTime: pauseFactor + Math.random() * pauseFactor,
+            travelTime: 4 + Math.random() * speedFactor, 
+            finalStayTime: 0,
+        })
+        platforms.push({
+            id: platformIdCounter++,
+            type: 'linear',
+            positionA: { x: i * 5 - 20, y: 1, z: i * 5 - 5 },
+            positionB: { x: i * 5 + 35, y: 1, z: i * 5 - 5 },
+            size: { x: 1, y: 0.5, z: 4},
+            delay: delayFactor + Math.random() * delayFactor,
+            pauseTime: pauseFactor + Math.random() * pauseFactor,
+            travelTime: 4 + Math.random() * speedFactor, 
+            finalStayTime: 0,
+        })
+        platforms.push({
+            id: platformIdCounter++,
+            type: 'linear',
+            positionA: { x: i * 5, y: 1, z: 35 },
+            positionB: { x: i * 5, y: 1, z: -20 },
+            size: { x: 4, y: 0.5, z: 1},
+            delay: delayFactor + Math.random() * delayFactor,
+            pauseTime: pauseFactor + Math.random() * pauseFactor,
+            travelTime: 4 + Math.random() * speedFactor, 
+            finalStayTime: 0,
+        })
+        platforms.push({
+            id: platformIdCounter++,
+            type: 'linear',
+            positionA: { x: i * 5, y: 3, z: 35 },
+            positionB: { x: i * 5, y: 3, z: -20 },
+            size: { x: 4, y: 0.5, z: 1},
+            delay: delayFactor + Math.random() * delayFactor,
+            pauseTime: pauseFactor + Math.random() * pauseFactor,
+            travelTime: 4 + Math.random() * speedFactor, 
+            finalStayTime: 0,
+        })
+        platforms.push({
+            id: platformIdCounter++,
+            type: 'linear',
+            positionA: { x: i * 5 + 35, y: 3, z: i * 5 - 5 },
+            positionB: { x: i * 5 - 20, y: 3, z: i * 5 - 5 },
+            size: { x: 1, y: 0.5, z: 4},
+            delay: delayFactor + Math.random() * delayFactor,
+            pauseTime: pauseFactor + Math.random() * pauseFactor,
+            travelTime: 4 + Math.random() * speedFactor, 
+            finalStayTime: 0,
+        })
+        platforms.push({
+            id: platformIdCounter++,
+            type: 'linear',
+            positionA: { x: i * 5 + 35, y: 1, z: i * 5 - 5 },
+            positionB: { x: i * 5 - 20, y: 1, z: i * 5 - 5 },
+            size: { x: 1, y: 0.5, z: 4},
+            delay: delayFactor + Math.random() * delayFactor,
+            pauseTime: pauseFactor + Math.random() * pauseFactor,
+            travelTime: 4 + Math.random() * speedFactor, 
+            finalStayTime: 0,
+        })
+    }
+    return (platforms);
 }
 
-export { generateSurvivePlatforms };
+function generateSurviveCheckpoints() {
+	// Pas de checkpoints dans le mode Survive (ou des checkpoints différents si tu veux)
+	// Par exemple, des zones de sécurité temporaires
+	const checkpoints = [];
+	
+	// Si tu veux ajouter des checkpoints pour Survive :
+	// checkpoints.push({
+	// 	posX: 0,
+	// 	posY: 5,
+	// 	posZ: 0
+	// });
+	
+	return checkpoints;
+}
+
+export { generateSurvivePlatforms, generateSurviveCheckpoints };

@@ -10,6 +10,11 @@ class GameMode {
 		throw new Error('generatePlatforms() must be implemented');
 	}
 
+	// Génère les checkpoints spécifiques au mode
+	generateCheckpoints() {
+		return []; // Par défaut, pas de checkpoints
+	}
+
 	// Logique exécutée à chaque frame du gameLoop
 	tick(game, io) {
 		throw new Error('tick() must be implemented');

@@ -6,6 +6,7 @@ export class RemotePlayer extends Player {
         super(scene, position, color)
         
         this.lastDirection = new THREE.Vector3(0, 0, 0);
+        this.name = 'nameFromDb';
     }
 
     setPosition(x, y, z, rotation, isMoving = true) {

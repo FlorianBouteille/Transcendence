@@ -1,4 +1,5 @@
 import * as THREE from 'three'
+//import GameMode from '../backend/src/gameModes/GameMode'
 
 const loadingManager = new THREE.LoadingManager()
 loadingManager.onStart = () => {
@@ -23,6 +24,15 @@ export const environmentMap = cubeTextureLoader.load([
     'static/env_map/ny.png',
     'static/env_map/pz.png',
     'static/env_map/nz.png'
+])
+
+export const environmentMap2 = cubeTextureLoader.load([
+    'static/env_map2/px.png',
+    'static/env_map2/nx.png',
+    'static/env_map2/py.png',
+    'static/env_map2/ny.png',
+    'static/env_map2/pz.png',
+    'static/env_map2/nz.png'
 ])
 
 const textureLoader = new THREE.TextureLoader(loadingManager)
@@ -357,6 +367,12 @@ const rubberFloorYellowMaterial = new THREE.MeshStandardMaterial({
 	emissiveIntensity: 0.3
 })
 
+const TransparentMaterial = new THREE.MeshStandardMaterial({
+	transparent: true,
+	color: new THREE.Color(0xab12ef),
+	opacity: 1
+})
+
 setScifiTextureRepeat(1, 1);
 setBlockTexturesRepeat(1, 1);
 // Map de materials disponibles
@@ -384,7 +400,8 @@ export const materials = {
 	rubberfloorred: rubberFloorRedMaterial,
 	rubberfloorgreen: rubberFloorGreenMaterial,
 	rubberfloorblue: rubberFloorBlueMaterial,
-	rubberflooryellow: rubberFloorYellowMaterial
+	rubberflooryellow: rubberFloorYellowMaterial,
+	transparent: TransparentMaterial
 }
 
 function setScifiTextureRepeat(x, y) {

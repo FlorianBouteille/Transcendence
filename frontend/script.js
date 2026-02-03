@@ -8,11 +8,13 @@ import { PeriodicPlatform } from './PeriodicPlatform.js'
 import { LinearPlatform } from './LinearPlatform.js'
 import { BouncyPlatform } from './BouncyPlatform.js'
 import { Crown } from './crown.js'
-import { checkPoint } from './CheckPoint.js'
+import { CheckPoint } from './CheckPoint.js'
 import { randomColor } from './utils.js'
 import { Vector2 } from 'three'
 import { connectWS } from './src/network/socket.js'
-import { materials, environmentMap } from './materials.js'
+import { materials, environmentMap, environmentMap2 } from './materials.js'
+import { DisapearingPlatform } from './DisapearingPlatform.js'
+import { createPlayerLabel, updatePlayerLabels } from './playerLabel.js'
 
 const urlParams = new URLSearchParams(window.location.search);
 const roomId = urlParams.get('room');
@@ -24,11 +26,11 @@ if (!roomId) {
 //importation des textures :
 const socket = connectWS();
 let platformsFromBack = [];
+let checkpointsFromBack = [];
 let movingPlatformsFromBack = [];
 let platformsCreated = false
-
-
-
+let checkpointsCreated = false
+let gameType = null
 
 socket.on('connect', () => {
 	console.log('✅ Connecté au serveur');
@@ -55,16 +57,10 @@ const canvas = document.querySelector('canvas.webgl')
 
 // Scene
 const scene = new THREE.Scene()
-scene.background = environmentMap;
-scene.environment = environmentMap;
-//const light = new THREE.HemisphereLight(0xffffff, 0xffffff, 5);
-//scene.add(light);
+// L'environment map sera définie après avoir reçu le gameType du serveur
 
 const remotePlayers = {};  // Stocke les meshes des joueurs distants
 
-function getMaterial(name) {
-	return materials[name];
-}
 function createPlatforms(platformsData) {
 	platformsData.forEach(data => {
 		let platform;
@@ -80,32 +76,40 @@ function createPlatforms(platformsData) {
 			platform = new LinearPlatform(scene, new THREE.Vector3(data.positionA.x, data.positionA.y, data.positionA.z), new THREE.Vector3(data.positionB.x, data.positionB.y, data.positionB.z), data.size.x, data.size.y, data.size.z, data.travelTime, data.delay, data.pauseTime, data.finalStayTime, materials[data.material]);
 			movingPlatformsFromBack.push(platform);
 		}
+		else if (data.type === 'disapearing')
+		{
+			platform = new DisapearingPlatform(scene, new THREE.Vector3(data.position.x, data.position.y, data.position.z), data.size.x, data.size.y, data.size.z, data.duration, data.life, data.death, materials[data.material])
+			movingPlatformsFromBack.push(platform);
+		}
 		else if (data.type === 'bouncy')
 			platform = new BouncyPlatform(scene, new THREE.Vector3(data.position.x, data.position.y, data.position.z), data.size.x, data.size.y, data.size.z, data.strenght, materials[data.material]);
 		if (platform) {
-			//platform.mesh.material.color.setHex(data.color);
 			platformsFromBack.push(platform);
 			console.log('Platform type: ', data.type, 'push!');
 		}
 	});
 }
 
+function createCheckpoints(checkpointsData)
+{
+	checkpointsData.forEach(data => 
+	{
+		let point;
+		point = new CheckPoint(data.posX, data.posY, data.posZ)
+		scene.add(point.mesh);
+		checkpointsFromBack.push(point);
+	});
+}
+
 
 socket.on('gameState', (state) => {
-	if (state.platforms)
-		console.log('Reçu gameState, platforms:', state.platforms?.length);  // ← Ajoute ça
-
-	if (!platformsCreated && state.platforms) {
-		createPlatforms(state.platforms);
-		platformsCreated = true;
-	}
-
 	state.players.forEach(playerData => {
 		if (playerData.id === socket.id) return; //pour pas s afficher en remote
 		if (!remotePlayers[playerData.id]) {
 			const remotePlayer = new RemotePlayer(scene, new THREE.Vector3(0, 2, 0), playerData.color);
 			remotePlayers[playerData.id] = remotePlayer;
 			scene.add(remotePlayer.mesh);
+			createPlayerLabel(playerData.id, playerData.name || `Player ${playerData.id.substring(0, 6)}`);
 		}
 
 		// Mettre à jour la position directement
@@ -149,6 +153,7 @@ window.addEventListener('keydown', (event) => {
 // Objects
 const player = new LocalPlayer(scene, canvas, randomColor());
 scene.add(player.mesh);
+createPlayerLabel('local', 'Me !');
 
 setInterval(() => {
 	socket.emit('playerPosition', {
@@ -165,27 +170,6 @@ setInterval(() => {
 const grid = new THREE.GridHelper(50, 50);
 scene.add(grid);
 
-//CheckPoints
-
-const checkPoint1 = new checkPoint(37, 7.5, 0);
-scene.add(checkPoint1.mesh);
-const checkPoint2 = new checkPoint(112, 8, 0);
-scene.add(checkPoint2.mesh);
-const checkPoint3 = new checkPoint(60, 30.5, 1.4);
-scene.add(checkPoint3.mesh);
-const checkPoint4 = new checkPoint(25, 58, 0);
-scene.add(checkPoint4.mesh);
-const checkPoint5 = new checkPoint(-55, 69, 0);
-scene.add(checkPoint5.mesh);
-let checkPoints = new Array();
-checkPoints.push(checkPoint1);
-checkPoints.push(checkPoint2);
-checkPoints.push(checkPoint3);
-checkPoints.push(checkPoint4);
-checkPoints.push(checkPoint5);
-
-// const platforms = addPlatforms(scene);
-const platforms = '';
 // Sizes
 
 window.addEventListener('resize', () => {
@@ -298,19 +282,37 @@ player.currentPlatform = null;
 // Attendre la confirmation que la room est jointe
 socket.on('roomJoined', (data) => {
 	console.log('✅ Room jointe, création des plateformes');
+	gameType = data.gameType || 'crown';
+	console.log('🎮 Mode de jeu:', gameType);
+	
+	// Configurer l'environment map en fonction du gameType
+	if (gameType === 'crown') {
+		scene.background = environmentMap;
+		scene.environment = environmentMap;
+	} else {
+		scene.background = environmentMap2;
+		scene.environment = environmentMap2;
+	}
+	
 	if (data.platforms) {
 		createPlatforms(data.platforms);
 		platformsCreated = true;
 	}
+
+	if (data.checkpoints)
+	{
+		createCheckpoints(data.checkpoints);
+		checkpointsCreated = true;
+	}
+
 	socket.emit('gameLoaded');
 });
+
 
 const clock = new THREE.Clock(false);
 let gameStartTimeStamp = null;
 let crown = new Crown(-83, 100, 0);
 scene.add(crown.mesh);
-
-player.checkPoint = checkPoints[4].mesh.position.clone();
 socket.on('startClock', (timestamp) => 
 {
 	gameStartTimeStamp = timestamp;
@@ -343,11 +345,12 @@ const tick = () => {
 	});
 
 	player.update(deltaTime, keys, platformsFromBack);
-	for (let i = 0; i < checkPoints.length; i++) {
-		if (checkPoints[i].getBox().intersectsBox(player.getBox())) {
-			player.checkPoint = checkPoints[i].mesh.position.clone();
+	for (let i = 0; i < checkpointsFromBack.length; i++) {
+		if (checkpointsFromBack[i].getBox().intersectsBox(player.getBox())) {
+			player.checkPoint = checkpointsFromBack[i].mesh.position.clone();
 		}
 	}
+	updatePlayerLabels(player, remotePlayers, sizes);
 	if (crown.getBox().intersectsBox(player.getBox()))
 	{
 		console.log('You won the game !');

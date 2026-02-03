@@ -62,7 +62,7 @@ export class Player {
         this.velocityY = 0
         this.gravity = 12
         this.jumpForce = 6
-        this.isGrounded = true
+        this.isGrounded = false;
         this.isJumping = false
         this.halfHeight = 1;
         this.halfDepth = 0.3;

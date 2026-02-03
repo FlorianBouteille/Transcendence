@@ -28,7 +28,7 @@ export class LinearPlatform extends Platform {
         
         if (this.totalElapsedTime < this.delay) {
             this.mesh.position.copy(this.positionA)
-            this.mesh.visible = true
+            this.mesh.visible = false
         }
         else if (timeInCycle < this.travelTime) {
             this.mesh.visible = true
