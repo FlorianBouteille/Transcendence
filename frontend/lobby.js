@@ -249,4 +249,3 @@ socket.on('start', (msg) => {
 		window.location.href = '/game.html';
 	}
 });
-
