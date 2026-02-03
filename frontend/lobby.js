@@ -47,10 +47,34 @@ function showView(viewId) {
 
 // Exemple d'utilisation
 
+//=========GAME SELECTION=========
+
+
+const crownBtn = document.getElementById('crown');
+const surviveBtn = document.getElementById('survive');
+let gameType;
+
+crownBtn.onclick = () =>
+{
+	surviveBtn.classList.remove('active');
+	crownBtn.classList.add('active');
+	gameType = 'crown'
+}
+
+surviveBtn.onclick = () =>
+{
+	crownBtn.classList.remove('active');
+	surviveBtn.classList.add('active');
+	gameType = 'survive'
+}
 
 //=========GAME SOLO=========
 document.getElementById('solo-btn').onclick = () => {
-	socket.emit('solo');
+	if (!gameType) {
+		showNotification('Please select a game type first!', 'warning');
+		return;
+	}
+	socket.emit('solo', { gameType });
 };
 
 window.addEventListener('beforeunload', () => {
@@ -86,10 +110,14 @@ document.getElementById('back-btn-1').onclick = () => {
 
 //----------CREATE ROOM----------
 document.getElementById('create-room-btn').onclick = () => {
+	if (!gameType) {
+		showNotification('Please select a game type first!', 'warning');
+		return;
+	}
 	let roomCode = document.getElementById('custom-room-code').value.trim().toUpperCase();
 	if (roomCode.length === 0)
 		roomCode = Math.random().toString(36).substring(2, 8).toUpperCase();
-	socket.emit('createPrivateRoom', { roomCode: roomCode });
+	socket.emit('createPrivateRoom', { roomCode, gameType });
 	showView('room-view');
 	document.getElementById('room-code').textContent = roomCode;
 	console.log('Room created with code:', roomCode);
@@ -153,7 +181,11 @@ socket.on('gameCountdown', ({ seconds }) => {
 });
 //=========RANDOM=========
 document.getElementById('random-btn').onclick = () => {
-	socket.emit('joinRandom');
+	if (!gameType) {
+		showNotification('Please select a game type first!', 'warning');
+		return;
+	}
+	socket.emit('joinRandom', { gameType });
 	showView('queue-view');
 };
 document.getElementById('cancel-queue-btn').onclick = () => {
@@ -226,20 +258,12 @@ document.getElementById('start-game-btn').addEventListener('click', (e) => {
 		return;
 	}
 
-	socket.emit('startGame');
-});
-
-
-
-document.getElementById('start-game-btn').addEventListener('click', (e) => {
-	const isHost = e.target.dataset.isHost === 'true';
-
-	if (!isHost) {
-		showNotification('Only the host (👑) can start the game!', 'warning');
+	if (!gameType) {
+		showNotification('Please select a game type first!', 'warning');
 		return;
 	}
 
-	socket.emit('startGame');
+	socket.emit('startGame', { gameType });
 });
 
 socket.on('start', (msg) => {

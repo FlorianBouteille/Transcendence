@@ -974,6 +974,10 @@ fin ft_transcendence*/
 		transform: rotate(360deg);
 	}
 }
+.active
+{
+	background: linear-gradient(135deg, #2ea84e, #50d96b);
+}
 
 /*FIN PAGE SCORE*/
 
