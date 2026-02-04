@@ -142,6 +142,13 @@ function generateSurvivePlatforms(platformIdCounter) {
             travelTime: 4 + Math.random() * speedFactor, 
             finalStayTime: 0,
         })
+        platforms.push({
+            id: platformIdCounter++,
+            type: 'static',
+            position: {x: 0, y: 10, z: 0},
+            size: {x: 20, y:1, z : 20},
+            material: 'invisible'
+        })
     }
     return (platforms);
 }
@@ -157,6 +164,11 @@ function generateSurviveCheckpoints() {
 	// 	posY: 5,
 	// 	posZ: 0
 	// });
+    checkpoints.push({
+        posX: 0,
+        posY: 10.5,
+        posZ: 0
+    });
 	
 	return checkpoints;
 }

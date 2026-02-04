@@ -79,8 +79,8 @@ function addPlayer(id, roomID) {
 	};
 	gameInstances[roomID].players[id] = player;
 	
-	// Appeler le hook du gameMode
-	if (gameInstances[roomID].gameMode) {
+	// Appeler le hook du gameMode si la méthode existe
+	if (gameInstances[roomID].gameMode && gameInstances[roomID].gameMode.onPlayerJoin) {
 		gameInstances[roomID].gameMode.onPlayerJoin(player, gameInstances[roomID]);
 	}
 	
@@ -123,10 +123,10 @@ function initGameServer(socketIo) {
 			socket.emit('serverTime', Date.now());
 		});
 	});
+	
+	// Boucle simplifiée : redistribue juste les positions des joueurs
 	setInterval(gameLoop, 16);
 }
-
-
 
 function gameLoop() {
 	Object.entries(gameInstances).forEach(([roomId, game]) => {
@@ -134,27 +134,15 @@ function gameLoop() {
 		
 		const elapsedTime = (Date.now() - game.startTime) / 1000;
 
-		// Exécuter la logique spécifique au mode de jeu
-		if (game.gameMode) {
-			game.gameMode.tick(game, io);
-			
-			// Vérifier les conditions de victoire
-			const winner = game.gameMode.checkWinCondition(game);
-			if (winner) {
-				// La partie est terminée, on arrête d'envoyer des updates
-				return;
-			}
-		}
-
 		const GameState = {
 			players: Object.values(game.players),
-			elapsedTime: elapsedTime,
-			...(game.gameMode ? game.gameMode.getGameState(game) : {})
+			elapsedTime: elapsedTime
 		};
 
 		io.to(roomId).emit('gameState', GameState);
 	});
 }
+
 function sleep(ms) {
 	return new Promise(resolve => setTimeout(resolve, ms));
 }
@@ -366,7 +354,6 @@ function initLobbyHandler(socket, io) {
 			return;
 		}
 
-		// Mettre à jour le gameType si fourni
 		if (gameType && gameType !== gameInstances[roomID].gameType) {
 			const gameMode = createGameMode(gameType, roomID, platformIdCounter);
 			gameInstances[roomID].gameType = gameType;
@@ -375,7 +362,6 @@ function initLobbyHandler(socket, io) {
 			gameInstances[roomID].checkpoints = gameMode.generateCheckpoints();
 			gameInstances[roomID].gameState = gameMode.initGameState();
 		}
-
 		startGameCountdown(roomID);
 	});
 	socket.on('leavePrivate', () => {
@@ -451,6 +437,65 @@ function initLobbyHandler(socket, io) {
 				gameInstances[roomID].hasStarted = true;
 				console.log(`🎮 Room ${roomID} a démarré avec ${currentPlayers} joueurs`);
 			}
+		}
+	});
+	
+	socket.on('first', (data) => {
+		console.log('🏆 Premier joueur arrivé:', data.playerData, 'en', data.elapsedTime, 'secondes');
+		const game = gameInstances[socket.roomID];
+    
+   		const gameData = {
+			roomId: socket.roomID,
+			gameType: game.gameType,
+			winner: socket.id,
+			elapsedTime: data.elapsedTime,
+			players: Object.values(game.players).map(p => ({
+				id: p.id,
+				// position finale, etc.
+			})),
+			startTime: game.startTime,
+			endTime: Date.now()
+		};
+		//// ENVOYER LES DONNEES A LA DB !!! 
+		io.to(socket.roomID).emit('gameEnd', gameData);
+	});
+
+	socket.on('died', (data) => {
+		console.log('💀 A player has died:', socket.id);
+		
+		io.to(socket.roomID).emit('playerDied', {
+			playerId: socket.id,
+			elapsedTime: data.elapsedTime
+		});
+		
+		if (data.alivePlayers.length <= 1)
+		{
+			let winnerId;
+			if (data.alivePlayers.length == 1) {
+				winnerId = data.alivePlayers[0];
+			} else {
+				winnerId = socket.id;
+			}
+			
+			const game = gameInstances[socket.roomID];
+			
+			const gameData = {
+				roomId: socket.roomID,
+				gameType: game.gameType,
+				winner: winnerId,
+				elapsedTime: data.elapsedTime,
+				players: Object.values(game.players).map(p => ({
+					id: p.id
+				})),
+				startTime: game.startTime,
+				endTime: Date.now()
+			};
+			
+			console.log('🏆 Sending gameEnd with:', gameData);
+			
+			// ENREGISTRER LA PARTIE DANS LA DB !!!!!! 
+			
+			io.to(socket.roomID).emit('gameEnd', gameData);
 		}
 	});
 

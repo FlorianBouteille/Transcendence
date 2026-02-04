@@ -10,11 +10,13 @@ import { BouncyPlatform } from './BouncyPlatform.js'
 import { Crown } from './crown.js'
 import { CheckPoint } from './CheckPoint.js'
 import { randomColor } from './utils.js'
+import { CrownGame } from './CrownGame.js'
 import { Vector2 } from 'three'
 import { connectWS } from './src/network/socket.js'
 import { materials, environmentMap, environmentMap2 } from './materials.js'
 import { DisapearingPlatform } from './DisapearingPlatform.js'
 import { createPlayerLabel, updatePlayerLabels } from './playerLabel.js'
+import { SurviveGame } from './SurviveGame.js'
 
 const urlParams = new URLSearchParams(window.location.search);
 const roomId = urlParams.get('room');
@@ -151,9 +153,9 @@ window.addEventListener('keydown', (event) => {
 
 
 // Objects
-const player = new LocalPlayer(scene, canvas, randomColor());
+const player = new LocalPlayer(scene, canvas, 'LocalPlayer', randomColor()); //// ALLER CHERCHER LE NOM DANS LA DB !!!!!!
 scene.add(player.mesh);
-createPlayerLabel('local', 'Me !');
+createPlayerLabel('local', player.name);
 
 setInterval(() => {
 	socket.emit('playerPosition', {
@@ -278,7 +280,7 @@ function syncClockWithServer() {
 syncClockWithServer();
 
 player.currentPlatform = null;
-
+let currentGame = null;
 // Attendre la confirmation que la room est jointe
 socket.on('roomJoined', (data) => {
 	console.log('✅ Room jointe, création des plateformes');
@@ -289,9 +291,11 @@ socket.on('roomJoined', (data) => {
 	if (gameType === 'crown') {
 		scene.background = environmentMap;
 		scene.environment = environmentMap;
+		currentGame = new CrownGame(scene, player, new Crown(-80, 95, 0), socket);
 	} else {
 		scene.background = environmentMap2;
 		scene.environment = environmentMap2;
+		currentGame = new SurviveGame(scene, player, remotePlayers, socket);
 	}
 	
 	if (data.platforms) {
@@ -303,16 +307,17 @@ socket.on('roomJoined', (data) => {
 	{
 		createCheckpoints(data.checkpoints);
 		checkpointsCreated = true;
+		// Modifier le checkPoint initial du joueur pour tester
+		if (checkpointsFromBack.length > 0) {
+			player.checkPoint = checkpointsFromBack[checkpointsFromBack.length - 1].mesh.position.clone();
+		}
 	}
 
 	socket.emit('gameLoaded');
 });
 
-
 const clock = new THREE.Clock(false);
 let gameStartTimeStamp = null;
-let crown = new Crown(-83, 100, 0);
-scene.add(crown.mesh);
 socket.on('startClock', (timestamp) => 
 {
 	gameStartTimeStamp = timestamp;
@@ -322,7 +327,6 @@ socket.on('startClock', (timestamp) =>
 });
 
 const tick = () => {
-	// Attendre que l'horloge soit synchronisée
 	if (!clockStarted) {
 		window.requestAnimationFrame(tick);
 		return;
@@ -335,10 +339,6 @@ const tick = () => {
 	for (let i = 0; i < movingPlatformsFromBack.length; i++) {
 		movingPlatformsFromBack[i].update(elapsedTime);
 	}
-
-
-	// Mettre à jour le joueur local
-
 	// Mettre à jour tous les joueurs distants (interpolation + animation)
 	Object.values(remotePlayers).forEach(remotePlayer => {
 		remotePlayer.update(deltaTime);
@@ -351,10 +351,7 @@ const tick = () => {
 		}
 	}
 	updatePlayerLabels(player, remotePlayers, sizes);
-	if (crown.getBox().intersectsBox(player.getBox()))
-	{
-		console.log('You won the game !');
-	}
+	currentGame.tick(elapsedTime);
 	renderer.render(scene, player.camera)
 	window.requestAnimationFrame(tick)
 }

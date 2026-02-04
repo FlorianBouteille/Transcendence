@@ -3,7 +3,7 @@ import { randomColor } from './utils.js'
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js'
 
 export class Player {
-    constructor(scene, position = new THREE.Vector3(), playerColor) {
+    constructor(scene, position = new THREE.Vector3(), name, playerColor) {
         const loader = new GLTFLoader()
         const geometry = new THREE.BoxGeometry(0.6, 2, 0.6)
         const material = new THREE.MeshBasicMaterial({ color: randomColor() , visible : false})
@@ -62,12 +62,14 @@ export class Player {
         this.velocityY = 0
         this.gravity = 12
         this.jumpForce = 6
+        this.alive = true
         this.isGrounded = false;
         this.isJumping = false
         this.halfHeight = 1;
         this.halfDepth = 0.3;
         this.halfWidth = 0.3;
         this.tolerance = 0.05
+        this.name = name;
 
         this.score = 0
     }
@@ -213,11 +215,16 @@ export class Player {
         return true
     }
 
+    die()
+    {
+        this.alive = false;
+    }
+
     updatePhysics(deltaTime, platforms, direction) 
     {
         if (this.mesh.position.y < -5)
         {
-            this.respawn();
+            this.die();
         }
         const previousY = this.mesh.position.y
         const previousX = this.mesh.position.x

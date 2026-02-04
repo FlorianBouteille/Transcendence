@@ -14,6 +14,12 @@ export class Crown
         this.box.setFromObject(this.mesh);
     }
 
+    update(elapsedTime)
+    {
+        this.mesh.position.y += (Math.sin(elapsedTime)) / 12;
+        this.box.setFromObject(this.mesh);
+    }
+
     getBox()
     {
         return (this.box);

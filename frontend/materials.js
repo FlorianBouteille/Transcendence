@@ -373,6 +373,12 @@ const TransparentMaterial = new THREE.MeshStandardMaterial({
 	opacity: 1
 })
 
+const InvisibleMaterial = new THREE.MeshStandardMaterial({
+	transparent: true,
+	color: new THREE.Color(0xab12ef),
+	opacity: 0.01
+})
+
 setScifiTextureRepeat(1, 1);
 setBlockTexturesRepeat(1, 1);
 // Map de materials disponibles
@@ -401,7 +407,8 @@ export const materials = {
 	rubberfloorgreen: rubberFloorGreenMaterial,
 	rubberfloorblue: rubberFloorBlueMaterial,
 	rubberflooryellow: rubberFloorYellowMaterial,
-	transparent: TransparentMaterial
+	transparent: TransparentMaterial,
+	invisible: InvisibleMaterial
 }
 
 function setScifiTextureRepeat(x, y) {

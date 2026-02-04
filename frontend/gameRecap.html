@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Game Recap</title>
+        <link rel="stylesheet" href="style.css">
+        <style>
+            .recap-container {
+                text-align: center;
+                padding: 50px;
+                font-family: Arial, sans-serif;
+            }
+            .winner-banner {
+                font-size: 2em;
+                font-weight: bold;
+                margin-bottom: 30px;
+                color: #FFD700;
+            }
+            .leaderboard {
+                max-width: 600px;
+                margin: 0 auto;
+                background: rgba(0, 0, 0, 0.5);
+                border-radius: 10px;
+                padding: 20px;
+            }
+            .leaderboard-item {
+                display: flex;
+                justify-content: space-between;
+                padding: 10px;
+                margin: 5px 0;
+                background: rgba(255, 255, 255, 0.1);
+                border-radius: 5px;
+            }
+            .rank { font-weight: bold; }
+            .back-button {
+                margin-top: 30px;
+                padding: 10px 20px;
+                font-size: 1.2em;
+                cursor: pointer;
+            }
+        </style>
+    </head>
+    <body>
+        <div class="recap-container">
+            <div class="winner-banner">
+                <span id="winner-name">Player</span> Won in <span id="completion-time">0</span> seconds!
+            </div>
+            
+            <div class="leaderboard">
+                <h2>Leaderboard</h2>
+                <div id="leaderboard-list">
+                    <!-- Sera rempli dynamiquement -->
+                </div>
+            </div>
+            
+            <button class="back-button" onclick="window.location.href='lobby.html'">
+                Back to Lobby
+            </button>
+        </div>
+
+        <script type="module">
+            // Récupérer les données depuis l'URL ou localStorage
+            const urlParams = new URLSearchParams(window.location.search);
+            const winnerId = urlParams.get('winner');
+            const elapsedTime = urlParams.get('time');
+            
+            // Remplir les infos
+            if (winnerId) {
+                document.getElementById('winner-name').textContent = winnerId;
+            }
+            if (elapsedTime) {
+                document.getElementById('completion-time').textContent = parseFloat(elapsedTime).toFixed(2);
+            }
+            
+            // TODO: Remplir le classement avec les données des joueurs
+        </script>
+    </body>
+</html>

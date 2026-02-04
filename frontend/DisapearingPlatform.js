@@ -11,7 +11,6 @@ export class DisapearingPlatform extends Platform
         this.isActive = true
         this.cycleTime = life + duration + death
         
-        // IMPORTANT : Cloner le material pour que chaque plateforme ait le sien
         this.mesh.material = this.mesh.material.clone()
         this.mesh.material.transparent = true
         this.mesh.material.opacity = 1
