@@ -246,3 +246,25 @@ body {
 }
 
 /*FIN PAGE SCORE*/
+
+.nav-link-l {
+	position: absolute;
+	text-decoration: none;
+	color: #2c0ce6;
+	font-weight: 600;
+	font-size: 0.95rem;
+	letter-spacing: 0.08em;
+	text-transform: uppercase;
+	transition: color 0.2s ease, text-shadow 0.2s ease;
+	text-shadow: 0 0 10px rgb(255, 200, 0);
+}
+
+.nav-link-l:hover {
+	color: #6b5aa3;
+	text-shadow: 0 0 20px rgba(255, 0, 212, 0.8), 0 0 30px rgba(251, 0, 255, 0.4);
+}
+
+.bottom-left {
+	bottom: 28px;
+	left: 32px;
+}

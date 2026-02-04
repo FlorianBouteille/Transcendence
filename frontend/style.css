@@ -120,7 +120,10 @@ body {
 	top: 228px;
 	right: 32px;
 }
-
+.top-right-2 {
+	top: 28px;
+	right: 32px;
+}
 .bottom-left {
 	bottom: 218px;
 	left: 32px;
