@@ -85,15 +85,63 @@ function generateAllPlatforms() {
 }
 
 function removePlayer(id, roomID) {
-	if (!roomID || !gameInstances[roomID]) return;
-	delete gameInstances[roomID].players[id];
-	delete playerGameTypes[id];
-	console.log('Joueur retire: ', id);
+	let room = findRoomBySocketId(id);
+	if (!room) room = roomID;
+	if (!room || !gameInstances[room]) {
+		console.log('Failed to remove:', id, 'from:', room);
+		return;
+	}
 
+	const game = gameInstances[room];
 
-	if (Object.keys(gameInstances[roomID].players).length === 0) {
-		delete gameInstances[roomID];
-		console.log(`🗑️ Room ${roomID} supprimée (vide)`);
+	// Rooms privates
+	if (game.type === 'private') {
+		// Lobby uniquement : retirer des roomers
+		if (!game.hasStarted) {
+			const roomerIndex = game.roomers?.indexOf(id);
+			if (roomerIndex > -1) game.roomers.splice(roomerIndex, 1);
+
+			const readyIndex = game.readyPlayers?.indexOf(id);
+			if (readyIndex > -1) game.readyPlayers.splice(readyIndex, 1);
+
+			console.log('Joueur retiré du lobby:', id);
+
+			if (game.roomers.length === 0) {
+				delete gameInstances[room];
+				console.log(`🗑️ Room ${room} supprimée (vide)`);
+				return;
+			}
+
+			if (game.host === id) {
+				game.host = game.roomers[0];
+				console.log(`👑 Nouveau host: ${game.host}`);
+			}
+
+			io.to(room).emit('lobbyUpdate', {
+				players: game.roomers.map(id => ({
+					id,
+					isHost: id === game.host,
+					ready: game.readyPlayers.includes(id)
+				})),
+				count: game.roomers.length,
+				allReady: game.readyPlayers.length === game.roomers.length
+			});
+		} else {
+			console.log('Joueur déconnecté (reconnexion possible):', id);
+		}
+
+		delete game.players[id];
+		delete playerGameTypes[id];
+	} else {
+		// Solo/Random
+		delete game.players[id];
+		delete playerGameTypes[id];
+		console.log('Joueur retiré:', id);
+
+		if (Object.keys(game.players).length === 0) {
+			delete gameInstances[room];
+			console.log(`🗑️ Room ${room} supprimée (vide)`);
+		}
 	}
 }
 
@@ -140,7 +188,9 @@ function addPlayer(id, roomID) {
 
 
 function everyOneLoaded(id, roomID) {
-	if (!gameInstances[roomID] || !gameInstances[roomID].players[id]) return false;
+	if (!gameInstances[roomID] || !gameInstances[roomID].players[id])
+		return false;
+
 
 	gameInstances[roomID].players[id].loaded = true;
 
@@ -347,11 +397,12 @@ function initLobbyHandler(socket, io) {
 
 	socket.on('joinPrivateRoom', (data) => {
 		const roomID = 'PRIVATE_' + data.roomCode;
-		if (!gameInstances[roomID]) {
+		if (!gameInstances[roomID] || gameInstances[roomID].playing) {
 			console.log('Room id:', roomID, ' dosen t exist');
 			socket.emit('roomInexistant', { roomCode: data.roomCode });
 			return;
 		}
+
 		gameInstances[roomID].roomers.push(socket.id);
 		socket.join(roomID);
 		socket.emit('roomJoinedSuccess', { roomCode: data.roomCode });
@@ -502,6 +553,11 @@ function initLobbyHandler(socket, io) {
 		}
 
 		if (gameInstances[roomID].type === 'random' && gameInstances[roomID].hasStarted) {
+			console.log('❌ Room déjà lancée, redirect vers lobby:', roomID);
+			socket.emit('roomNotFound');
+			return;
+		}
+		if (gameInstances[roomID].type === 'private' && gameInstances[roomID].playing) {
 			console.log('❌ Room déjà lancée, redirect vers lobby:', roomID);
 			socket.emit('roomNotFound');
 			return;
