@@ -299,6 +299,7 @@ body {
 .hero {
 	transform: translateY(-20px);
 }
+
 /*FIN PRIVACY POLICY*/
 /*FIN PAGE ACCUEIL*/
 
@@ -473,6 +474,30 @@ body {
 }
 
 .ready-button:disabled {
+	opacity: 0.7;
+	cursor: default;
+}
+
+.cancel-button {
+	height: 46px;
+	border: none;
+	border-radius: 999px;
+	background: linear-gradient(135deg, #d32f2f, #f44336);
+	color: #fff;
+	font-weight: 700;
+	letter-spacing: 0.12em;
+	text-transform: uppercase;
+	cursor: pointer;
+	box-shadow: 0 12px 26px rgba(211, 47, 47, 0.4);
+	transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.cancel-button:hover:not(:disabled) {
+	transform: translateY(-2px);
+	box-shadow: 0 16px 30px rgba(211, 47, 47, 0.5);
+}
+
+.cancel-button:disabled {
 	opacity: 0.7;
 	cursor: default;
 }
@@ -707,83 +732,107 @@ fragments
 fin ft_transcendence*/
 
 .alien-title {
-  position: relative;
-  font-family: 'Orbitron', monospace;
-  font-size: 3.5rem;
-  text-align: center;
-  color: #00ff66;
-  letter-spacing: 0.15em;
-  text-transform: lowercase;
+	position: relative;
+	font-family: 'Orbitron', monospace;
+	font-size: 3.5rem;
+	text-align: center;
+	color: #00ff66;
+	letter-spacing: 0.15em;
+	text-transform: lowercase;
 
-  /* glow alien */
-  text-shadow:
-    0 0 8px #00ff66,
-    0 0 20px #00ff66,
-    0 0 40px #88ff00;
+	/* glow alien */
+	text-shadow:
+		0 0 8px #00ff66,
+		0 0 20px #00ff66,
+		0 0 40px #88ff00;
 
-  animation: pulse 3s infinite;
+	animation: pulse 3s infinite;
 }
 
 /* couche explosion jaune */
 .alien-title::before {
-  content: "ft_transcendence";
-  position: absolute;
-  inset: 0;
-  color: yellow;
-  z-index: -1;
-  opacity: 0;
+	content: "ft_transcendence";
+	position: absolute;
+	inset: 0;
+	color: yellow;
+	z-index: -1;
+	opacity: 0;
 
-  text-shadow:
-    0 0 20px yellow,
-    0 0 60px orange,
-    0 0 120px yellow;
+	text-shadow:
+		0 0 20px yellow,
+		0 0 60px orange,
+		0 0 120px yellow;
 
-  animation: blast 1.55s infinite;
+	animation: blast 1.55s infinite;
 }
 
 /* onde de choc */
 .alien-title::after {
-  content: "";
-  position: absolute;
-  left: 50%;
-  top: 50%;
-  width: 45px;
-  height: 45px;
-  background: radial-gradient(circle, yellow, transparent 70%);
-  transform: translate(-50%, -50%);
-  opacity: 0;
-  border-radius: 50%;
+	content: "";
+	position: absolute;
+	left: 50%;
+	top: 50%;
+	width: 45px;
+	height: 45px;
+	background: radial-gradient(circle, yellow, transparent 70%);
+	transform: translate(-50%, -50%);
+	opacity: 0;
+	border-radius: 50%;
 
-  animation: shockwave 1.5s infinite;
+	animation: shockwave 1.5s infinite;
 }
 
 @keyframes pulse {
-  0% { transform: scale(1); }
-  45% { transform: scale(1); }
-  50% { transform: scale(1.08); }
-  55% { transform: scale(1); }
+	0% {
+		transform: scale(1);
+	}
+
+	45% {
+		transform: scale(1);
+	}
+
+	50% {
+		transform: scale(1.08);
+	}
+
+	55% {
+		transform: scale(1);
+	}
 }
 
 @keyframes blast {
-  0% { opacity: 0; }
-  45% { opacity: 0; }
-  50% { opacity: 1; }
-  55% { opacity: 0; }
+	0% {
+		opacity: 0;
+	}
+
+	45% {
+		opacity: 0;
+	}
+
+	50% {
+		opacity: 1;
+	}
+
+	55% {
+		opacity: 0;
+	}
 }
 
 @keyframes shockwave {
-  0% {
-    opacity: 0;
-    transform: translate(-50%, -50%) scale(1);
-  }
-  50% {
-    opacity: 0.8;
-    transform: translate(-50%, -50%) scale(1);
-  }
-  60% {
-    opacity: 0;
-    transform: translate(-50%, -50%) scale(15);
-  }
+	0% {
+		opacity: 0;
+		transform: translate(-50%, -50%) scale(1);
+	}
+
+	50% {
+		opacity: 0.8;
+		transform: translate(-50%, -50%) scale(1);
+	}
+
+	60% {
+		opacity: 0;
+		transform: translate(-50%, -50%) scale(15);
+	}
 }
 
 /* =========================
@@ -974,8 +1023,8 @@ fin ft_transcendence*/
 		transform: rotate(360deg);
 	}
 }
-.active
-{
+
+.active {
 	background: linear-gradient(135deg, #2ea84e, #50d96b);
 }
 

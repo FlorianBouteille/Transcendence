@@ -185,14 +185,11 @@ function gameLoop() {
 
 		const elapsedTime = (Date.now() - game.startTime) / 1000;
 
-		// Exécuter la logique spécifique au mode de jeu
 		if (game.gameMode) {
 			game.gameMode.tick(game, io);
 
-			// Vérifier les conditions de victoire
 			const winner = game.gameMode.checkWinCondition(game);
 			if (winner) {
-				// La partie est terminée, on arrête d'envoyer des updates
 				return;
 			}
 		}
@@ -223,10 +220,14 @@ function findRoomBySocketId(id) {
 
 async function startGameCountdown(roomID) {
 	for (let i = 5; i > 0; i--) {
+		if (gameInstances[roomID].countdownCancelled) {
+			delete gameInstances[roomID].countdownCancelled;
+			console.log('game bien cancel');
+			return;
+		}
 		io.to(roomID).emit('gameCountdown', { seconds: i });
 		await sleep(1000);
 	}
-
 	gameInstances[roomID].hasStarted = true;
 	io.to(roomID).emit('gameStarted', { roomId: roomID });
 }
@@ -411,35 +412,7 @@ function initLobbyHandler(socket, io) {
 		});
 	});
 
-	socket.on('changeGameType', ({ gameType }) => {
-		const roomID = findRoomBySocketId(socket.id);
-		if (!roomID || !gameInstances[roomID]) return;
 
-		if (socket.id !== gameInstances[roomID].host) {
-			console.log('❌ Seul l\'hôte peut changer le type de jeu');
-			return;
-		}
-
-		const gameMode = createGameMode(gameType, roomID, platformIdCounter);
-		gameInstances[roomID].gameType = gameType;
-		gameInstances[roomID].gameMode = gameMode;
-		gameInstances[roomID].platforms = gameMode.generatePlatforms();
-		gameInstances[roomID].gameState = gameMode.initGameState();
-
-		gameInstances[roomID].readyPlayers = [];
-		console.log(`🎮 Type de jeu changé en ${gameType}, tous les joueurs unready`);
-
-
-		io.to(roomID).emit('lobbyUpdate', {
-			players: gameInstances[roomID].roomers.map(id => ({
-				id,
-				isHost: id === gameInstances[roomID].host,
-				ready: false
-			})),
-			count: gameInstances[roomID].roomers.length,
-			gameType: gameType
-		});
-	});
 
 	socket.on('startGame', ({ gameType }) => {
 		const roomID = findRoomBySocketId(socket.id);
@@ -455,7 +428,6 @@ function initLobbyHandler(socket, io) {
 			return;
 		}
 
-		// Mettre à jour le gameType si fourni
 		if (gameType && gameType !== gameInstances[roomID].gameType) {
 			const gameMode = createGameMode(gameType, roomID, platformIdCounter);
 			gameInstances[roomID].gameType = gameType;
@@ -463,9 +435,20 @@ function initLobbyHandler(socket, io) {
 			gameInstances[roomID].platforms = gameMode.generatePlatforms();
 			gameInstances[roomID].gameState = gameMode.initGameState();
 		}
-
 		startGameCountdown(roomID);
 	});
+
+	socket.on('cancelGame', () => {
+		const roomID = findRoomBySocketId(socket.id);
+		if (!roomID || !gameInstances[roomID]) return;
+
+
+		gameInstances[roomID].countdownCancelled = true;
+		console.log('game Cancelled');
+		io.to(roomID).emit('gameCancelled');
+
+	});
+
 	socket.on('leavePrivate', () => {
 		const findRoom = findRoomBySocketId(socket.id);
 		if (!findRoom) return;
@@ -519,7 +502,7 @@ function initLobbyHandler(socket, io) {
 		}
 
 		if (gameInstances[roomID].type === 'random' && gameInstances[roomID].hasStarted) {
-			console.log('❌ Room random déjà lancée, redirect vers lobby:', roomID);
+			console.log('❌ Room déjà lancée, redirect vers lobby:', roomID);
 			socket.emit('roomNotFound');
 			return;
 		}
