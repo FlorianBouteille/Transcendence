@@ -107,7 +107,7 @@ body {
 }
 
 .nav-link:hover {
-	color: #7a2cff;
+	color: #6b5aa3;
 	text-shadow: 0 0 20px rgba(0, 255, 65, 0.8), 0 0 30px rgba(0, 255, 65, 0.4);
 }
 
@@ -129,12 +129,12 @@ body {
 .bottom-left-2 {
 	bottom: 28px;
 	left: 32px;
-	color: #39FF14;
+	color: #8214ff;
 }
 
 .bottom-left-2:hover {
-	color: #00FF41;
-	text-shadow: 0 0 18px rgba(0, 255, 65, 0.6);
+	color: #d3a2c9;
+	text-shadow: 102 100 805px rgba(106, 0, 255, 0.6);
 }
 
 .bottom-right {
@@ -626,7 +626,7 @@ fin ft_transcendence*/
 .alien-title {
   position: relative;
   font-family: 'Orbitron', monospace;
-  font-size: 3.5rem;
+  font-size: 4.5rem;
   text-align: center;
   color: #00ff66;
   letter-spacing: 0.15em;
@@ -666,7 +666,7 @@ fin ft_transcendence*/
   top: 50%;
   width: 45px;
   height: 45px;
-  background: radial-gradient(circle, yellow, transparent 70%);
+  background: radial-gradient(circle, yellow, transparent 80%);
   transform: translate(-50%, -50%);
   opacity: 0;
   border-radius: 50%;

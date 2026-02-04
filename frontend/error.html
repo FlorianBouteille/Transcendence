@@ -38,12 +38,15 @@
             z-index: 1;
         }
     </style>
-
+</head>
     <body>
 
         <img class="character" src="/perso_color/perso_big_eyes.png" alt="">
         <h1>ERROR LOG</h1>
-        <a class=" nav-link bottom-left " href="register.html ">retour</a>
+    <!-- <a class=" nav-link bottom-left " href="javascript:history.back()">retour</a> -->
+     <a class="nav-link bottom-left" href="/" onclick="if (history.length > 1) { history.back(); return false; }">retour</a>
+
+
     </body>
 
 </html>
