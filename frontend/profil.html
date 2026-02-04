@@ -1,19 +1,44 @@
 <!DOCTYPE html>
 <html lang="fr">
-	<head>
-		<meta charset="UTF-8" />
-		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-		<title>Profil | ft_transcendence</title>
-		<link rel="stylesheet" href="./style_profil.css" />
-	</head>
-	<body>
-		<main class="landing profile-page">
-			<a class="nav-link bottom-left" href="index.html">return</a>
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Profil | ft_transcendence</title>
+    <link rel="stylesheet" href="./style_profil.css" />
+</head>
+<body>
+    <main class="landing profile-page">
+        <a class="nav-link bottom-left" href="index.html">return</a>
+        <section class="profile-hero">
+            <h1 class="profile-title">User Profile</h1>
+            <p class="profile-subtitle">Welcome back, commander.</p>
+        </section>
+        
+        <!-- Conteneur pour le personnage -->
+        <div id="personnage-container">
+            <img id="personnage-img" src="" alt="Personnage">
+        </div>
+		<img id="podium" src="perso_color/podium.png" alt="Podium">
+    </main>
 
-			<section class="profile-hero">
-				<h1 class="profile-title">User Profile</h1>
-				<p class="profile-subtitle">Welcome back, commander.</p>
-			</section>
-		</main>
-	</body>
+    <script>
+        // Liste de vos personnages
+        const personnages = [
+            'perso_color/perso_valsie2.png',
+            'perso_color/perso_school2.png',
+			'perso_color/perso_soda2.png',
+            'perso_color/perso_sunglasses2.png',
+            'perso_color/perso_sweat2.png',
+            'perso_color/perso_hat2.png',
+            'perso_color/perso_casquette2.png',
+            'perso_color/perso_banane2.png'
+        ];
+        
+        // Sélectionner un personnage aléatoire
+        const personnageAleatoire = personnages[Math.floor(Math.random() * personnages.length)];
+        
+        // Afficher le personnage
+        document.getElementById('personnage-img').src = personnageAleatoire;
+    </script>
+</body>
 </html>

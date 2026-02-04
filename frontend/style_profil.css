@@ -58,7 +58,7 @@ body {
 	display: flex;
 	flex-direction: column;
 	gap: 12px;
-	transform: translateY(-30px);
+	transform: translateY(-530px);
 }
 
 .profile-title {
@@ -97,4 +97,27 @@ body {
 .bottom-left {
 	bottom: 28px;
 	left: 32px;
+}
+
+#podium {
+    position: absolute;
+    bottom: -60px; /* Ajustez selon vos besoins */
+    left: 51%;
+    transform: translateX(-50%);
+    width: 800px; /* Ajustez la taille */
+	z-index: 1;
+}
+
+#personnage-container {
+	position: absolute;
+	left: 50%;
+	bottom: 190px;
+	transform: translateX(-50%);
+	z-index: 2;
+}
+
+#personnage-img {
+	width: 320px;
+	height: auto;
+	display: block;
 }
