@@ -54,27 +54,48 @@ body {
 }
 
 .profile-hero {
+	position: relative;
 	text-align: center;
 	display: flex;
+	z-index: 10; /* Met le titre au-dessus */
 	flex-direction: column;
 	gap: 12px;
-	transform: translateY(-530px);
+	transform: translateY(-420px);
 }
 
 .profile-title {
 	font-size: clamp(2rem, 3vw, 3.1rem);
 	letter-spacing: 0.08em;
+	position: relative; /*ici*/
+    z-index: 1; /*ici*/
 	text-transform: uppercase;
 	font-weight: 700;
 	color: #5a2a00;
 	text-shadow: 0 6px 20px rgba(255, 255, 255, 0.45);
+	margin-top: 36px;
 }
 
-.profile-subtitle {
-	font-size: clamp(1rem, 1.4vw, 1.2rem);
-	letter-spacing: 0.08em;
-	color: rgba(90, 42, 0, 0.8);
+/*debut WELCOME BEAUGOSS*/
+
+.profile-arc {
+	width: min(1120px, 90vw);
+	height: auto;
+	margin: 0 auto;
+	position: absolute;
+	top: -110px;
+	left: 50%;
+	transform: translateX(-50%);
+	overflow: visible;
 }
+
+.profile-arc text {
+	fill: #5a2a00;
+	font-size: 40px;
+	letter-spacing: 0.005em;
+	font-weight: 700;
+	text-transform: uppercase;
+}
+/*fin WELCOME BEAUGOSS*/
 
 .nav-link {
 	position: absolute;
@@ -110,6 +131,7 @@ body {
 
 #personnage-container {
 	position: absolute;
+	margin-top: 150px; /* Laisse de l'espace pour le titre */
 	left: 50%;
 	bottom: 190px;
 	transform: translateX(-50%);
@@ -120,4 +142,89 @@ body {
 	width: 320px;
 	height: auto;
 	display: block;
+}
+
+#pingpong-rain {
+	position: absolute;
+	inset: 0;
+	overflow: hidden;
+	pointer-events: none;
+	z-index: 3;
+}
+
+.pingpong-ball {
+	position: absolute;
+	top: -15vh;
+	left: 0;
+	width: var(--size, 48px);
+	height: auto;
+	will-change: transform, opacity;
+	filter: drop-shadow(0 10px 10px rgba(90, 42, 0, 0.18));
+	animation-duration: var(--duration, 5.5s);
+	animation-delay: var(--delay, 0s);
+	animation-timing-function: cubic-bezier(0.2, 0.6, 0.2, 1);
+	animation-fill-mode: forwards;
+}
+
+.pingpong-ball.is-three {
+	animation-name: pingpong-fall-3;
+}
+
+.pingpong-ball.is-four {
+	animation-name: pingpong-fall-4;
+}
+
+@keyframes pingpong-fall-3 {
+	0% {
+		transform: translateY(-20vh) rotate(0deg);
+		opacity: 0;
+	}
+	6% {
+		opacity: 1;
+	}
+	36% {
+		transform: translateY(68vh) rotate(140deg);
+	}
+	50% {
+		transform: translateY(56vh) rotate(220deg);
+	}
+	72% {
+		transform: translateY(84vh) rotate(330deg);
+	}
+	84% {
+		transform: translateY(74vh) rotate(410deg);
+	}
+	100% {
+		transform: translateY(115vh) rotate(520deg);
+		opacity: 0;
+	}
+}
+
+@keyframes pingpong-fall-4 {
+	0% {
+		transform: translateY(-20vh) rotate(0deg);
+		opacity: 0;
+	}
+	5% {
+		opacity: 1;
+	}
+	30% {
+		transform: translateY(62vh) rotate(120deg);
+	}
+	42% {
+		transform: translateY(50vh) rotate(200deg);
+	}
+	60% {
+		transform: translateY(80vh) rotate(300deg);
+	}
+	72% {
+		transform: translateY(70vh) rotate(380deg);
+	}
+	88% {
+		transform: translateY(92vh) rotate(460deg);
+	}
+	100% {
+		transform: translateY(118vh) rotate(560deg);
+		opacity: 0;
+	}
 }

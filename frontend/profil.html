@@ -9,12 +9,20 @@
 <body>
     <main class="landing profile-page">
         <a class="nav-link bottom-left" href="index.html">return</a>
+        <div id="pingpong-rain" aria-hidden="true"></div>
         <section class="profile-hero">
+            <svg class="profile-arc" viewBox="0 0 500 240" role="img" aria-hidden="true">
+                <defs>
+                    <path id="arc-text" d="M 40 210 A 210 210 0 0 1 460 210" />
+                </defs>
+                <text>
+                    <textPath href="#arc-text" startOffset="50%" text-anchor="middle">WELCOME BEAUGOSS</textPath>
+                </text>
+            </svg>
             <h1 class="profile-title">User Profile</h1>
-            <p class="profile-subtitle">Welcome back, commander.</p>
         </section>
         
-        <!-- Conteneur pour le personnage -->
+        <!-- Espace pour les personnages -->
         <div id="personnage-container">
             <img id="personnage-img" src="" alt="Personnage">
         </div>
@@ -22,7 +30,6 @@
     </main>
 
     <script>
-        // Liste de vos personnages
         const personnages = [
             'perso_color/perso_valsie2.png',
             'perso_color/perso_school2.png',
@@ -33,12 +40,53 @@
             'perso_color/perso_casquette2.png',
             'perso_color/perso_banane2.png'
         ];
-        
-        // Sélectionner un personnage aléatoire
+
         const personnageAleatoire = personnages[Math.floor(Math.random() * personnages.length)];
         
         // Afficher le personnage
         document.getElementById('personnage-img').src = personnageAleatoire;
+
+        const rainLayer = document.getElementById('pingpong-rain');
+        const ballImage = 'perso_color/pingpong.png';
+        const minDurationMs = 15000;
+        const maxDurationMs = 30000;
+        const rainDurationMs = Math.floor(minDurationMs + Math.random() * (maxDurationMs - minDurationMs));
+        const rainEndsAt = performance.now() + rainDurationMs;
+
+        const spawnBall = () => {
+            const ball = document.createElement('img');
+            const size = Math.floor(28 + Math.random() * 48);
+            const duration = (3.8 + Math.random() * 3.5).toFixed(2);
+            const delay = (Math.random() * 0.6).toFixed(2);
+            const bounceClass = Math.random() > 0.5 ? 'is-three' : 'is-four';
+            const maxX = Math.max(0, window.innerWidth - size);
+            const x = Math.floor(Math.random() * maxX);
+
+            ball.src = ballImage;
+            ball.alt = '';
+            ball.className = `pingpong-ball ${bounceClass}`;
+            ball.style.left = `${x}px`;
+            ball.style.setProperty('--size', `${size}px`);
+            ball.style.setProperty('--duration', `${duration}s`);
+            ball.style.setProperty('--delay', `${delay}s`);
+
+            ball.addEventListener('animationend', () => {
+                ball.remove();
+            });
+
+            rainLayer.appendChild(ball);
+        };
+
+        const spawnLoop = () => {
+            if (performance.now() > rainEndsAt) {
+                return;
+            }
+            spawnBall();
+            const nextIn = Math.floor(120 + Math.random() * 260);
+            window.setTimeout(spawnLoop, nextIn);
+        };
+
+        spawnLoop();
     </script>
 </body>
 </html>

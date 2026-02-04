@@ -91,17 +91,20 @@ body {
 
 /* titre */
 .lobby-box h1 {
-	font-size: 2.8rem;
-	letter-spacing: 0.10em;
+	font-size: clamp(1.8rem, 3vw, 2.8rem);
+	letter-spacing: 0.12em;
 	text-transform: uppercase;
-	color: #a3361b;
+	font-family: "Bungee", "Luckiest Guy", Impact, sans-serif;
+	color: #f0c24d;
+	text-shadow: 0 3px 0 #2c0ce6, 0 10px 8px rgba(255, 79, 216, 0.35);
 }
+
 
 /* status */
 .lobby-status {
 	padding: 12px 16px;
 	border-radius: 14px;
-	background: rgba(255, 255, 255, 0.6);
+	background: rgba(244, 176, 39, 0.6);
 	border: 1px solid rgba(30, 22, 48, 0.12);
 	font-weight: 600;
 	letter-spacing: 0.06em;
