@@ -80,7 +80,7 @@ function createPlatforms(platformsData) {
 		}
 		else if (data.type === 'disapearing')
 		{
-			platform = new DisapearingPlatform(scene, new THREE.Vector3(data.position.x, data.position.y, data.position.z), data.size.x, data.size.y, data.size.z, data.duration, data.life, data.death, materials[data.material])
+			platform = new DisapearingPlatform(scene, new THREE.Vector3(data.position.x, data.position.y, data.position.z), data.size.x, data.size.y, data.size.z, data.duration, data.life, data.death, data.delay, materials[data.material])
 			movingPlatformsFromBack.push(platform);
 		}
 		else if (data.type === 'bouncy')
@@ -295,7 +295,7 @@ socket.on('roomJoined', (data) => {
 	} else {
 		scene.background = environmentMap2;
 		scene.environment = environmentMap2;
-		currentGame = new SurviveGame(scene, player, remotePlayers, socket);
+		currentGame = new SurviveGame(scene, player, remotePlayers, movingPlatformsFromBack, socket);
 	}
 	
 	if (data.platforms) {

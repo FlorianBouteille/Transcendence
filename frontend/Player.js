@@ -79,6 +79,15 @@ export class Player {
         this.mesh.position.x = this.checkPoint.x;
         this.mesh.position.y = this.checkPoint.y + 1;
         this.mesh.position.z = this.checkPoint.z;
+        
+        // Mettre à jour la hitbox
+        this.box.min.copy(this.localBox.min).add(this.mesh.position);
+        this.box.max.copy(this.localBox.max).add(this.mesh.position);
+        
+        // Reset physique
+        this.velocityY = 0;
+        this.currentPlatform = null;
+        this.isGrounded = false;
     }
 
     move(direction, deltaTime, platforms) 

@@ -1,12 +1,14 @@
 import * as THREE from 'three'
+import { LinearPlatform } from './LinearPlatform.js'
 
 export class SurviveGame
 {
-    constructor(scene, player, otherPlayers, socket)
+    constructor(scene, player, otherPlayers, platforms, socket)
     {
         this.socket = socket;
         this.player = player;
         this.hasDied = false;
+        this.platforms = platforms;
         
         // Liste complète des joueurs vivants (incluant moi-même)
         this.alivePlayers = { ...otherPlayers };
@@ -25,6 +27,7 @@ export class SurviveGame
                 this.hasDied = true;
                 this.player.checkPoint = new THREE.Vector3(0, 12, 0);
                 this.player.respawn();
+                this.player.currentPlatform = null;
             }
         });
         
@@ -48,6 +51,16 @@ export class SurviveGame
                 elapsedTime: elapsedTime
             });
         }
+        // Calculer le multiplicateur de vitesse (augmente avec le temps)
+        const speedMultiplier = Math.min(1.0 + (Math.floor(elapsedTime / 20) * 0.1), 5.0);
+        
+        // Appliquer le multiplicateur à toutes les plateformes linéaires
+        this.platforms.forEach(platform => {
+            if (platform instanceof LinearPlatform)
+            {
+                platform.speedMultiplier = speedMultiplier;
+            }
+        });
     }
     
     showVictoryScreen(data)

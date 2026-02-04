@@ -2,12 +2,13 @@ import { Platform } from './Platform.js'
 
 export class DisapearingPlatform extends Platform
 {
-    constructor(scene, position, sizeX, sizeY, sizeZ, duration, life, death, material)
+    constructor(scene, position, sizeX, sizeY, sizeZ, duration, life, death, delay, material)
     {
         super(scene, position, sizeX, sizeY, sizeZ, material)
         this.duration = duration
         this.aliveTime = life
         this.deadTime = death
+        this.delay = delay || 0
         this.isActive = true
         this.cycleTime = life + duration + death
         
@@ -18,7 +19,18 @@ export class DisapearingPlatform extends Platform
 
     update(elapsedTime)
     {
-        let timeInCycle = elapsedTime % this.cycleTime;
+        // Appliquer le delay
+        const adjustedTime = elapsedTime - this.delay;
+        
+        // Si on est avant le delay, la plateforme reste visible
+        if (adjustedTime < 0) {
+            this.mesh.visible = true;
+            this.mesh.material.opacity = 1;
+            this.box.setFromObject(this.mesh);
+            return;
+        }
+        
+        let timeInCycle = adjustedTime % this.cycleTime;
         
         if (timeInCycle < this.aliveTime)
         {
@@ -57,6 +69,7 @@ export class DisapearingPlatform extends Platform
             this.duration,
             this.aliveTime,
             this.deadTime,
+            this.delay,
             this.mesh.material
         )
         return clone

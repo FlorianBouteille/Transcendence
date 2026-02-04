@@ -17,12 +17,16 @@ export class LinearPlatform extends Platform {
         // Calcule le cycle total
         this.cycleTime = travelTime + finalStayTime + pauseTime
         this.totalElapsedTime = 0 // Temps global accumulé
+        this.speedMultiplier = 1.0 // Multiplicateur de vitesse externe
     }
 
     update(elapsedTime) 
     {
         this.previousPosition = this.mesh.position.clone()
-        this.totalElapsedTime = elapsedTime
+        
+        // Appliquer le multiplicateur de vitesse au temps écoulé
+        const acceleratedTime = elapsedTime * this.speedMultiplier
+        this.totalElapsedTime = acceleratedTime
         
         let timeInCycle = (this.totalElapsedTime - this.delay) % this.cycleTime
         

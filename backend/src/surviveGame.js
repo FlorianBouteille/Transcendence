@@ -15,17 +15,22 @@ function getRandomBlockMaterial() {
 // Fonction principale qui génère les plateformes du mode Survive
 function generateSurvivePlatforms(platformIdCounter) {
 	const platforms = [];
-    let pauseFactor = 8;
-    let delayFactor = 5;
-    let speedFactor = 2;
+    let pauseFactor = 10;
+    let delayFactor = 8;
+    let speedFactor = 3;
+	
 	// Plateforme de départ
     for (let i = 0; i < 4; i++)
     {
+        // Offset progressif pour espacer les vagues
+        const waveOffset = i * 6; // Chaque "ligne" démarre avec un décalage
+        
         platforms.push({
             id: platformIdCounter++,
             type: 'disapearing',
             position: { x: i * 5, y: 0, z: 0 },
             size: { x: 4, y: 1, z: 4 },
+            delay: 2 + i,
             duration: 3 + Math.random() * 2,
             life: 4 + Math.random() * 4,
             death: 1 + Math.random() * 2,
@@ -37,6 +42,7 @@ function generateSurvivePlatforms(platformIdCounter) {
             type: 'disapearing',
             position: { x: i * 5, y: 0, z: 5 },
             size: { x: 4, y: 1, z: 4 },
+            delay: 4 + i,
             duration: 3 + Math.random() * 2,
             life: 4 + Math.random() * 4,
             death: 1 + Math.random() * 2,
@@ -48,21 +54,24 @@ function generateSurvivePlatforms(platformIdCounter) {
             type: 'disapearing',
             position: { x: i * 5, y: 0, z: -5 },
             size: { x: 4, y: 1, z: 4 },
+            delay: 6 + i,
             duration: 3 + Math.random() * 2,
             life: 4 + Math.random() * 4,
             death: 1 + Math.random() * 2,
             color: generateColor(),
             material: 'transparent'
         })
+        
+        // Plateformes qui balayent - délais très variés
         platforms.push({
             id: platformIdCounter++,
             type: 'linear',
             positionA: { x: i * 5, y: 1, z: -20 },
             positionB: { x: i * 5, y: 1, z: 35 },
             size: { x: 4, y: 0.5, z: 1},
-            delay: delayFactor + Math.random() * delayFactor,
+            delay: waveOffset + Math.random() * 15, // 0-21 secondes
             pauseTime: pauseFactor + Math.random() * pauseFactor,
-            travelTime: 4 + Math.random() * speedFactor, 
+            travelTime: 5 + Math.random() * speedFactor, 
             finalStayTime: 0,
         })
         platforms.push({
@@ -71,9 +80,9 @@ function generateSurvivePlatforms(platformIdCounter) {
             positionA: { x: i * 5, y: 3, z: -20 },
             positionB: { x: i * 5, y: 3, z: 35 },
             size: { x: 4, y: 0.5, z: 1},
-            delay: delayFactor + Math.random() * delayFactor,
+            delay: waveOffset + 3 + Math.random() * 15, // Décalé de 3s
             pauseTime: pauseFactor + Math.random() * pauseFactor,
-            travelTime: 4 + Math.random() * speedFactor, 
+            travelTime: 5 + Math.random() * speedFactor, 
             finalStayTime: 0,
         })
         platforms.push({
@@ -82,9 +91,9 @@ function generateSurvivePlatforms(platformIdCounter) {
             positionA: { x: i * 5 - 20, y: 3, z: i * 5 - 5 },
             positionB: { x: i * 5 + 35, y: 3, z: i * 5 - 5 },
             size: { x: 1, y: 0.5, z: 4},
-            delay: delayFactor + Math.random() * delayFactor,
+            delay: waveOffset + 6 + Math.random() * 15, // Décalé de 6s
             pauseTime: pauseFactor + Math.random() * pauseFactor,
-            travelTime: 4 + Math.random() * speedFactor, 
+            travelTime: 5 + Math.random() * speedFactor, 
             finalStayTime: 0,
         })
         platforms.push({
@@ -93,20 +102,22 @@ function generateSurvivePlatforms(platformIdCounter) {
             positionA: { x: i * 5 - 20, y: 1, z: i * 5 - 5 },
             positionB: { x: i * 5 + 35, y: 1, z: i * 5 - 5 },
             size: { x: 1, y: 0.5, z: 4},
-            delay: delayFactor + Math.random() * delayFactor,
+            delay: waveOffset + 9 + Math.random() * 15, // Décalé de 9s
             pauseTime: pauseFactor + Math.random() * pauseFactor,
-            travelTime: 4 + Math.random() * speedFactor, 
+            travelTime: 5 + Math.random() * speedFactor, 
             finalStayTime: 0,
         })
+        
+        // Plateformes retour (sens inverse)
         platforms.push({
             id: platformIdCounter++,
             type: 'linear',
             positionA: { x: i * 5, y: 1, z: 35 },
             positionB: { x: i * 5, y: 1, z: -20 },
             size: { x: 4, y: 0.5, z: 1},
-            delay: delayFactor + Math.random() * delayFactor,
+            delay: waveOffset + 12 + Math.random() * 15,
             pauseTime: pauseFactor + Math.random() * pauseFactor,
-            travelTime: 4 + Math.random() * speedFactor, 
+            travelTime: 5 + Math.random() * speedFactor, 
             finalStayTime: 0,
         })
         platforms.push({
@@ -115,9 +126,9 @@ function generateSurvivePlatforms(platformIdCounter) {
             positionA: { x: i * 5, y: 3, z: 35 },
             positionB: { x: i * 5, y: 3, z: -20 },
             size: { x: 4, y: 0.5, z: 1},
-            delay: delayFactor + Math.random() * delayFactor,
+            delay: waveOffset + 15 + Math.random() * 15,
             pauseTime: pauseFactor + Math.random() * pauseFactor,
-            travelTime: 4 + Math.random() * speedFactor, 
+            travelTime: 5 + Math.random() * speedFactor, 
             finalStayTime: 0,
         })
         platforms.push({
@@ -126,9 +137,9 @@ function generateSurvivePlatforms(platformIdCounter) {
             positionA: { x: i * 5 + 35, y: 3, z: i * 5 - 5 },
             positionB: { x: i * 5 - 20, y: 3, z: i * 5 - 5 },
             size: { x: 1, y: 0.5, z: 4},
-            delay: delayFactor + Math.random() * delayFactor,
+            delay: waveOffset + 18 + Math.random() * 15,
             pauseTime: pauseFactor + Math.random() * pauseFactor,
-            travelTime: 4 + Math.random() * speedFactor, 
+            travelTime: 5 + Math.random() * speedFactor, 
             finalStayTime: 0,
         })
         platforms.push({
@@ -137,9 +148,9 @@ function generateSurvivePlatforms(platformIdCounter) {
             positionA: { x: i * 5 + 35, y: 1, z: i * 5 - 5 },
             positionB: { x: i * 5 - 20, y: 1, z: i * 5 - 5 },
             size: { x: 1, y: 0.5, z: 4},
-            delay: delayFactor + Math.random() * delayFactor,
+            delay: waveOffset + 21 + Math.random() * 15,
             pauseTime: pauseFactor + Math.random() * pauseFactor,
-            travelTime: 4 + Math.random() * speedFactor, 
+            travelTime: 5 + Math.random() * speedFactor, 
             finalStayTime: 0,
         })
         platforms.push({
