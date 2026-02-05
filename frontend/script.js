@@ -94,7 +94,7 @@ function createPlatforms(platformsData) {
 
 function createCheckpoints(checkpointsData)
 {
-	checkpointsData.forEach(data => 
+	checkpointsData.forEach(data =>
 	{
 		let point;
 		point = new CheckPoint(data.posX, data.posY, data.posZ)
@@ -153,7 +153,9 @@ window.addEventListener('keydown', (event) => {
 
 
 // Objects
-const player = new LocalPlayer(scene, canvas, 'LocalPlayer', randomColor()); //// ALLER CHERCHER LE NOM DANS LA DB !!!!!!
+const user = JSON.parse(localStorage.getItem('user'));
+const playerName = user?.username || 'Player';
+const player = new LocalPlayer(scene, canvas, playerName, randomColor());
 // Envoyer son nom au serveur
 scene.add(player.mesh);
 createPlayerLabel('local', player.name);
@@ -229,7 +231,7 @@ const renderer = new THREE.WebGLRenderer({
 renderer.setSize(sizes.width, sizes.height)
 renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2))
 
-// GUI 
+// GUI
 // const playerGui = gui.addFolder('Player');
 const platformsGui = gui.addFolder('Plateformes')
 console.log('nb de plateformes : ' + platformsFromBack.length);
@@ -287,7 +289,7 @@ socket.on('roomJoined', (data) => {
 	console.log('✅ Room jointe, création des plateformes');
 	gameType = data.gameType || 'crown';
 	console.log('🎮 Mode de jeu:', gameType);
-	
+
 	// Configurer l'environment map en fonction du gameType
 	if (gameType === 'crown') {
 		scene.background = environmentMap;
@@ -298,7 +300,7 @@ socket.on('roomJoined', (data) => {
 		scene.environment = environmentMap2;
 		currentGame = new SurviveGame(scene, player, remotePlayers, movingPlatformsFromBack, socket);
 	}
-	
+
 	if (data.platforms) {
 		createPlatforms(data.platforms);
 		platformsCreated = true;
@@ -319,7 +321,7 @@ socket.on('roomJoined', (data) => {
 
 const clock = new THREE.Clock(false);
 let gameStartTimeStamp = null;
-socket.on('startClock', (timestamp) => 
+socket.on('startClock', (timestamp) =>
 {
 	gameStartTimeStamp = timestamp;
 	console.log('🚀 Tous les joueurs prêts, démarrage à timestamp:', gameStartTimeStamp);
