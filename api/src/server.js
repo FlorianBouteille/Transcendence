@@ -6,10 +6,7 @@ const PORT = process.env.PORT || 3000;
 async function start() {
 	try {
 		// 1 Connect to the database
-		const sequelize = await db.connect();
-
-		// 2 Initialize models and optionally synchronize tables
-		db.models = await db.initModels(sequelize, {sync: true, alter:true});
+		await db.connect();
 
 		// 3 Create the Express app
 		const app = createApp();

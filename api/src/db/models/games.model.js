@@ -1,16 +1,16 @@
 import { DataTypes } from "sequelize";
 
-// Define the Matches table model
-export function matches(sequelize) {
-	const Matches = sequelize.define("Matches", {
+// Define the games table model
+export function games(sequelize) {
+	const table = sequelize.define("games", {
 		id: { type: DataTypes.INTEGER, autoIncrement: true, primaryKey: true },
-		match_name: { type: DataTypes.STRING(100) },
+		mode: { type: DataTypes.STRING(100) },
 		start_time: { type: DataTypes.DATE, defaultValue: DataTypes.NOW },
 		end_time: { type: DataTypes.DATE }
 	}, {
-		tableName: "Matches",
+		tableName: "games",
 		timestamps: false
 	});
 
-	return Matches;
+	return table;
 }

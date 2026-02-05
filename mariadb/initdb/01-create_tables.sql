@@ -1,8 +1,9 @@
 USE db;
 
 -- Users table
-CREATE TABLE UserAccounts (
+CREATE TABLE userAccounts (
 	id INT AUTO_INCREMENT PRIMARY KEY,
+	username VARCHAR(50) NOT NULL UNIQUE,
 	email VARCHAR(100) NOT NULL UNIQUE,
 	username VARCHAR(100) NOT NULL UNIQUE,
 	password_hash VARCHAR(255) NOT NULL,
@@ -12,54 +13,54 @@ CREATE TABLE UserAccounts (
 );
 
 -- Players table
-CREATE TABLE Players (
+CREATE TABLE players (
 	id INT AUTO_INCREMENT PRIMARY KEY,
 	user_id INT NOT NULL,
 	pseudonym VARCHAR(50) NOT NULL,
-	description TEXT,
+	bio TEXT,
 	coins INT DEFAULT 0,
 	avatar_url VARCHAR(255),
 	created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
 	updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-	FOREIGN KEY (user_id) REFERENCES UserAccounts(id) ON DELETE CASCADE
+	FOREIGN KEY (user_id) REFERENCES userAccounts(id) ON DELETE CASCADE
 );
 
--- Matches table
-CREATE TABLE Matches (
+-- Games table
+CREATE TABLE games (
 	id INT AUTO_INCREMENT PRIMARY KEY,
-	match_name VARCHAR(100),
+	mode VARCHAR(100),
 	start_time DATETIME DEFAULT CURRENT_TIMESTAMP,
 	end_time DATETIME
 );
 
 -- PlayerStats table
-CREATE TABLE PlayerStats (
+CREATE TABLE playerStats (
 	id INT AUTO_INCREMENT PRIMARY KEY,
 	player_id INT NOT NULL,
-	match_id INT NOT NULL,
+	game_id INT NOT NULL,
 	chrono INT DEFAULT 0,
 	position INT,
-	eliminated BOOLEAN DEFAULT FALSE,
-	FOREIGN KEY (player_id) REFERENCES Players(id) ON DELETE CASCADE,
-	FOREIGN KEY (match_id) REFERENCES Matches(id) ON DELETE CASCADE
+	eliminated BOOLEAN,
+	FOREIGN KEY (player_id) REFERENCES players(id) ON DELETE CASCADE,
+	FOREIGN KEY (game_id) REFERENCES games(id) ON DELETE CASCADE
 );
 
 -- Items table
-CREATE TABLE Items (
+CREATE TABLE items (
 	id INT AUTO_INCREMENT PRIMARY KEY,
 	player_id INT NOT NULL,
 	item_name VARCHAR(100) NOT NULL,
 	item_type VARCHAR(50),
 	acquired_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-	FOREIGN KEY (player_id) REFERENCES Players(id) ON DELETE CASCADE
+	FOREIGN KEY (player_id) REFERENCES players(id) ON DELETE CASCADE
 );
 
 -- Leaderboard table
-CREATE TABLE Leaderboard (
+CREATE TABLE leaderboard (
 	id INT AUTO_INCREMENT PRIMARY KEY,
 	player_id INT NOT NULL,
 	total_score INT DEFAULT 0,
 	global_rank INT,
 	last_update DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-	FOREIGN KEY (player_id) REFERENCES Players(id) ON DELETE CASCADE
+	FOREIGN KEY (player_id) REFERENCES players(id) ON DELETE CASCADE
 );

@@ -2,24 +2,24 @@ import { DataTypes } from "sequelize";
 
 // Define the PlayerStats table model
 export function playerStats(sequelize, models) {
-	const PlayerStats = sequelize.define("PlayerStats", {
+	const table = sequelize.define("playerStats", {
 		id: { type: DataTypes.INTEGER, autoIncrement: true, primaryKey: true },
 		player_id: { type: DataTypes.INTEGER, allowNull: false },
-		match_id: { type: DataTypes.INTEGER, allowNull: false },
+		game_id: { type: DataTypes.INTEGER, allowNull: false },
 		chrono: { type: DataTypes.INTEGER, defaultValue: 0 },
 		position: { type: DataTypes.INTEGER },
-		eliminated: { type: DataTypes.BOOLEAN, defaultValue: false }
+		eliminated: { type: DataTypes.BOOLEAN }
 	}, {
-		tableName: "PlayerStats",
+		tableName: "playerStats",
 		timestamps: false
 	});
 
 	// Associations
-	PlayerStats.belongsTo(models.players, { foreignKey: "player_id", onDelete: "CASCADE" });
-	models.players.hasMany(PlayerStats, { foreignKey: "player_id" });
+	table.belongsTo(models.players, { foreignKey: "player_id", onDelete: "CASCADE" });
+	models.players.hasMany(table, { foreignKey: "player_id" });
 
-	PlayerStats.belongsTo(models.matches, { foreignKey: "match_id", onDelete: "CASCADE" });
-	models.matches.hasMany(PlayerStats, { foreignKey: "match_id" });
+	table.belongsTo(models.games, { foreignKey: "game_id", onDelete: "CASCADE" });
+	models.games.hasMany(table, { foreignKey: "game_id" });
 
-	return PlayerStats;
+	return table;
 }

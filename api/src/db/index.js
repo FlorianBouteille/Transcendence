@@ -1,12 +1,27 @@
-import * as connection from "./connection.js";
-import { models as modelFactories, initModels as initModelsFn } from "./models/index.js";
+import { connect, disconnect } from "./connection.js";
+import { initModels } from "./models/index.js";
 
 export const db = {
-	...connection,
-	models: modelFactories,
-	initModels: async function (sequelize, { sync = false, alter = false, force = false } = {}) {
-		const initializedModels = await initModelsFn(sequelize, { sync, alter, force });
-		this.models = initializedModels;
-		return initializedModels;
+	sequelize: null,
+	models: null,
+
+	connect: async function ({ sync = false, alter = false, force = false } = {}) {
+		if (!this.sequelize) {
+			this.sequelize = await connect();
+		}
+
+		// Initialize models if not already done
+		if (!this.models) {
+			this.models = await initModels(this.sequelize, { sync, alter, force });
+			console.log("✅ Models initialized");
+		}
+
+		return this.sequelize;
+	},
+
+	disconnect: async function () {
+		await disconnect();
+		this.sequelize = null;
+		this.models = null;
 	}
 };
