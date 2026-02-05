@@ -71,6 +71,20 @@ services:
       - transcendence
       - api_mariadb_net
 
+# ---------- DATABASE GUI ----------
+  adminer:
+    image: adminer
+    container_name: adminer
+    restart: unless-stopped
+    depends_on:
+      mariadb:
+        condition: service_healthy
+    ports:
+      - 8081:8080
+    networks:
+      - transcendence
+      - api_mariadb_net
+
 # ---------- DATABASE ----------
   mariadb:
     build: ./mariadb

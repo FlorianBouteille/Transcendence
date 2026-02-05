@@ -9,7 +9,7 @@ export async function globalHistory(req, res){
 				'mode',
 				[db.sequelize.literal("DATE_FORMAT(start_time, '%Y-%m-%d %H:%i:%s')"), 'date'],
 				[db.sequelize.literal("SEC_TO_TIME(TIMESTAMPDIFF(SECOND, start_time, end_time))"), 'duration'],
-				[db.sequelize.col('playerStats->player.pseudonym'), 'winner']
+				[db.sequelize.col('playerStats->players.pseudonym'), 'winner']
 			],
 			include: [
 				{
@@ -45,11 +45,11 @@ export async function globalHistory(req, res){
 export async function playerHistory(req, res){
 	try {
 		// Get player_id
-		const id = await db.models.userAccounts.findOne({
-			where: { username: req.user.username },
-			attributes: ['player_id'],
-		});
-		const playerId = 1;
+		// const id = await db.models.userAccounts.findOne({
+		// 	where: { username: req.user.username },
+		// 	attributes: ['player_id'],
+		// });
+		const playerId = 6;
 
 		const playerHistoryTable = await db.models.games.findAll({
 			attributes: [
@@ -62,7 +62,7 @@ export async function playerHistory(req, res){
 				{
 					model: db.models.playerStats,
 					attributes: [],
-					required: false,	// LEFT JOIN playerStats ON games.id = playerStats.games_id
+					required: true,	// INNER JOIN playerStats ON games.id = playerStats.games_id
 					where: {
 						player_id: playerId
 					}
