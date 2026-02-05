@@ -25,8 +25,9 @@
         <div id="cloud-bg" aria-label="Message du jour">
             <img src="perso_color/cloud.png" alt="" aria-hidden="true">
             <div id="cloud-message">
-                <p class="cloud-title">Petit bio t'as capte</p>
-                <p class="cloud-text">Stats: 12 victoires • 3 défaites • Rang 8</p>
+                <p class="cloud-text">Petit bio t'as capte</p>
+                <p class="cloud-text">Stats: 12 games • 1 victoire • 11 défaites</p>
+
             </div>
         </div>
         
@@ -39,14 +40,32 @@
 
     <script>
         const personnages = [
-            'perso_color/perso_valsie2.png',
-            'perso_color/perso_school2.png',
-			'perso_color/perso_soda2.png',
-            'perso_color/perso_sunglasses2.png',
-            'perso_color/perso_sweat2.png',
-            'perso_color/perso_hat2.png',
-            'perso_color/perso_casquette2.png',
-            'perso_color/perso_banane2.png'
+            'perso_color/perso_1.png',
+            'perso_color/perso_2.png',
+            'perso_color/perso_3.png',
+            'perso_color/perso_4.png',
+            'perso_color/perso_5.png',
+            'perso_color/perso_6.png',
+            'perso_color/perso_7.png',
+            'perso_color/perso_8.png',
+            'perso_color/perso_9.png',
+            'perso_color/perso_10.png',
+            'perso_color/perso_11.png',
+            'perso_color/perso_12.png',
+            'perso_color/perso_13.png',
+            'perso_color/perso_14.png',
+            'perso_color/perso_15.png',
+            'perso_color/perso_16.png',
+            'perso_color/perso_17.png',
+            'perso_color/perso_18.png',
+            'perso_color/perso_19.png',
+            'perso_color/perso_20.png',
+			'perso_color/perso_21.png',
+            'perso_color/perso_22.png',
+            'perso_color/perso_23.png',
+            'perso_color/perso_24.png',
+            'perso_color/perso_25.png',
+            'perso_color/perso_26.png'
         ];
 
         const personnageAleatoire = personnages[Math.floor(Math.random() * personnages.length)];
@@ -89,7 +108,7 @@
                 return;
             }
             spawnBall();
-            const nextIn = Math.floor(120 + Math.random() * 260);
+            const nextIn = Math.floor(100 + Math.random() * 260);
             window.setTimeout(spawnLoop, nextIn);
         };
 
