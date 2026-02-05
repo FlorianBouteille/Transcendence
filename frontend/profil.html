@@ -21,6 +21,14 @@
             </svg>
             <h1 class="profile-title">User Profile</h1>
         </section>
+
+        <div id="cloud-bg" aria-label="Message du jour">
+            <img src="perso_color/cloud.png" alt="" aria-hidden="true">
+            <div id="cloud-message">
+                <p class="cloud-title">Petit bio t'as capte</p>
+                <p class="cloud-text">Stats: 12 victoires • 3 défaites • Rang 8</p>
+            </div>
+        </div>
         
         <!-- Espace pour les personnages -->
         <div id="personnage-container">
@@ -43,7 +51,6 @@
 
         const personnageAleatoire = personnages[Math.floor(Math.random() * personnages.length)];
         
-        // Afficher le personnage
         document.getElementById('personnage-img').src = personnageAleatoire;
 
         const rainLayer = document.getElementById('pingpong-rain');
@@ -55,7 +62,7 @@
 
         const spawnBall = () => {
             const ball = document.createElement('img');
-            const size = Math.floor(28 + Math.random() * 48);
+            const size = Math.floor(28 + Math.random() * 41);
             const duration = (3.8 + Math.random() * 3.5).toFixed(2);
             const delay = (Math.random() * 0.6).toFixed(2);
             const bounceClass = Math.random() > 0.5 ? 'is-three' : 'is-four';
