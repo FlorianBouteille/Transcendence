@@ -312,7 +312,7 @@ socket.on('roomJoined', (data) => {
 		checkpointsCreated = true;
 		// Modifier le checkPoint initial du joueur pour tester
 		if (checkpointsFromBack.length > 0) {
-			player.checkPoint = checkpointsFromBack[0].mesh.position.clone();
+			player.checkPoint = checkpointsFromBack[3].mesh.position.clone();
 		}
 	}
 

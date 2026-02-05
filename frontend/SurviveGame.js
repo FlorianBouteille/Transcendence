@@ -36,7 +36,7 @@ export class SurviveGame
         
         socket.on('gameEnd', (data) =>
         {
-            //this.showVictoryScreen(data);
+            this.showVictoryScreen(data);
         });
     }
     

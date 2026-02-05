@@ -789,7 +789,7 @@ fin ft_transcendence*/
 
 #time, #counter
 {
-	font-size: 60px;
+	/* font-size: 60px;
 	letter-spacing: 3px;
 	word-spacing: 2px;
 	color: #c8d5dd;
@@ -798,7 +798,13 @@ fin ft_transcendence*/
 	font-style: normal;
 	font-variant: normal;
 	text-transform: none;
-	text-shadow: 3px 3px 8px #CDCE72;
+	text-shadow: 3px 3px 8px #CDCE72; */
+	font-size: clamp(1.8rem, 3vw, 2.8rem);
+	letter-spacing: 0.12em;
+	text-transform: uppercase;
+	font-family: "Bungee", "Luckiest Guy", Impact, sans-serif;
+	color: #f0c24d;
+	text-shadow: 0 3px 0 #2c0ce6, 0 10px 8px rgba(255, 79, 216, 0.35);
 }
 
 
