@@ -154,6 +154,7 @@ window.addEventListener('keydown', (event) => {
 
 // Objects
 const player = new LocalPlayer(scene, canvas, 'LocalPlayer', randomColor()); //// ALLER CHERCHER LE NOM DANS LA DB !!!!!!
+// Envoyer son nom au serveur
 scene.add(player.mesh);
 createPlayerLabel('local', player.name);
 

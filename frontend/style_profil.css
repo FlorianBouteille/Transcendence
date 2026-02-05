@@ -1,0 +1,277 @@
+*,
+*::before,
+*::after {
+	margin: 0;
+	padding: 0;
+	box-sizing: border-box;
+}
+
+:root {
+	color-scheme: light;
+	font-family: "Trebuchet MS", "Segoe UI", sans-serif;
+}
+
+body {
+	min-height: 100vh;
+	overflow: hidden;
+	color: #2d1b0a;
+}
+
+.landing {
+	position: relative;
+	min-height: 100vh;
+	display: grid;
+	place-items: center;
+	background: linear-gradient(180deg, #ff8a3d 0%, #ffb647 40%, #ffe4a1 70%, #fff6e6 100%);
+	isolation: isolate;
+}
+
+.landing::before {
+	content: "";
+	position: absolute;
+	inset: 0;
+	background-image:
+		radial-gradient(circle at 20% 15%, rgba(255, 255, 255, 0.9) 0 1px, transparent 2px),
+		radial-gradient(circle at 80% 30%, rgba(255, 255, 255, 0.8) 0 1px, transparent 2px),
+		radial-gradient(circle at 55% 60%, rgba(255, 255, 255, 0.7) 0 1px, transparent 2px),
+		radial-gradient(circle at 35% 75%, rgba(255, 255, 255, 0.6) 0 1px, transparent 2px);
+	background-size: 220px 220px;
+	opacity: 0.6;
+	z-index: -2;
+}
+
+.landing::after {
+	content: "";
+	position: absolute;
+	inset: 0;
+	background-image:
+		linear-gradient(120deg, rgba(255, 255, 255, 0.14) 0 2px, transparent 2px),
+		linear-gradient(60deg, rgba(255, 255, 255, 0.08) 0 2px, transparent 2px);
+	background-size: 120px 120px;
+	mix-blend-mode: screen;
+	opacity: 0.4;
+	z-index: -1;
+}
+
+.profile-hero {
+	position: relative;
+	text-align: center;
+	display: flex;
+	z-index: 10; /* Met le titre au-dessus */
+	flex-direction: column;
+	gap: 12px;
+	transform: translateY(-420px);
+}
+
+.profile-title {
+	font-size: clamp(2rem, 3vw, 3.1rem);
+	letter-spacing: 0.08em;
+	position: relative; /*ici*/
+    z-index: 1; /*ici*/
+	text-transform: uppercase;
+	font-weight: 700;
+	color: #5a2a00;
+	text-shadow: 0 6px 20px rgba(255, 255, 255, 0.45);
+	margin-top: 36px;
+}
+
+/*debut WELCOME BEAUGOSS*/
+
+.profile-arc {
+	width: min(1120px, 90vw);
+	height: auto;
+	margin: 0 auto;
+	position: absolute;
+	top: -110px;
+	left: 50%;
+	transform: translateX(-50%);
+	overflow: visible;
+}
+
+.profile-arc text {
+	fill: #5a2a00;
+	font-size: 40px;
+	letter-spacing: 0.005em;
+	font-weight: 700;
+	text-transform: uppercase;
+}
+/*fin WELCOME BEAUGOSS*/
+
+.nav-link {
+	position: absolute;
+	text-decoration: none;
+	color: #ff8a3d;
+	font-weight: 700;
+	font-size: 0.95rem;
+	letter-spacing: 0.1em;
+	text-transform: uppercase;
+	transition: color 0.2s ease, text-shadow 0.2s ease, transform 0.2s ease;
+	text-shadow: 0 0 10px rgba(255, 138, 61, 0.35);
+}
+
+.nav-link:hover {
+	color: #ffb647;
+	text-shadow: 0 0 18px rgba(255, 182, 71, 0.6);
+	transform: translateY(-2px);
+}
+
+.bottom-left {
+	bottom: 28px;
+	left: 32px;
+}
+
+#podium {
+    position: absolute;
+    bottom: -60px; /* Ajustez selon vos besoins */
+    left: 51%;
+    transform: translateX(-50%);
+    width: 800px; /* Ajustez la taille */
+	z-index: 2;
+}
+
+/*nuage*/
+#cloud-bg {
+	position: absolute;
+	top: 350px;
+	left: 35%;
+	transform: translateX(-50%);
+	width: min(1000px, 120vw);
+	max-width:1180px;
+	opacity: 0.9;
+	z-index: 1;
+	pointer-events: none;
+	display: grid;
+	place-items: center;
+}
+
+#cloud-bg img {
+	width: 100%;
+	height: auto;
+	display: block;
+}
+
+/*message nuage*/
+#cloud-message {
+	position: absolute;
+	inset: 44% 02% 22% 24%;
+	display: flex;
+	flex-direction: column;
+	gap: 8px;
+	text-align: center;
+	color: #5a2a00;
+	text-shadow: 0 2px 10px rgba(255, 255, 255, 0.55);
+	pointer-events: none;
+}
+
+.cloud-title {
+	font-size: clamp(1rem, 1.4vw, 1.35rem);
+	letter-spacing: 0.06em;
+	text-transform: uppercase;
+	font-weight: 700;
+}
+
+.cloud-text {
+	font-size: clamp(0.95rem, 1.2vw, 1.15rem);
+	font-weight: 600;
+}
+
+/*personnage */
+#personnage-container {
+	position: absolute;
+	margin-top: 150px; /* laisse de l'espace pour le titre */
+	left: 50%;
+	bottom: 190px;
+	transform: translateX(-50%);
+	z-index: 3;
+}
+
+#personnage-img {
+	width: 320px;
+	height: auto;
+	display: block;
+}
+
+#pingpong-rain {
+	position: absolute;
+	inset: 0;
+	overflow: hidden;
+	pointer-events: none;
+	z-index: 2;
+}
+
+.pingpong-ball {
+	position: absolute;
+	top: -15vh;
+	left: 0;
+	width: var(--size, 48px);
+	height: auto;
+	will-change: transform, opacity;
+	filter: drop-shadow(0 10px 10px rgba(90, 42, 0, 0.18));
+	animation-duration: var(--duration, 5.5s);
+	animation-delay: var(--delay, 0s);
+	animation-timing-function: cubic-bezier(0.2, 0.6, 0.2, 1);
+	animation-fill-mode: forwards;
+}
+
+.pingpong-ball.is-three {
+	animation-name: pingpong-fall-3;
+}
+
+.pingpong-ball.is-four {
+	animation-name: pingpong-fall-4;
+}
+
+@keyframes pingpong-fall-3 {
+	0% {
+		transform: translateY(-20vh) rotate(0deg);
+		opacity: 0;
+	}
+	6% {
+		opacity: 1;
+	}
+	36% {
+		transform: translateY(68vh) rotate(140deg);
+	}
+	50% {
+		transform: translateY(56vh) rotate(220deg);
+	}
+	72% {
+		transform: translateY(84vh) rotate(330deg);
+	}
+	84% {
+		transform: translateY(74vh) rotate(410deg);
+	}
+	100% {
+		transform: translateY(115vh) rotate(520deg);
+		opacity: 0;
+	}
+}
+
+@keyframes pingpong-fall-4 {
+	0% {
+		transform: translateY(-20vh) rotate(0deg);
+		opacity: 0;
+	}
+	5% {
+		opacity: 1;
+	}
+	30% {
+		transform: translateY(62vh) rotate(120deg);
+	}
+	42% {
+		transform: translateY(50vh) rotate(200deg);
+	}
+	60% {
+		transform: translateY(80vh) rotate(300deg);
+	}
+	72% {
+		transform: translateY(70vh) rotate(380deg);
+	}
+	88% {
+		transform: translateY(92vh) rotate(460deg);
+	}
+	100% {
+		transform: translateY(118vh) rotate(560deg);
+		opacity: 0;
+	}
+}

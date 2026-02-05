@@ -1,5 +1,5 @@
 import { register, login } from "./auth.controller.js";
-import { user } from "./user.controller.js";
+//import { userAccounts } from "./user-accounts.models.js";
 import { profile } from "./profile.controller.js";
 import { globalHistory } from "./history.controller.js";
 
@@ -7,7 +7,7 @@ import { globalHistory } from "./history.controller.js";
 export const ctrl = {
 	register,
 	login,
-	user,
+//	user,
 	profile,
 	globalHistory
 };

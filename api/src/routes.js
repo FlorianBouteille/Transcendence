@@ -15,7 +15,7 @@ routes.post("/login", ctrl.login);
 
 // ---------- Profile ----------
 routes.get("/profile", ctrl.profile);
-routes.get("/user", ctrl.user);
+//routes.get("/user", ctrl.user);
 
 // ---------- History ----------
 routes.get("/history/global", ctrl.globalHistory);

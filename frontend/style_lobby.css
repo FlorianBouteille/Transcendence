@@ -1,0 +1,273 @@
+*,
+*::before,
+*::after {
+	margin: 0;
+	padding: 0;
+	box-sizing: border-box;
+}
+
+:root {
+	color-scheme: light;
+	font-family: "Trebuchet MS", "Segoe UI", sans-serif;
+}
+
+body {
+	min-height: 100vh;
+	overflow: hidden;
+	color: #2d1b0a;
+}
+
+.landing {
+	position: relative;
+	min-height: 100vh;
+	display: grid;
+	place-items: center;
+	background: linear-gradient(180deg, #2c0ce6 0%, #e89b3c 40%, #f0c24d 70%, #fff6e6 100%);
+	isolation: isolate;
+}
+
+.landing::before {
+	content: "";
+	position: absolute;
+	inset: 0;
+	background-image:
+		radial-gradient(circle at 20% 15%, rgba(255, 255, 255, 0.9) 0 1px, transparent 2px),
+		radial-gradient(circle at 80% 30%, rgba(255, 255, 255, 0.8) 0 1px, transparent 2px),
+		radial-gradient(circle at 55% 60%, rgba(255, 255, 255, 0.7) 0 1px, transparent 2px),
+		radial-gradient(circle at 35% 75%, rgba(255, 255, 255, 0.6) 0 1px, transparent 2px);
+	background-size: 220px 220px;
+	opacity: 0.6;
+	z-index: -2;
+}
+
+.landing::after {
+	content: "";
+	position: absolute;
+	inset: 0;
+	background-image:
+		linear-gradient(120deg, rgba(255, 255, 255, 0.14) 0 2px, transparent 2px),
+		linear-gradient(60deg, rgba(255, 255, 255, 0.08) 0 2px, transparent 2px);
+	background-size: 120px 120px;
+	mix-blend-mode: screen;
+	opacity: 0.4;
+	z-index: -1;
+}
+
+
+/* =========================
+   LOBBY PAGE
+   ========================= */
+
+.lobby-page {
+	display: grid;
+	place-items: center;
+}
+
+/* centre le contenu */
+.lobby-container {
+	position: relative;
+	z-index: 1;
+	display: grid;
+	place-items: center;
+	width: 100%;
+}
+
+/* card lobby */
+.lobby-box {
+	width: min(520px, 92vw);
+	background: rgba(255, 255, 255, 0.75);
+	border-radius: 26px;
+	padding: 32px 36px;
+	box-shadow: 0 22px 50px rgba(3, 0, 8, 0.35);
+	border: 1px solid rgba(0, 0, 0, 0.15);
+	backdrop-filter: blur(8px);
+	display: flex;
+	flex-direction: column;
+	gap: 20px;
+	text-align: center;
+	position: relative;
+	overflow: visible;
+}
+
+/* titre */
+.lobby-box h1 {
+	font-size: clamp(1.8rem, 3vw, 2.8rem);
+	letter-spacing: 0.12em;
+	text-transform: uppercase;
+	font-family: "Bungee", "Luckiest Guy", Impact, sans-serif;
+	color: #f0c24d;
+	text-shadow: 0 3px 0 #2c0ce6, 0 10px 8px rgba(255, 79, 216, 0.35);
+}
+
+
+/* status */
+.lobby-status {
+	padding: 12px 16px;
+	border-radius: 14px;
+	background: rgba(244, 176, 39, 0.6);
+	border: 1px solid rgba(30, 22, 48, 0.12);
+	font-weight: 600;
+	letter-spacing: 0.06em;
+}
+
+/* liste joueurs */
+.players-list {
+	display: grid;
+	gap: 10px;
+	margin-top: 6px;
+}
+
+/* exemple de joueur (si tu injectes des <div>) */
+.players-list div {
+	padding: 10px 14px;
+	border-radius: 12px;
+	background: rgba(255, 255, 255, 0.65);
+	box-shadow: inset 0 0 0 2px rgba(255, 255, 255, 0.7);
+	font-weight: 600;
+}
+
+/* bouton ready */
+.ready-button {
+	margin-top: 8px;
+	height: 46px;
+	border: none;
+	border-radius: 14px;
+	background: linear-gradient(135deg, #2ea84e, #50d96b);
+	color: #fff;
+	font-weight: 800;
+	letter-spacing: 0.14em;
+	text-transform: uppercase;
+	cursor: pointer;
+	box-shadow: 0 12px 30px rgba(0, 255, 65, 0.45);
+	transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.ready-button:hover {
+	transform: translateY(-2px);
+	box-shadow: 0 16px 38px rgba(0, 255, 65, 0.55);
+}
+
+/* countdown */
+.countdown {
+	margin-top: 10px;
+	font-size: 1.4rem;
+	font-weight: 700;
+	letter-spacing: 0.18em;
+	color: #ff4fd8;
+	text-shadow: 0 2px 0 #ffea5a, 0 8px 20px rgba(255, 79, 216, 0.4);
+}
+
+.hidden {
+	display: none;
+}
+
+/* Cacher les sections */
+.hidden {
+	display: none !important;
+}
+
+/* Boutons du menu */
+.menu-buttons {
+	display: flex;
+	flex-direction: column;
+	gap: 15px;
+	margin-top: 20px;
+}
+
+.menu-button {
+	padding: 15px 30px;
+	font-size: 18px;
+	background: linear-gradient(135deg, #7b5613 0%, #a2814b 100%);
+	border: none;
+	border-radius: 10px;
+	color: white;
+	cursor: pointer;
+	transition: transform 0.2s;
+}
+
+.menu-button:hover {
+	transform: scale(1.05);
+}
+
+.back-button {
+	padding: 10px 20px;
+	background: #7b5613;
+	border: none;
+	border-radius: 8px;
+	color: white;
+	cursor: pointer;
+	margin-top: 20px;
+}
+
+/* Input pour code */
+.code-input {
+	width: 100%;
+	padding: 15px;
+	font-size: 24px;
+	text-align: center;
+	text-transform: uppercase;
+	border: 2px solid #7b5613;
+	border-radius: 10px;
+	margin: 20px 0;
+	letter-spacing: 5px;
+}
+
+/* Room code cliquable */
+#room-code {
+	cursor: pointer;
+	padding: 5px 10px;
+	background: #f0f0f0;
+	border-radius: 5px;
+	user-select: all;
+}
+
+.copy-hint {
+	font-size: 12px;
+	color: #888;
+	margin-top: 5px;
+}
+
+/* Loading spinner */
+.loading-spinner {
+	width: 50px;
+	height: 50px;
+	border: 5px solid #f3f3f3;
+	border-top: 5px solid #7b5613;
+	border-radius: 50%;
+	animation: spin 1s linear infinite;
+	margin: 20px auto;
+}
+
+@keyframes spin {
+	0% {
+		transform: rotate(0deg);
+	}
+
+	100% {
+		transform: rotate(360deg);
+	}
+}
+
+/*FIN PAGE SCORE*/
+
+.nav-link-l {
+	position: absolute;
+	text-decoration: none;
+	color: #2c0ce6;
+	font-weight: 600;
+	font-size: 0.95rem;
+	letter-spacing: 0.08em;
+	text-transform: uppercase;
+	transition: color 0.2s ease, text-shadow 0.2s ease;
+	text-shadow: 0 0 10px rgb(255, 200, 0);
+}
+
+.nav-link-l:hover {
+	color: #6b5aa3;
+	text-shadow: 0 0 20px rgba(255, 0, 212, 0.8), 0 0 30px rgba(251, 0, 255, 0.4);
+}
+
+.bottom-left {
+	bottom: 28px;
+	left: 32px;
+}
