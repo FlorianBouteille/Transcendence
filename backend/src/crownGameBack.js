@@ -413,7 +413,7 @@ function generateCrownPlatforms(platformIdCounter) {
 		position: { x: 78, y: 6.5, z: 0 },
 		size: { x: 70, y: 1, z: 4.5 },
 		color: colo,
-		material: 'blockblue'
+		material: 'longblockblue'
 	});
 
 	generateDodgeBlocks(platforms, platformIdCounter);

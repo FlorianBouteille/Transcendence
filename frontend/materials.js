@@ -352,6 +352,31 @@ const rubberFloorBlueMaterial = new THREE.MeshStandardMaterial({
 	emissive: new THREE.Color(0x6666ff),
 	emissiveIntensity: 0.3
 })
+const longBlockBlueMaterial = blockBlueMaterial.clone();
+
+// Cloner chaque texture pour avoir des instances indépendantes
+longBlockBlueMaterial.map = blockBlueTexture.clone();
+longBlockBlueMaterial.normalMap = blockNormalTexture.clone();
+longBlockBlueMaterial.aoMap = blockAmbientTexture.clone();
+longBlockBlueMaterial.roughnessMap = blockRoughnessTexture.clone();
+
+// Configurer le wrapping pour les nouvelles textures
+longBlockBlueMaterial.map.wrapS = longBlockBlueMaterial.map.wrapT = THREE.RepeatWrapping;
+longBlockBlueMaterial.normalMap.wrapS = longBlockBlueMaterial.normalMap.wrapT = THREE.RepeatWrapping;
+longBlockBlueMaterial.aoMap.wrapS = longBlockBlueMaterial.aoMap.wrapT = THREE.RepeatWrapping;
+longBlockBlueMaterial.roughnessMap.wrapS = longBlockBlueMaterial.roughnessMap.wrapT = THREE.RepeatWrapping;
+
+// Maintenant tu peux changer le repeat
+function setRepeat(x, y)
+{
+	longBlockBlueMaterial.map.repeat.set(x, y);
+	longBlockBlueMaterial.normalMap.repeat.set(x, y);
+	longBlockBlueMaterial.aoMap.repeat.set(x, y);
+	longBlockBlueMaterial.roughnessMap.repeat.set(x, y);
+}
+setRepeat(20, 1);
+
+
 
 const rubberFloorYellowMaterial = new THREE.MeshStandardMaterial({
 	map: rubberColorTexture.clone(),
@@ -391,6 +416,7 @@ export const materials = {
 	blockgreen: blockGreenMaterial,
 	blockred: blockRedMaterial,
 	blockblue: blockBlueMaterial,
+	longblockblue: longBlockBlueMaterial,
 	blockyellow: blockYellowMaterial,
 	blockorange: blockOrangeMaterial,
 	blockpink: blockPinkMaterial,
@@ -410,6 +436,7 @@ export const materials = {
 	transparent: TransparentMaterial,
 	invisible: InvisibleMaterial
 }
+
 
 function setScifiTextureRepeat(x, y) {
 	scifiColorTexture.repeat.set(x, y)

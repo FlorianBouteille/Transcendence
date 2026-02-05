@@ -13,21 +13,23 @@ export class SurviveGame
         // Liste complète des joueurs vivants (incluant moi-même)
         this.alivePlayers = { ...otherPlayers };
         this.alivePlayers[socket.id] = player;
+        this.totalPlayers = Object.keys(this.alivePlayers).length;
+        this.newPlayerDied = false;
         this.create_ui();
         
         socket.on('playerDied', (data) =>
         {
-            // Retirer le joueur mort de la liste
             delete this.alivePlayers[data.playerId];
+            this.newPlayerDied = true;
             
             console.log(`💀 ${data.playerId} est mort! Restants: ${Object.keys(this.alivePlayers).length}`);
             
-            // Si c'est moi qui suis mort
             if (data.playerId === socket.id && !this.hasDied) 
             {
                 this.hasDied = true;
                 this.player.checkPoint = new THREE.Vector3(0, 12, 0);
                 this.player.respawn();
+                this.player.isGrounded = false;
                 this.player.currentPlatform = platforms[platforms.length - 1];
             }
         });
@@ -45,14 +47,25 @@ export class SurviveGame
         document.body.appendChild(this.uiContainer);
         const timeContainer = document.createElement('h2');
         timeContainer.id = 'time';
-        timeContainer.innerText = '0.0';
+        timeContainer.innerText = 'time : 0.0';
         this.uiContainer.appendChild(timeContainer);
+        const counterContainer = document.createElement('h2');
+        counterContainer.id = 'counter';
+        counterContainer.innerText = "Remaining Players : " + this.totalPlayers + "/" + this.totalPlayers;
+        this.uiContainer.appendChild(counterContainer);
     }
 
     updateUi(elapsedTime)
     {
         const timeContainer = document.getElementById('time');
-        timeContainer.innerText = elapsedTime.toFixed(1);
+        timeContainer.innerText = 'time : ' + elapsedTime.toFixed(1);
+        if (this.newPlayerDied)
+        {
+            const counterContainer = document.getElementById('counter');
+            const alivePlayers = Object.keys(this.alivePlayers).length;
+            counterContainer.innerText = "Remaining Players : " + alivePlayers + "/" + this.totalPlayers;
+            this.newPlayerDied = false;
+        }
     }
 
     tick(elapsedTime)

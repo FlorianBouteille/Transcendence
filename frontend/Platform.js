@@ -16,6 +16,9 @@ export class Platform {
         this.mesh.position.copy(position)
         scene.add(this.mesh)
         this.box = new THREE.Box3().setFromObject(this.mesh)
+        //decommenter pour voir la hitbox des plateformes
+        // this.boxHelper =  new THREE.Box3Helper(this.box, 0xff0000);
+        // scene.add(this.boxHelper);
         this.basePosition = this.mesh.position.clone()
         this.previousPosition = this.mesh.position.clone()
         this.isActive = true
