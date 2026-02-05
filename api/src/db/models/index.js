@@ -1,19 +1,9 @@
 import { userAccounts } from "./user-accounts.model.js";
 import { players } from "./players.model.js";
-import { matches } from "./matches.model.js";
+import { games } from "./games.model.js";
 import { playerStats } from "./player-stats.model.js";
 import { items } from "./items.model.js";
 import { leaderboard } from "./leaderboard.model.js";
-
-// export all model factory functions in one object
-export const models = {
-	userAccounts,
-	players,
-	matches,
-	playerStats,
-	items,
-	leaderboard
-};
 
 // export the initModels function
 export async function initModels(sequelize, { sync = false, alter = false, force = false } = {}) {
@@ -21,7 +11,7 @@ export async function initModels(sequelize, { sync = false, alter = false, force
 
 	// Independent models first
 	modelsInst.userAccounts = userAccounts(sequelize);
-	modelsInst.matches = matches(sequelize);
+	modelsInst.games = games(sequelize);
 
 	// Dependent models with associations
 	modelsInst.players = players(sequelize, modelsInst);
