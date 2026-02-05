@@ -1,4 +1,4 @@
-import { generateCrownPlatforms } from './crownGame.js';
+import { generateCrownPlatforms } from './crownGameBack.js';
 import { createGameMode } from './gameModes/gameModeFactory.js';
 
 let io;

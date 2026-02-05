@@ -1,5 +1,5 @@
 import GameMode from './GameMode.js';
-import { generateCrownPlatforms, generateCheckpoints } from '../crownGame.js';
+import { generateCrownPlatforms, generateCheckpoints } from '../crownGameBack.js';
 
 class CrownMode extends GameMode {
 	generatePlatforms() {

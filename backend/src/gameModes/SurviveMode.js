@@ -1,5 +1,5 @@
 import GameMode from './GameMode.js';
-import { generateSurvivePlatforms, generateSurviveCheckpoints } from '../surviveGame.js';
+import { generateSurvivePlatforms, generateSurviveCheckpoints } from '../surviveGameBack.js';
 
 class SurviveMode extends GameMode {
 	generatePlatforms() {

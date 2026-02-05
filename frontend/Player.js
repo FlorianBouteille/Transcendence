@@ -51,7 +51,7 @@ export class Player {
             this.visual.traverse((child) => 
             {
                 if (child.isMesh) {
-                    child.material = new THREE.MeshStandardMaterial ({ color : playerColor })
+                    child.material = new THREE.MeshStandardMaterial ({ color : randomColor() })
                     this.material = child.material
                 }
             })

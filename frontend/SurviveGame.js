@@ -13,6 +13,7 @@ export class SurviveGame
         // Liste complète des joueurs vivants (incluant moi-même)
         this.alivePlayers = { ...otherPlayers };
         this.alivePlayers[socket.id] = player;
+        this.create_ui();
         
         socket.on('playerDied', (data) =>
         {
@@ -27,18 +28,39 @@ export class SurviveGame
                 this.hasDied = true;
                 this.player.checkPoint = new THREE.Vector3(0, 12, 0);
                 this.player.respawn();
-                this.player.currentPlatform = null;
+                this.player.currentPlatform = platforms[platforms.length - 1];
             }
         });
         
         socket.on('gameEnd', (data) =>
         {
-            this.showVictoryScreen(data);
+            //this.showVictoryScreen(data);
         });
     }
     
+    create_ui()
+    {
+        this.uiContainer = document.createElement('div');
+        this.uiContainer.className = 'survive-ui';
+        document.body.appendChild(this.uiContainer);
+        const timeContainer = document.createElement('h2');
+        timeContainer.id = 'time';
+        timeContainer.innerText = '0.0';
+        this.uiContainer.appendChild(timeContainer);
+    }
+
+    updateUi(elapsedTime)
+    {
+        const timeContainer = document.getElementById('time');
+        timeContainer.innerText = elapsedTime.toFixed(1);
+    }
+
     tick(elapsedTime)
     {
+        if (elapsedTime - Math.floor(elapsedTime) < 0.01)
+        {
+            console.log(elapsedTime);
+        }
         if (this.player.alive === false && !this.hasDied)
         {
             delete this.alivePlayers[this.socket.id];
@@ -52,7 +74,7 @@ export class SurviveGame
             });
         }
         // Calculer le multiplicateur de vitesse (augmente avec le temps)
-        const speedMultiplier = Math.min(1.0 + (Math.floor(elapsedTime / 20) * 0.1), 5.0);
+        const speedMultiplier = Math.min(1.0 + (Math.floor(elapsedTime / 15) * 0.1), 6.0);
         
         // Appliquer le multiplicateur à toutes les plateformes linéaires
         this.platforms.forEach(platform => {
@@ -61,6 +83,7 @@ export class SurviveGame
                 platform.speedMultiplier = speedMultiplier;
             }
         });
+        this.updateUi(elapsedTime);
     }
     
     showVictoryScreen(data)

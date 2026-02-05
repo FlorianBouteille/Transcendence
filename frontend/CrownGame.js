@@ -7,6 +7,8 @@ export class CrownGame
         this.crown = crown;
         this.socket = socket;
         this.player = player;
+        this.uiContainer;
+        this.create_ui()
         scene.add(crown.mesh);
         socket.on('gameEnd', (data) =>
         {
@@ -14,6 +16,23 @@ export class CrownGame
         });
     }
     
+    create_ui()
+    {
+        this.uiContainer = document.createElement('div');
+        this.uiContainer.className = 'survive-ui';
+        document.body.appendChild(this.uiContainer);
+        const timeContainer = document.createElement('h2');
+        timeContainer.id = 'time';
+        timeContainer.innerText = '0.0';
+        this.uiContainer.appendChild(timeContainer);
+    }
+
+    updateUi(elapsedTime)
+    {
+        const timeContainer = document.getElementById('time');
+        timeContainer.innerText = elapsedTime.toFixed(1);
+    }
+
     tick(elapsedTime)
     {
         this.crown.update(elapsedTime);
@@ -24,6 +43,7 @@ export class CrownGame
             this.player.respawn();
             this.player.alive = true;
         }
+        this.updateUi(elapsedTime);
     }
     showVictoryScreen(data)
     {

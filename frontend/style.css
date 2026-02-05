@@ -1017,3 +1017,20 @@ fin ft_transcendence*/
 .notification.warning {
 	background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
 }
+
+/* ============== GAMES UI ============== */
+
+.survive-ui
+{
+	display: flex;
+	flex-direction: row;
+	justify-content: space-around;
+	z-index: 1;
+}
+
+#time
+{
+	position:absolute;	
+	font-size: 80px;
+	color: white;
+}
