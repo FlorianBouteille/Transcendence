@@ -9,10 +9,10 @@
     <body>
         <main class="landing already-page">
             <a class="nav-link bottom-left" href="index">retour</a>
-           
+
             <section class="register-card" aria-labelledby="login-title">
                 <h1 id="login-title" class="register-title"> </h1>
-                <form class="register-form" autocomplete="on">
+                <form id="loginForm" class="register-form" autocomplete="on">
                     <label class="register-field">
                         <span>Login</span>
                         <input type="text" id="login" name="login" placeholder="Enter your login or mail..." required />
@@ -22,7 +22,61 @@
                         <input type="password" id="password" name="password" placeholder="Enter your password..." required />
                     </label>
                     <button class="register-submit" type="submit">Sign in</button>
+					<p id="message"></p>
                 </form>
            </main>
+
+		   <script>
+				const messageEl = document.getElementById('message');
+
+				const existingToken = localStorage.getItem('token');
+				if (existingToken) {
+					messageEl.textContent = 'Vous etes deja connecte';
+					messageEl.style.color = 'green';
+				}
+
+				document.getElementById('loginForm').addEventListener('submit', async (e) =>{
+					e.preventDefault();
+
+					const login = document.getElementById('login').value;
+					const password = document.getElementById('password').value;
+
+					try {
+				const response = await fetch('/api/login', {
+					method: 'POST',
+					headers: { 'Content-Type': 'application/json' },
+					body: JSON.stringify({ login, password })
+				});
+
+				const data = await response.json();
+
+				if (response.ok) {
+					// Verifier si 2FA est requis
+					if (data.requires_2FA) {
+						localStorage.setItem('pending_2fa_user_id', data.user_id);
+						messageEl.textContent = 'Verification 2FA requise...';
+						messageEl.style.color = 'orange';
+						setTimeout(() => window.location.href = '2FA.html', 1000);
+					} else {
+						// Connexion directe
+						localStorage.setItem('token', data.token);
+						localStorage.setItem('user', JSON.stringify(data.user));
+
+						messageEl.textContent = `Connexion reussie! Bienvenue ${data.user.username}`;
+						messageEl.style.color = 'green';
+
+						setTimeout(() => window.location.href = 'lobby.html', 1000);
+					}
+				} else {
+					messageEl.textContent = data.error;
+					messageEl.style.color = 'red';
+				}
+			} catch (err) {
+				messageEl.textContent = 'Erreur de connexion au serveur';
+				messageEl.style.color = 'red';
+			}
+				})
+
+		   </script>
     </body>
 </html>
