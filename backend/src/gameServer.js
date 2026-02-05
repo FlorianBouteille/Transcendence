@@ -4,30 +4,80 @@ import { createGameMode } from './gameModes/gameModeFactory.js';
 let io;
 const gameInstances = {};
 let platformIdCounter = { value: 0 };
-const waitingPlayer = [];
-let lastRandomRoom = 0;
-
+const waitingPlayer = {};
+let lastRandomRoom = {};
+const playerGameTypes = {};
 
 function printGameInstances() {
-	console.log('========== GAME INSTANCES ==========');
-	console.log('Total rooms:', Object.keys(gameInstances).length);
+	console.log('\n╔════════════════════════════════════════════════════════════════╗');
+	console.log('║                      GAME INSTANCES                            ║');
+	console.log('╚════════════════════════════════════════════════════════════════╝');
+	console.log(`📊 Total rooms: ${Object.keys(gameInstances).length}`);
+	console.log(`⏳ Waiting players:`);
+	Object.entries(waitingPlayer).forEach(([gameType, players]) => {
+		console.log(`   ${gameType}: ${players.length} [${players.join(', ')}]`);
+	});
+	console.log(`🎲 Last random rooms:`);
+	Object.entries(lastRandomRoom).forEach(([gameType, roomID]) => {
+		console.log(`   ${gameType}: ${roomID || 'none'}`);
+	});
+	console.log('');
 
-	Object.entries(gameInstances).forEach(([roomID, game]) => {
-		console.log(`\n📦 Room: ${roomID}`);
-		console.log(`   Type: ${game.type}`);
-		console.log(`   HasStarted: ${game.hasStarted}`);
-		console.log(`   Players (${Object.keys(game.players).length}):`);
+	if (Object.keys(gameInstances).length === 0) {
+		console.log('   (Aucune room active)\n');
+		return;
+	}
 
-		Object.entries(game.players).forEach(([id, player]) => {
-			console.log(`      - ${id}: loaded=${player.loaded}, position=(${player.x.toFixed(1)}, ${player.y.toFixed(1)}, ${player.z.toFixed(1)})`);
-		});
+	Object.entries(gameInstances).forEach(([roomID, game], index) => {
+		console.log(`┌─ Room ${index + 1}: ${roomID} ${'─'.repeat(Math.max(0, 50 - roomID.length))}`);
+		console.log(`│  🎮 Type: ${game.type}`);
+		console.log(`│  🎯 Game Type: ${game.gameType}`);
+		console.log(`│  🏁 Has Started: ${game.hasStarted ? '✅' : '❌'}`);
+		console.log(`│  ⏱️  Start Time: ${new Date(game.startTime).toLocaleTimeString()}`);
+		console.log(`│  🎲 GameMode: ${game.gameMode ? game.gameMode.constructor.name : 'none'}`);
 
-		console.log(`   Platforms: ${game.platforms.length}`);
+		if (game.type === 'private') {
+			console.log(`│  👑 Host: ${game.host}`);
+			console.log(`│  👥 Roomers (${game.roomers?.length || 0}): [${game.roomers?.join(', ') || ''}]`);
+			console.log(`│  ✅ Ready Players (${game.readyPlayers?.length || 0}): [${game.readyPlayers?.join(', ') || ''}]`);
+		}
+		if (game.type === 'random') {
+			console.log(`│  🎯 Expected Players: ${game.expectedPlayers || 'N/A'}`);
+		}
+
+		const playerCount = Object.keys(game.players).length;
+		console.log(`│  👤 Players (${playerCount}):`);
+		if (playerCount === 0) {
+			console.log(`│     (Aucun joueur)`);
+		} else {
+			Object.entries(game.players).forEach(([id, player]) => {
+				const readyStatus = player.ready ? '✅' : '❌';
+				const loadedStatus = player.loaded ? '✅' : '❌';
+				const aliveStatus = player.alive ? '💚' : '💀';
+				console.log(`│     • ${id.substring(0, 8)}...`);
+				console.log(`│       Ready: ${readyStatus} | Loaded: ${loadedStatus} | Alive: ${aliveStatus}`);
+				console.log(`│       Position: (${player.x.toFixed(1)}, ${player.y.toFixed(1)}, ${player.z.toFixed(1)})`);
+				console.log(`│       Grounded: ${player.isGrounded ? '✅' : '❌'} | Jumping: ${player.isJumping ? '✅' : '❌'} | Moving: ${player.isMoving ? '✅' : '❌'}`);
+			});
+		}
+
+		console.log(`│  🟦 Platforms: ${game.platforms.length}`);
+
+		if (game.gameState) {
+			console.log(`│  📊 Game State:`);
+			Object.entries(game.gameState).forEach(([key, value]) => {
+				if (typeof value === 'object' && value !== null) {
+					console.log(`│     ${key}: ${JSON.stringify(value)}`);
+				} else {
+					console.log(`│     ${key}: ${value}`);
+				}
+			});
+		}
+
+		console.log(`└${'─'.repeat(63)}\n`);
 	});
 
-	console.log('\n📋 Waiting Players:', waitingPlayer);
-	console.log('🎲 Last Random Room:', lastRandomRoom);
-	console.log('====================================\n');
+	console.log('═'.repeat(66) + '\n');
 }
 
 function generateAllPlatforms() {
@@ -35,14 +85,63 @@ function generateAllPlatforms() {
 }
 
 function removePlayer(id, roomID) {
-	if (!roomID || !gameInstances[roomID]) return;
-	delete gameInstances[roomID].players[id];
-	console.log('Joueur retire: ', id);
+	let room = findRoomBySocketId(id);
+	if (!room) room = roomID;
+	if (!room || !gameInstances[room]) {
+		console.log('Failed to remove:', id, 'from:', room);
+		return;
+	}
 
+	const game = gameInstances[room];
 
-	if (Object.keys(gameInstances[roomID].players).length === 0) {
-		delete gameInstances[roomID];
-		console.log(`🗑️ Room ${roomID} supprimée (vide)`);
+	// Rooms privates
+	if (game.type === 'private') {
+		// Lobby uniquement : retirer des roomers
+		if (!game.hasStarted) {
+			const roomerIndex = game.roomers?.indexOf(id);
+			if (roomerIndex > -1) game.roomers.splice(roomerIndex, 1);
+
+			const readyIndex = game.readyPlayers?.indexOf(id);
+			if (readyIndex > -1) game.readyPlayers.splice(readyIndex, 1);
+
+			console.log('Joueur retiré du lobby:', id);
+
+			if (game.roomers.length === 0) {
+				delete gameInstances[room];
+				console.log(`🗑️ Room ${room} supprimée (vide)`);
+				return;
+			}
+
+			if (game.host === id) {
+				game.host = game.roomers[0];
+				console.log(`👑 Nouveau host: ${game.host}`);
+			}
+
+			io.to(room).emit('lobbyUpdate', {
+				players: game.roomers.map(id => ({
+					id,
+					isHost: id === game.host,
+					ready: game.readyPlayers.includes(id)
+				})),
+				count: game.roomers.length,
+				allReady: game.readyPlayers.length === game.roomers.length
+			});
+		} else {
+			console.log('Joueur déconnecté (reconnexion possible):', id);
+		}
+
+		delete game.players[id];
+		delete playerGameTypes[id];
+	} else {
+		// Solo/Random
+		delete game.players[id];
+		delete playerGameTypes[id];
+		console.log('Joueur retiré:', id);
+
+		if (Object.keys(game.players).length === 0) {
+			delete gameInstances[room];
+			console.log(`🗑️ Room ${room} supprimée (vide)`);
+		}
 	}
 }
 
@@ -83,13 +182,15 @@ function addPlayer(id, roomID) {
 	if (gameInstances[roomID].gameMode && gameInstances[roomID].gameMode.onPlayerJoin) {
 		gameInstances[roomID].gameMode.onPlayerJoin(player, gameInstances[roomID]);
 	}
-	
+
 	console.log('Joueur ajouté:', id);
 }
 
 
 function everyOneLoaded(id, roomID) {
-	if (!gameInstances[roomID] || !gameInstances[roomID].players[id]) return false;
+	if (!gameInstances[roomID] || !gameInstances[roomID].players[id])
+		return false;
+
 
 	gameInstances[roomID].players[id].loaded = true;
 
@@ -131,7 +232,7 @@ function initGameServer(socketIo) {
 function gameLoop() {
 	Object.entries(gameInstances).forEach(([roomId, game]) => {
 		if (!game.hasStarted) return;
-		
+
 		const elapsedTime = (Date.now() - game.startTime) / 1000;
 
 		const GameState = {
@@ -159,10 +260,14 @@ function findRoomBySocketId(id) {
 
 async function startGameCountdown(roomID) {
 	for (let i = 5; i > 0; i--) {
+		if (gameInstances[roomID].countdownCancelled) {
+			delete gameInstances[roomID].countdownCancelled;
+			console.log('game bien cancel');
+			return;
+		}
 		io.to(roomID).emit('gameCountdown', { seconds: i });
 		await sleep(1000);
 	}
-
 	gameInstances[roomID].hasStarted = true;
 	io.to(roomID).emit('gameStarted', { roomId: roomID });
 }
@@ -172,7 +277,7 @@ function initLobbyHandler(socket, io) {
 	socket.on('solo', ({ gameType = 'crown' }) => {
 		const roomID = 'SOLO_' + socket.id;
 		const gameMode = createGameMode(gameType, roomID, platformIdCounter);
-		
+		playerGameTypes[socket.id] = gameType;
 		gameInstances[roomID] = {
 			players: {},
 			platforms: gameMode.generatePlatforms(),
@@ -184,20 +289,29 @@ function initLobbyHandler(socket, io) {
 			gameState: gameMode.initGameState(),
 			hasStarted: false
 		};
+		printGameInstances();
 		socket.emit('gameStarted', { roomId: roomID });
 		console.log(`New solo player on roomID: ${roomID}, gameType: ${gameType}`);
 	});
 
 
 	socket.on('joinRandom', async ({ gameType = 'crown' }) => {
-		waitingPlayer.push(socket.id);
-		io.emit('queueUpdate', { count: waitingPlayer.length });
-		printGameInstances();
-		if (waitingPlayer.length >= 2 && (lastRandomRoom === 0 || !gameInstances[lastRandomRoom] || gameInstances[lastRandomRoom].hasStarted)) {
-			const roomID = 'RANDOM_' + socket.id;
-			lastRandomRoom = roomID;
+		playerGameTypes[socket.id] = gameType;
+		if (!waitingPlayer[gameType]) {
+			waitingPlayer[gameType] = [];
+			lastRandomRoom[gameType] = 0;
+		}
+		waitingPlayer[gameType].push(socket.id);
+		io.emit('queueUpdate', {
+			gameType: gameType,
+			count: waitingPlayer[gameType].length
+		});
+
+		if (waitingPlayer[gameType].length >= 2 && (lastRandomRoom[gameType] === 0 || !gameInstances[lastRandomRoom[gameType]] || gameInstances[lastRandomRoom[gameType]].hasStarted)) {
+			const roomID = 'RANDOM_' + gameType + '_' + socket.id;
+			lastRandomRoom[gameType] = roomID;
 			const gameMode = createGameMode(gameType, roomID, platformIdCounter);
-			
+
 			gameInstances[roomID] = {
 				players: {},
 				platforms: gameMode.generatePlatforms(),
@@ -215,14 +329,14 @@ function initLobbyHandler(socket, io) {
 				await sleep(1000);
 			}
 
-			while (waitingPlayer.length < 2) {
+			while (waitingPlayer[gameType].length < 2) {
 				for (let i = 10; i > 0; i--) {
 					io.emit('countdown', { seconds: `Waiting for players... ${i}s` });
 					await sleep(1000);
 				}
 			}
 
-			const addedPlayer = waitingPlayer.slice(0, 8);
+			const addedPlayer = waitingPlayer[gameType].slice(0, 8);
 			gameInstances[roomID].expectedPlayers = addedPlayer.length;
 			addedPlayer.forEach(playerId => {
 				const playerSocket = io.sockets.sockets.get(playerId);
@@ -230,8 +344,9 @@ function initLobbyHandler(socket, io) {
 					playerSocket.emit('gameStarted', { roomId: roomID });
 				}
 			});
-			waitingPlayer.splice(0, addedPlayer.length);
+			waitingPlayer[gameType].splice(0, addedPlayer.length);
 		}
+		printGameInstances();
 	});
 
 	socket.on('createPrivateRoom', (data) => {
@@ -242,9 +357,9 @@ function initLobbyHandler(socket, io) {
 			socket.emit('roomInexistant', { roomCode: roomCode });
 			return;
 		}
-		
+
 		const gameMode = createGameMode(gameType, roomID, platformIdCounter);
-		
+
 		gameInstances[roomID] = {
 			players: {},
 			platforms: gameMode.generatePlatforms(),
@@ -259,7 +374,6 @@ function initLobbyHandler(socket, io) {
 			readyPlayers: [],
 			host: socket.id
 		};
-		printGameInstances();
 		gameInstances[roomID].roomers.push(socket.id);
 		socket.join(roomID);
 		io.to(roomID).emit('lobbyUpdate', {
@@ -270,17 +384,18 @@ function initLobbyHandler(socket, io) {
 			})),
 			count: gameInstances[roomID].roomers.length
 		});
-
+		printGameInstances();
 
 	});
 
 	socket.on('joinPrivateRoom', (data) => {
 		const roomID = 'PRIVATE_' + data.roomCode;
-		if (!gameInstances[roomID]) {
+		if (!gameInstances[roomID] || gameInstances[roomID].playing) {
 			console.log('Room id:', roomID, ' dosen t exist');
 			socket.emit('roomInexistant', { roomCode: data.roomCode });
 			return;
 		}
+
 		gameInstances[roomID].roomers.push(socket.id);
 		socket.join(roomID);
 		socket.emit('roomJoinedSuccess', { roomCode: data.roomCode });
@@ -292,6 +407,7 @@ function initLobbyHandler(socket, io) {
 			})),
 			count: gameInstances[roomID].roomers.length
 		});
+		printGameInstances();
 	});
 
 
@@ -340,6 +456,8 @@ function initLobbyHandler(socket, io) {
 		});
 	});
 
+
+
 	socket.on('startGame', ({ gameType }) => {
 		const roomID = findRoomBySocketId(socket.id);
 		if (!roomID || !gameInstances[roomID]) return;
@@ -364,17 +482,29 @@ function initLobbyHandler(socket, io) {
 		}
 		startGameCountdown(roomID);
 	});
+
+	socket.on('cancelGame', () => {
+		const roomID = findRoomBySocketId(socket.id);
+		if (!roomID || !gameInstances[roomID]) return;
+
+
+		gameInstances[roomID].countdownCancelled = true;
+		console.log('game Cancelled');
+		io.to(roomID).emit('gameCancelled');
+
+	});
+
 	socket.on('leavePrivate', () => {
 		const findRoom = findRoomBySocketId(socket.id);
 		if (!findRoom) return;
-		const wasHost = gameInstances[roomID].host === socket.id;
+		const wasHost = gameInstances[findRoom].host === socket.id;
 		const index = gameInstances[findRoom].roomers.indexOf(socket.id);
 		if (index > -1) {
 			gameInstances[findRoom].roomers.splice(index, 1);
 		}
-		const readyIndex = gameInstances[roomID].readyPlayers.indexOf(socket.id);
+		const readyIndex = gameInstances[findRoom].readyPlayers.indexOf(socket.id);
 		if (readyIndex > -1) {
-			gameInstances[roomID].readyPlayers.splice(readyIndex, 1);
+			gameInstances[findRoom].readyPlayers.splice(readyIndex, 1);
 		}
 		if (gameInstances[findRoom].roomers.length === 0) {
 			delete gameInstances[findRoom];
@@ -382,28 +512,30 @@ function initLobbyHandler(socket, io) {
 			socket.leave(findRoom);
 			return;
 		}
-		if (wasHost && gameInstances[roomID].roomers.length > 0) {
-			gameInstances[roomID].host = gameInstances[roomID].roomers[0];
-			console.log(`👑 Nouveau host: ${gameInstances[roomID].host}`);
+		if (wasHost && gameInstances[findRoom].roomers.length > 0) {
+			gameInstances[findRoom].host = gameInstances[findRoom].roomers[0];
+			console.log(`👑 Nouveau host: ${gameInstances[findRoom].host}`);
 		}
-		io.to(roomID).emit('lobbyUpdate', {
-			players: gameInstances[roomID].roomers.map(id => ({
+		io.to(findRoom).emit('lobbyUpdate', {
+			players: gameInstances[findRoom].roomers.map(id => ({
 				id,
-				isHost: id === gameInstances[roomID].host,
-				ready: gameInstances[roomID].readyPlayers.includes(id)
+				isHost: id === gameInstances[findRoom].host,
+				ready: gameInstances[findRoom].readyPlayers.includes(id)
 			})),
-			count: gameInstances[roomID].roomers.length,
-			allReady: gameInstances[roomID].readyPlayers.length === gameInstances[roomID].roomers.length
+			count: gameInstances[findRoom].roomers.length,
+			allReady: gameInstances[findRoom].readyPlayers.length === gameInstances[findRoom].roomers.length
 		});
-		socket.leave(roomID);
+		socket.leave(findRoom);
 	});
 
 	socket.on('leaveQueue', () => {
-		const index = waitingPlayer.indexOf(socket.id);
+		const gameType = playerGameTypes[socket.id];
+		if (!gameType || !waitingPlayer[gameType]) return;
+		const index = waitingPlayer[gameType].indexOf(socket.id);
 		if (index > -1) {
-			waitingPlayer.splice(index, 1);
+			waitingPlayer[gameType].splice(index, 1);
 			console.log(`❌ ${socket.id} a quitté la file d'attente`);
-			io.emit('queueUpdate', { count: waitingPlayer.length });
+			io.emit('queueUpdate', { count: waitingPlayer[gameType].length });
 		}
 	});
 
@@ -415,7 +547,12 @@ function initLobbyHandler(socket, io) {
 		}
 
 		if (gameInstances[roomID].type === 'random' && gameInstances[roomID].hasStarted) {
-			console.log('❌ Room random déjà lancée, redirect vers lobby:', roomID);
+			console.log('❌ Room déjà lancée, redirect vers lobby:', roomID);
+			socket.emit('roomNotFound');
+			return;
+		}
+		if (gameInstances[roomID].type === 'private' && gameInstances[roomID].playing) {
+			console.log('❌ Room déjà lancée, redirect vers lobby:', roomID);
 			socket.emit('roomNotFound');
 			return;
 		}

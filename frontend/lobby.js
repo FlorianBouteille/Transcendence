@@ -8,6 +8,7 @@ const readyBtn = document.getElementById('ready-btn');
 // Variable pour savoir si le joueur a déjà cliqué sur Ready
 let isReady = false;
 let isHost = false;
+let countDownStart = false;
 
 // ============== NOTIFICATION SYSTEM ==============
 function showNotification(message, type = 'error', duration = 3000) {
@@ -36,6 +37,10 @@ function showNotification(message, type = 'error', duration = 3000) {
 function showView(viewId) {
 	// Cache toutes les vues
 	document.getElementById('main-menu').classList.add('hidden');
+	if (viewId === 'private-choice' || 'join-room-section')
+		document.getElementById('game-choice').classList.add('hidden');
+	else
+		document.getElementById('game-choice').classList.remove('hidden');
 	document.getElementById('private-choice').classList.add('hidden');
 	document.getElementById('join-room-section').classList.add('hidden');
 	document.getElementById('room-view').classList.add('hidden');
@@ -54,15 +59,13 @@ const crownBtn = document.getElementById('crown');
 const surviveBtn = document.getElementById('survive');
 let gameType;
 
-crownBtn.onclick = () =>
-{
+crownBtn.onclick = () => {
 	surviveBtn.classList.remove('active');
 	crownBtn.classList.add('active');
 	gameType = 'crown'
 }
 
-surviveBtn.onclick = () =>
-{
+surviveBtn.onclick = () => {
 	crownBtn.classList.remove('active');
 	surviveBtn.classList.add('active');
 	gameType = 'survive'
@@ -87,7 +90,8 @@ socket.on('gameStarted', ({ roomId }) => {
 
 //=========ROOM-PRIVATE=========
 document.getElementById('private-btn').onclick = () => {
-	document.getElementById('custom-room-code').value = ''; // Clear input
+	document.getElementById('custom-room-code').value = '';
+
 	showView('private-choice');
 };
 document.getElementById('room-code').addEventListener('click', () => {
@@ -110,10 +114,7 @@ document.getElementById('back-btn-1').onclick = () => {
 
 //----------CREATE ROOM----------
 document.getElementById('create-room-btn').onclick = () => {
-	if (!gameType) {
-		showNotification('Please select a game type first!', 'warning');
-		return;
-	}
+
 	let roomCode = document.getElementById('custom-room-code').value.trim().toUpperCase();
 	if (roomCode.length === 0)
 		roomCode = Math.random().toString(36).substring(2, 8).toUpperCase();
@@ -154,6 +155,36 @@ socket.on('roomJoinedSuccess', (data) => {
 	showView('room-view');
 });
 
+
+socket.on('gameCancelled', () => {
+	const countdownElement = document.getElementById('game-countdown');
+	if (countdownElement) {
+		countdownElement.classList.add('hidden');
+	}
+
+	const cancelBtn = document.getElementById('cancel-game-btn');
+	if (cancelBtn) {
+		cancelBtn.classList.add('hidden');
+	}
+
+	readyBtn.classList.remove('hidden');
+	document.getElementById('leave-room-btn').classList.remove('hidden');
+
+	const startBtn = document.getElementById('start-game-btn');
+	if (isHost) {
+		startBtn.classList.remove('hidden');
+	}
+
+	if (isHost) {
+		const gameChoice = document.getElementById('game-choice');
+		if (gameChoice) {
+			gameChoice.classList.remove('hidden');
+		}
+	}
+
+	showNotification('Game cancelled by host', 'warning');
+});
+
 document.getElementById('confirm-join-btn').onclick = () => {
 	const roomCode = document.getElementById('room-code-input').value.trim().toUpperCase();
 
@@ -178,18 +209,43 @@ socket.on('gameCountdown', ({ seconds }) => {
 		countdownElement.classList.remove('hidden');
 		secondsElement.textContent = seconds;
 	}
+	const readyBtn = document.getElementById('ready-btn');
+	readyBtn.classList.add('hidden');
+
+	const startBtn = document.getElementById('start-game-btn');
+	startBtn.classList.add('hidden');
+	const leaveBtn = document.getElementById('leave-room-btn');
+	leaveBtn.classList.add('hidden');
+
+	const gameChoice = document.getElementById('game-choice');
+	if (gameChoice) {
+		gameChoice.classList.add('hidden');
+	}
+	const cancel = document.getElementById('cancel-game-btn')
+	if (isHost) {
+		if (cancel)
+			cancel.classList.remove('hidden');
+	}
 });
+
+
+document.getElementById('cancel-game-btn').onclick = () => {
+	socket.emit('cancelGame');
+};
+
 //=========RANDOM=========
 document.getElementById('random-btn').onclick = () => {
 	if (!gameType) {
 		showNotification('Please select a game type first!', 'warning');
 		return;
 	}
+	document.getElementById('game-choice').classList.add('hidden');
 	socket.emit('joinRandom', { gameType });
 	showView('queue-view');
 };
 document.getElementById('cancel-queue-btn').onclick = () => {
 	socket.emit('leaveQueue');
+	document.getElementById('game-choice').classList.remove('hidden');
 	showView('main-menu');
 };
 
@@ -202,6 +258,7 @@ socket.on('countdown', ({ seconds }) => {
 		countdownElement.textContent = seconds;
 	}
 });
+
 
 socket.on('connect', () => {
 	console.log('Connecte au serveur, ID:', socket.id);
@@ -222,7 +279,7 @@ socket.on('lobbyUpdate', (data) => {
 	document.getElementById('player-count').textContent = count;
 
 	const me = players.find(p => p.id === socket.id);
-	const isHost = me ? me.isHost : false;
+	isHost = me ? me.isHost : false;
 	const amReady = me ? me.ready : false;
 
 	const readyBtn = document.getElementById('ready-btn');
@@ -238,11 +295,20 @@ socket.on('lobbyUpdate', (data) => {
 	}
 
 	if (allReady && players.length > 1) {
-		startBtn.classList.remove('hidden');
+		if (isHost)
+			startBtn.classList.remove('hidden');
 		startBtn.dataset.isHost = isHost;
 	} else {
 		startBtn.classList.add('hidden');
 	}
+
+	if (isHost) {
+		const gameChoice = document.getElementById('game-choice');
+		if (gameChoice) {
+			gameChoice.classList.remove('hidden');
+		}
+	}
+
 });
 
 // ✅ Toggle ready state
@@ -262,7 +328,6 @@ document.getElementById('start-game-btn').addEventListener('click', (e) => {
 		showNotification('Please select a game type first!', 'warning');
 		return;
 	}
-
 	socket.emit('startGame', { gameType });
 });
 

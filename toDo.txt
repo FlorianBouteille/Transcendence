@@ -1,0 +1,3 @@
+private:
+	survie, marche pas ?
+	gerer le ctrl r en partie
