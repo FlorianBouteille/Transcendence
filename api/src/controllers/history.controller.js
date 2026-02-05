@@ -41,40 +41,46 @@ export async function globalHistory(req, res){
 };
 
 
-// export async function playerHistory(req, res){
-// 	try {
-// 		// Get player_id
-// 		// const id = await db.models.userAccounts.findOne({
-// 		// 	where: { username: req.user.username },
-// 		// 	attributes: ['player_id'],
-// 		// });
-// 		const player_id = 1;
+// History of the player games
+export async function playerHistory(req, res){
+	try {
+		// Get player_id
+		const id = await db.models.userAccounts.findOne({
+			where: { username: req.user.username },
+			attributes: ['player_id'],
+		});
+		const playerId = 1;
 
+		const playerHistoryTable = await db.models.games.findAll({
+			attributes: [
+				'mode',
+				[db.sequelize.literal("DATE_FORMAT(start_time, '%Y-%m-%d %H:%i:%s')"), 'date'],
+				[db.sequelize.literal("SEC_TO_TIME(TIMESTAMPDIFF(SECOND, start_time, end_time))"), 'duration'],
+				[db.sequelize.literal(`CASE WHEN playerStats.position = 1 THEN 'win' ELSE 'lose' END`), 'result']
+			],
+			include: [
+				{
+					model: db.models.playerStats,
+					attributes: [],
+					required: false,	// LEFT JOIN playerStats ON games.id = playerStats.games_id
+					where: {
+						player_id: playerId
+					}
+				},
+			],
+			order: [
+				[db.sequelize.literal("start_time"), 'DESC']
+			],
+		});
 
-// 		const historyTable = await db.models.players.findAll({
-// 			attributes: [
-// 				'games.match.name',
-// 				'games.start_time',
-// 				'games.chrono',
-// 				'games.position',
-// 				[fn('COUNT', col('playerStats.id')), 'games'], // all games
-// 				[fn('COUNT', col('wins.id')), 'wins']           // only wins
-// 			],
-// 			include: [
-// 				{ model: db.models.playerStats, attributes: [] },       // all games
-// 				{ model: db.models.playerStats, as: 'wins', attributes: [] } // wins only
-// 			],
-// 			group: ['players.id']
-// 		});
+		if (!playerHistoryTable)
+			return res.status(404).json({ msg: "Error fetching player history"});
 
-// 		if (!historyTable)
-// 			return res.status(404).json({ msg: "User profile not found."});
-
-// 		return res.json(historyTable);
-// 	} catch (error) {
-// 		console.error('Error fetching player profile:', error);
-// 		res.status(500).json({ error: "Erreur serveur" });
-// 	}
-// };
+		return res.json(playerHistoryTable);q
+	} catch (error) {
+		console.error('Error fetching player history', error);
+		res.status(500).json({ error: "Erreur serveur" });
+	}
+};
 
 

@@ -1,28 +1,61 @@
 services:
-  mariadb:
-    image: mariadb:11
-    container_name: mariadb
+# ---------- PROXY ----------
+  nginx:
+    build:
+      context: .
+      dockerfile: nginx/Dockerfile
+    container_name: nginx
+    restart: unless-stopped
+    depends_on:
+      - frontend
+    ports:
+      - "${NGINX_PORT:-8080}:80"
+    networks:
+      - transcendence
+
+# ---------- FRONT ----------
+  frontend:
+    build: ./frontend
+    container_name: frontend
+    restart: unless-stopped
+    depends_on:
+      - backend
+    ports:
+      - "5173:5173"
+    networks:
+      - transcendence
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules
+
+# ---------- GAME SERVER ----------
+  backend:
+    build: ./backend
+    container_name: backend
+    restart: unless-stopped
+    depends_on:
+      mariadb:
+        condition: service_healthy
     env_file:
       - .env
     environment:
-      MARIADB_DATABASE: ${DB_NAME}
-      MARIADB_USER: ${DB_USER}
-      MARIADB_PASSWORD: ${DB_PASSWORD}
-      MARIADB_ROOT_PASSWORD: ${DB_ROOT_PASSWORD}
-    volumes:
-      - mariadb_data:/var/lib/mysql
+      DB_HOST: mariadb
+      DB_PORT: 3306
+      DB_NAME: ${DB_NAME}
+      DB_USER: ${DB_USER}
+      DB_PASSWORD : ${DB_PASSWORD}
+      PORT: 3001
     networks:
       - transcendence
-    restart : unless-stopped
-    healthcheck:
-      test: ["CMD", "mariadb-admin", "ping", "-h", "localhost", "-p${DB_ROOT_PASSWORD}"]
-      interval: 2s
-      timeout: 5s
-      retries: 20
 
+# ---------- API SERVER ----------
   api:
     build: ./api
     container_name: api
+    restart: unless-stopped
+    depends_on:
+      mariadb:
+        condition: service_healthy
     env_file:
       - .env
     environment:
@@ -32,63 +65,42 @@ services:
       DB_USER: ${DB_USER}
       DB_PASSWORD: ${DB_PASSWORD}
       PORT: 3000
-    depends_on:
-      mariadb:
-        condition: service_healthy
+    ports:
+      - "3000:3000"
     networks:
       - transcendence
-    restart: unless-stopped
+      - api_mariadb_net
 
-  backend:
-    build: ./backend
-    container_name: backend
-    env_file:
-      - .env
+# ---------- DATABASE ----------
+  mariadb:
+    build: ./mariadb
+    container_name: mariadb
+    restart : unless-stopped
     environment:
-      DB_HOST: mariadb
-      DB_PORT: 3306
-      DB_NAME: ${DB_NAME}
-      DB_USER: ${DB_USER}
-      DB_PASSWORD: ${DB_PASSWORD}
-      PORT: 3001
-    depends_on:
-      mariadb:
-        condition: service_healthy
+      MARIADB_DATABASE: ${DB_NAME}
+      MARIADB_USER: ${DB_USER}
+      MARIADB_PASSWORD: ${DB_PASSWORD}
+      MARIADB_ROOT_PASSWORD: ${DB_ROOT_PASSWORD}
     networks:
-      - transcendence
-    restart: unless-stopped
-    
-  frontend:
-    build: ./frontend
-    container_name: frontend
-    ports:
-      - "5173:5173"
-    networks:
-      - transcendence
-    restart: unless-stopped
+      - api_mariadb_net
     volumes:
-      - ./frontend:/app
-      - /app/node_modules
+      - mariadb_data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "healthcheck.sh", "--connect", "--innodb_initialized"]
+      start_period: 10s
+      interval: 10s
+      timeout: 5s
+      retries: 3
 
-  nginx:
-    build:
-      context: .
-      dockerfile: nginx/Dockerfile
-    container_name: nginx
-    restart: unless-stopped
-    depends_on:
-      - api
-      - backend
-      - frontend
-    ports:
-      - "${NGINX_PORT:-8080}:80"
-    networks:
-      - transcendence
-
-volumes:
-  mariadb_data:
 
 networks:
+  api_mariadb_net:
+    driver: bridge
+    internal: true
+
   transcendence:
     name: transcendence
 
+
+volumes:
+  mariadb_data:
