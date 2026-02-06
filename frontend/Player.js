@@ -21,8 +21,8 @@ export class Player {
             new THREE.Vector3(-0.3, -1, -0.3),
             new THREE.Vector3(0.3, 1, 0.3)
         );
-        this.boxHelper = new THREE.Box3Helper(this.box, 0xff0000);
-        scene.add(this.boxHelper);
+        // this.boxHelper = new THREE.Box3Helper(this.box, 0xff0000);
+        // scene.add(this.boxHelper);
 
         loader.load('static/character.glb', (gltf) => 
         {

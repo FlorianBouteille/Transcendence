@@ -24,12 +24,16 @@ export class LocalPlayer extends Player {
         // Mouse
         this.pitch = 0
         this.mouseSensitivity = 0.005
+        this.guiOpen = false; // Flag pour savoir si le GUI est ouvert
 
         document.addEventListener('mousemove', e => this.onMouseMove(e))
         canvas.addEventListener('click', () => canvas.requestPointerLock())
     }
 
     onMouseMove(event) {
+        // Ne pas bouger la caméra si le GUI est ouvert
+        if (this.guiOpen) return;
+        
         this.cameraPivot.rotation.y -= event.movementX * this.mouseSensitivity
 
         this.pitch += event.movementY * this.mouseSensitivity

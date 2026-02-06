@@ -55,7 +55,8 @@ function generateStairRight(platforms, platformIdCounter) {
 			position: pos,
 			size: { x: 3, y: 0.5, z: 3 },
 			color: colo,
-			//material: getRandomNormalMaterial()
+			randColor: true,
+			material: 'scifiwall'
 		});
 	});
 }
@@ -78,7 +79,8 @@ function generateStairLeft(platforms, platformIdCounter) {
 			position: pos,
 			size: { x: 3, y: 0.5, z: 3 },
 			color: colo,
-			//material: getRandomNormalMaterial()
+			randColor: true,
+			material: 'scifiwall'
 		});
 	});
 }
@@ -94,7 +96,8 @@ function generateMiddleWay(platforms, platformIdCounter) {
 		speed: { x: 0, y: 1, z: 0 },
 		phase: { x: 0, y: 1, z: 0 },
 		color: colo,
-		material: getRandomBlockMaterial()
+		randColor: true,
+		material: 'scifloorcube'
 	});
 
 	platforms.push({
@@ -106,7 +109,8 @@ function generateMiddleWay(platforms, platformIdCounter) {
 		speed: { x: 0, y: 1, z: 0 },
 		phase: { x: 0, y: 0, z: 0.5 },
 		color: colo,
-		material: getRandomBlockMaterial()
+		randColor: true,
+		material: 'scifloorcube'
 	});
 
 	platforms.push({
@@ -118,7 +122,8 @@ function generateMiddleWay(platforms, platformIdCounter) {
 		speed: { x: 0, y: 1, z: 0 },
 		phase: { x: 0, y: 0.5, z: 0 },
 		color: colo,
-		material: getRandomBlockMaterial()
+		randColor: true,
+		material: 'scifloorcube'
 	});
 
 	platforms.push({
@@ -130,7 +135,8 @@ function generateMiddleWay(platforms, platformIdCounter) {
 		speed: { x: 1.5, y: 0, z: 0 },
 		phase: { x: 1, y: 0, z: 1 },
 		color: colo,
-		material: getRandomBlockMaterial()
+		randColor: true,
+		material: 'scifloorcube'
 	});
 
 	platforms.push({
@@ -142,7 +148,8 @@ function generateMiddleWay(platforms, platformIdCounter) {
 		speed: { x: 1.5, y: 0, z: 0 },
 		phase: { x: 1.5, y: 0, z: 0 },
 		color: colo,
-		material: getRandomBlockMaterial()
+		randColor: true,
+		material: 'scifloorcube'
 	});
 
 	platforms.push({
@@ -154,7 +161,8 @@ function generateMiddleWay(platforms, platformIdCounter) {
 		speed: { x: 1.5, y: 0, z: 0 },
 		phase: { x: 2, y: 0, z: 0 },
 		color: colo,
-		material: getRandomBlockMaterial()
+		randColor: true,
+		material: 'scifloorcube'
 	});
 }
 
@@ -271,7 +279,8 @@ function generateElevator(platforms, platformIdCounter) {
 		speed: { x: 0, y: 2, z: 0 },
 		phase: { x: 0, y: 2, z: 0 },
 		color: colo,
-		material: getRandomBlockMaterial()
+		randColor: true,
+		material: 'scifloorcube'
 	});
 
 	platforms.push({
@@ -283,7 +292,8 @@ function generateElevator(platforms, platformIdCounter) {
 		speed: { x: 0, y: 2, z: 0 },
 		phase: { x: 0, y: 4, z: 0 },
 		color: colo,
-		material: getRandomBlockMaterial()
+		randColor: true,
+		material: 'scifloorcube'
 	});
 
 	platforms.push({
@@ -295,7 +305,8 @@ function generateElevator(platforms, platformIdCounter) {
 		speed: { x: 0, y: 2, z: 0 },
 		phase: { x: 0, y: 3, z: 0 },
 		color: colo,
-		material: getRandomBlockMaterial()
+		randColor: true,
+		material: 'scifloorcube'
 	});
 
 	platforms.push({
@@ -307,7 +318,8 @@ function generateElevator(platforms, platformIdCounter) {
 		speed: { x: 0, y: 2, z: 0 },
 		phase: { x: 0, y: 6, z: 0 },
 		color: colo,
-		material: getRandomBlockMaterial()
+		randColor: true,
+		material: 'scifloorcube'
 	});
 
 	platforms.push({
@@ -319,7 +331,8 @@ function generateElevator(platforms, platformIdCounter) {
 		speed: { x: 0, y: 2, z: 0 },
 		phase: { x: 0, y: 8, z: 0 },
 		color: colo,
-		material: getRandomBlockMaterial()
+		randColor: true,
+		material: 'scifloorcube'
 	});
 
 	platforms.push({
@@ -331,7 +344,8 @@ function generateElevator(platforms, platformIdCounter) {
 		speed: { x: 0, y: 2, z: 0 },
 		phase: { x: 0, y: 4, z: 0 },
 		color: colo,
-		material: getRandomBlockMaterial()
+		randColor: true,
+		material: 'scifloorcube'
 	});
 
 	platforms.push({
@@ -343,7 +357,8 @@ function generateElevator(platforms, platformIdCounter) {
 		speed: { x: 0, y: 2, z: 0 },
 		phase: { x: 0, y: 1, z: 0 },
 		color: colo,
-		material: getRandomBlockMaterial()
+		randColor: true,
+		material: 'scifloorcube'
 	});
 }
 
@@ -360,7 +375,8 @@ function movingStair(platforms, platformIdCounter) {
 				speed: { x: 0, y: Math.PI / 2, z: 0 },
 				phase: { x: 0, y: Math.random() * Math.PI * 2, z: 0 },
 				color: generateColor(),
-				material: getRandomBlockMaterial()
+				randColor: true,
+				material: 'scifloorcube'
 			});
 		}
 		// Plateforme droite
@@ -374,7 +390,8 @@ function movingStair(platforms, platformIdCounter) {
 				speed: { x: 0, y: Math.PI / 2, z: 0 },
 				phase: { x: 0, y: Math.random() * Math.PI * 2, z: 0 },
 				color: generateColor(),
-				material: getRandomBlockMaterial()
+				randColor: true,
+				material: 'scifloorcube'
 			});
 		}
 	}
@@ -413,7 +430,7 @@ function generateCrownPlatforms(platformIdCounter) {
 		position: { x: 78, y: 6.5, z: 0 },
 		size: { x: 70, y: 1, z: 4.5 },
 		color: colo,
-		material: 'longblockblue'
+		material: 'scifimetallong'
 	});
 
 	generateDodgeBlocks(platforms, platformIdCounter);

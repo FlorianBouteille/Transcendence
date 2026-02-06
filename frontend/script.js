@@ -55,6 +55,7 @@ const gui = new GUI({
 });
 
 gui.hide();
+
 const canvas = document.querySelector('canvas.webgl')
 
 // Scene
@@ -66,25 +67,26 @@ const remotePlayers = {};  // Stocke les meshes des joueurs distants
 function createPlatforms(platformsData) {
 	platformsData.forEach(data => {
 		let platform;
+		console.log(materials[data.material]);
 		if (data.type === 'static')
 		{
-			platform = new Platform(scene, new THREE.Vector3(data.position.x, data.position.y, data.position.z), data.size.x, data.size.y, data.size.z, materials[data.material]);
+			platform = new Platform(scene, new THREE.Vector3(data.position.x, data.position.y, data.position.z), data.size.x, data.size.y, data.size.z, materials[data.material], data.randColor);
 		}
 		else if (data.type === 'periodic') {
-			platform = new PeriodicPlatform(scene, new THREE.Vector3(data.position.x, data.position.y, data.position.z), data.size.x, data.size.y, data.size.z, new THREE.Vector3(data.amplitude.x, data.amplitude.y, data.amplitude.z), new THREE.Vector3(data.speed.x, data.speed.y, data.speed.z), new THREE.Vector3(data.phase.x, data.phase.y, data.phase.z), materials[data.material]);
+			platform = new PeriodicPlatform(scene, new THREE.Vector3(data.position.x, data.position.y, data.position.z), data.size.x, data.size.y, data.size.z, new THREE.Vector3(data.amplitude.x, data.amplitude.y, data.amplitude.z), new THREE.Vector3(data.speed.x, data.speed.y, data.speed.z), new THREE.Vector3(data.phase.x, data.phase.y, data.phase.z), materials[data.material], data.randColor);
 			movingPlatformsFromBack.push(platform);
 		}
 		else if (data.type === 'linear') {
-			platform = new LinearPlatform(scene, new THREE.Vector3(data.positionA.x, data.positionA.y, data.positionA.z), new THREE.Vector3(data.positionB.x, data.positionB.y, data.positionB.z), data.size.x, data.size.y, data.size.z, data.travelTime, data.delay, data.pauseTime, data.finalStayTime, materials[data.material]);
+			platform = new LinearPlatform(scene, new THREE.Vector3(data.positionA.x, data.positionA.y, data.positionA.z), new THREE.Vector3(data.positionB.x, data.positionB.y, data.positionB.z), data.size.x, data.size.y, data.size.z, data.travelTime, data.delay, data.pauseTime, data.finalStayTime, materials[data.material], data.randColor);
 			movingPlatformsFromBack.push(platform);
 		}
 		else if (data.type === 'disapearing')
 		{
-			platform = new DisapearingPlatform(scene, new THREE.Vector3(data.position.x, data.position.y, data.position.z), data.size.x, data.size.y, data.size.z, data.duration, data.life, data.death, data.delay, materials[data.material])
+			platform = new DisapearingPlatform(scene, new THREE.Vector3(data.position.x, data.position.y, data.position.z), data.size.x, data.size.y, data.size.z, data.duration, data.life, data.death, data.delay, materials[data.material], data.randColor)
 			movingPlatformsFromBack.push(platform);
 		}
 		else if (data.type === 'bouncy')
-			platform = new BouncyPlatform(scene, new THREE.Vector3(data.position.x, data.position.y, data.position.z), data.size.x, data.size.y, data.size.z, data.strenght, materials[data.material]);
+			platform = new BouncyPlatform(scene, new THREE.Vector3(data.position.x, data.position.y, data.position.z), data.size.x, data.size.y, data.size.z, data.strenght, materials[data.material], data.randColor);
 		if (platform) {
 			platformsFromBack.push(platform);
 			console.log('Platform type: ', data.type, 'push!');
@@ -99,6 +101,7 @@ function createCheckpoints(checkpointsData)
 		let point;
 		point = new CheckPoint(data.posX, data.posY, data.posZ)
 		scene.add(point.mesh);
+		scene.add(point.particles);
 		checkpointsFromBack.push(point);
 	});
 }
@@ -137,7 +140,13 @@ const sizes = {
 	width: window.innerWidth,
 	height: window.innerHeight
 }
+
+let isGuiOpen = false;
+
 window.addEventListener('mousemove', (event) => {
+	// Ne pas bouger la caméra si le GUI est ouvert
+	if (isGuiOpen) return;
+	
 	let newX = (event.clientX / sizes.width) * 2 - 1
 	let newY = - (event.clientY / sizes.height) * 2 + 1
 	mouse.deltaX = mouse.x - newX;
@@ -147,11 +156,18 @@ window.addEventListener('mousemove', (event) => {
 })
 
 window.addEventListener('keydown', (event) => {
-	if (event.key == 'h')
-		gui.show(gui._hidden);
+	if (event.key == 'h') {
+		gui.show(gui._hidden); // Toggle le GUI
+		isGuiOpen = !gui._hidden; // Lire l'état réel du GUI après le toggle
+		player.guiOpen = isGuiOpen; // Informer le player
+	}
 })
 
-
+const floorGeo = new THREE.PlaneGeometry(400, 400, 1, 1);
+const floor = new THREE.Mesh(floorGeo, materials.organic);
+floor.rotation.x = -Math.PI / 2;
+floor.position.y = -5
+scene.add(floor);
 // Objects
 const user = JSON.parse(localStorage.getItem('user'));
 const playerName = user?.username || 'Player';
@@ -172,8 +188,8 @@ setInterval(() => {
 	});
 }, 50)
 
-const grid = new THREE.GridHelper(50, 50);
-scene.add(grid);
+// const grid = new THREE.GridHelper(50, 50);
+// scene.add(grid);
 
 // Sizes
 
@@ -292,12 +308,12 @@ socket.on('roomJoined', (data) => {
 
 	// Configurer l'environment map en fonction du gameType
 	if (gameType === 'crown') {
-		scene.background = environmentMap;
-		scene.environment = environmentMap;
-		currentGame = new CrownGame(scene, player, new Crown(-80, 95, 0), socket);
-	} else {
 		scene.background = environmentMap2;
 		scene.environment = environmentMap2;
+		currentGame = new CrownGame(scene, player, new Crown(-80, 95, 0), socket);
+	} else {
+		scene.background = environmentMap;
+		scene.environment = environmentMap;
 		currentGame = new SurviveGame(scene, player, remotePlayers, movingPlatformsFromBack, socket);
 	}
 
@@ -306,14 +322,14 @@ socket.on('roomJoined', (data) => {
 		platformsCreated = true;
 	}
 
-	if (data.checkpoints)
+	if (data.checkpoints && gameType == 'crown')
 	{
 		createCheckpoints(data.checkpoints);
 		checkpointsCreated = true;
-		// Modifier le checkPoint initial du joueur pour tester
-		if (checkpointsFromBack.length > 0) {
-			player.checkPoint = checkpointsFromBack[3].mesh.position.clone();
-		}
+		//Modifier le checkPoint initial du joueur pour tester
+		// if (checkpointsFromBack.length > 0) {
+		// 	player.checkPoint = checkpointsFromBack[3].mesh.position.clone();
+		// }
 	}
 
 	socket.emit('gameLoaded');
@@ -351,7 +367,9 @@ const tick = () => {
 	for (let i = 0; i < checkpointsFromBack.length; i++) {
 		if (checkpointsFromBack[i].getBox().intersectsBox(player.getBox())) {
 			player.checkPoint = checkpointsFromBack[i].mesh.position.clone();
+			checkpointsFromBack[i].active = true;
 		}
+		checkpointsFromBack[i].update(elapsedTime);
 	}
 	updatePlayerLabels(player, remotePlayers, sizes);
 	currentGame.tick(elapsedTime);

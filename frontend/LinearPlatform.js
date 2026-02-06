@@ -2,8 +2,8 @@ import * as THREE from 'three'
 import { Platform } from './Platform.js'
 
 export class LinearPlatform extends Platform {
-    constructor(scene, positionA, positionB, sizeX, sizeY, sizeZ, travelTime, delay = 0, pauseTime = 0, finalStayTime = 0, material) {
-        super(scene, positionA, sizeX, sizeY, sizeZ, material)
+    constructor(scene, positionA, positionB, sizeX, sizeY, sizeZ, travelTime, delay = 0, pauseTime = 0, finalStayTime = 0, material, randColor = false) {
+        super(scene, positionA, sizeX, sizeY, sizeZ, material, randColor)
         
         this.positionA = positionA.clone()
         this.positionB = positionB.clone()

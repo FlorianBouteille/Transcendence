@@ -2,16 +2,37 @@ import * as THREE from 'three'
 import {randomColor } from './utils.js'
 
 export class Platform {
-    constructor(scene, position, sizeX, sizeY, sizeZ, theMaterial) {
+    constructor(scene, position, sizeX, sizeY, sizeZ, theMaterial, randColor = false) {
         const geometry = new THREE.BoxGeometry(sizeX, sizeY, sizeZ)
         let material;
-        if (theMaterial && theMaterial != undefined)
-            material = theMaterial;
-        else
+        if (theMaterial && theMaterial != undefined) {
+            // Cloner le material pour éviter de modifier l'original
+            if (Array.isArray(theMaterial)) {
+                // Si c'est un array de materials (6 faces), cloner chaque material
+                material = theMaterial.map(mat => mat.clone());
+            } else {
+                // Si c'est un material unique
+                material = theMaterial.clone();
+            }
+        } else 
+        {
             material = new THREE.MeshStandardMaterial({ color: randomColor() })
-        if (!theMaterial)
-        material.roughness = 0.7
-        material.metalness = 0.4
+        }
+        
+        // Appliquer une couleur random par-dessus la texture si demandé
+        if (randColor) {
+            if (Array.isArray(material)) {
+                // Si c'est un array de materials (6 faces)
+                const color = randomColor();
+                material.forEach(mat => {
+                    mat.color = new THREE.Color(color);
+                });
+            } else if (theMaterial) {
+                // Si c'est un material unique avec texture
+                material.color = new THREE.Color(randomColor());
+            }
+        }
+        
         this.mesh = new THREE.Mesh(geometry, material)
         this.mesh.position.copy(position)
         scene.add(this.mesh)
