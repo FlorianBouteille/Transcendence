@@ -13,7 +13,7 @@ export async function connect() {
 			host: process.env.DB_HOST,
 			port: process.env.DB_PORT,
 			dialect: "mariadb",
-			logging: false
+			logging: (sql) => { console.log('Sequelize SQL:', sql); }
 		}
 	);
 
