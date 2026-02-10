@@ -2,7 +2,7 @@ import { DataTypes } from "sequelize";
 
 // Define the games table model
 export function games(sequelize) {
-	const table = sequelize.define("games", {
+	const gamesTable = sequelize.define("games", {
 		id: { type: DataTypes.INTEGER, autoIncrement: true, primaryKey: true },
 		mode: { type: DataTypes.STRING(100) },
 		start_time: { type: DataTypes.DATE, defaultValue: DataTypes.NOW },
@@ -12,5 +12,5 @@ export function games(sequelize) {
 		timestamps: false
 	});
 
-	return table;
+	return gamesTable;
 }
