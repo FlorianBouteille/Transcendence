@@ -2,7 +2,7 @@ import { DataTypes } from "sequelize";
 
 // Define the Players table model
 export function players(sequelize, models) {
-	const table = sequelize.define("players", {
+	const playersTable = sequelize.define("players", {
 		id: { type: DataTypes.INTEGER, autoIncrement: true, primaryKey: true },
 		user_id: { type: DataTypes.INTEGER, allowNull: false },
 		pseudonym: { type: DataTypes.STRING(50), allowNull: false },
@@ -17,8 +17,7 @@ export function players(sequelize, models) {
 	});
 
 	// Associations
-	table.belongsTo(models.userAccounts, { foreignKey: "user_id", onDelete: "CASCADE" });
-	models.userAccounts.hasOne(table, { foreignKey: "user_id" });
-
-	return table;
+	playersTable.belongsTo(models.userAccounts, {as: 'userAccounts', foreignKey: "user_id", onDelete: "CASCADE" });
+	models.userAccounts.hasOne(playersTable, {as: 'players', foreignKey: "user_id" });
+	return playersTable;
 }
