@@ -17,7 +17,7 @@ export function players(sequelize, models) {
 	});
 
 	// Associations
-	playersTable.belongsTo(models.userAccounts, {as: 'userAccounts', foreignKey: "user_id", onDelete: "CASCADE" });
-	models.userAccounts.hasOne(playersTable, {as: 'players', foreignKey: "user_id" });
+	playersTable.belongsTo(models.userAccounts, {as: 'userAccounts', foreignKey: "id", onDelete: "CASCADE" });
+	models.userAccounts.hasOne(playersTable, {as: 'players', foreignKey: "id" });
 	return playersTable;
 }

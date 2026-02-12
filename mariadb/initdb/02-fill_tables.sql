@@ -26,7 +26,7 @@ INSERT INTO userAccounts (username, email, password_hash) VALUES
 -- =========================================================
 -- players
 -- =========================================================
-INSERT INTO players (user_id, pseudonym, bio, coins, avatar_url) VALUES
+INSERT INTO players (id, pseudonym, bio, coins, avatar_url) VALUES
 (1, 'BeanAlice', 'Falls with confidence', 120, 'https://example.com/a1.png'),
 (2, 'BobBounce', 'Never stops jumping', 80, 'https://example.com/a2.png'),
 (3, 'ChaosCharlie', 'Hits every obstacle', 200, 'https://example.com/a3.png'),

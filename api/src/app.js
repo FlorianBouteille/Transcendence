@@ -1,5 +1,6 @@
 import express from "express";
 import { routes } from "./routes.js";
+import { pagination } from "./middlewares/pagination.js";
 
 export function createApp() {
 	const app = express();
@@ -12,7 +13,8 @@ export function createApp() {
 	app.get("/health", (req, res) => res.json({ status: "ok" }));
 
 	// Routes
-	app.use("/api", routes);
+	app.use("/api", pagination, routes);
+	// app.use("/api/public/", routes);
 
 	return app;
 }
