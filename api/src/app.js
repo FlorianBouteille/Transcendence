@@ -1,6 +1,6 @@
 import express from "express";
 import { routes } from "./routes.js";
-import { pagination } from "./middlewares/pagination.js";
+import { setupSwagger } from "../docs/openapi.js";
 
 export function createApp() {
 	const app = express();
@@ -12,9 +12,14 @@ export function createApp() {
 	// Health check
 	app.get("/health", (req, res) => res.json({ status: "ok" }));
 
+	// Swagger
+	setupSwagger(app);
+
+	// Redirect /api to /api/docs
+	app.get("/api", (req, res) => res.redirect("/api/docs"));
+
 	// Routes
-	app.use("/api", pagination, routes);
-	// app.use("/api/public/", routes);
+	app.use("/api", routes);
 
 	return app;
 }

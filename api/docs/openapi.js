@@ -1,23 +1,36 @@
-// src/docs/openapi.js
-const swaggerJsdoc = require('swagger-jsdoc');
+import swaggerJsdoc from "swagger-jsdoc";
+import swaggerUi from "swagger-ui-express";
 
-const swaggerDefinition = {
-  openapi: '3.0.1',
-  info: {
-    title: 'My API',
-    version: '1.0.0',
-  },
-  servers: [
-    {
-      url: process.env.API_URL || 'http://localhost:3000',
-    },
-  ],
-};
+export function setupSwagger(app) {
+	const options = {
+		definition: {
+			openapi: "3.0.0",
+			info: {
+				title: "Game API",
+				version: "1.0.0",
+				description: "API for Fall Guys-like game",
+			},
+			servers: [
+				{
+					url: "http://localhost:8080/api",
+					description: "Local API server",
+				},
+			],
+			components: {
+				securitySchemes: {
+					BearerAuth: {
+						type: "http",
+						scheme: "bearer",
+						bearerFormat: "JWT",
+					},
+				},
+			},
+			security: [{ BearerAuth: [] }],
+		},
+		apis: ["./src/controllers/*.js"],
+	};
 
-const options = {
-  swaggerDefinition,
-  apis: ['./src/routes.js'], // scan route annotations
-};
+	const swaggerSpec = swaggerJsdoc(options);
 
-const swaggerSpec = swaggerJsdoc(options);
-module.exports = swaggerSpec;
+	app.use("/api/docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec));
+}
