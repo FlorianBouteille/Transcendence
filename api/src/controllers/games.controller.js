@@ -77,7 +77,7 @@ export async function gamesHistory(req, res) {
 		});
 
 		if (!history.rows)
-			return res.status(200).json({ msg: "No history found" });
+			return res.json({ msg: "No history found" });
 
 		return res.json({
 			data: history.rows,
@@ -144,8 +144,8 @@ export async function gamesIdHistory(req, res) {
 			}],
 		});
 
-		if (!history.rows.length)
-			return res.status(200).json({ msg: "No history found"});
+		if (!history.rows)
+			return res.json({ msg: "No history found"});
 
 		return res.json({
 			data: history.rows,

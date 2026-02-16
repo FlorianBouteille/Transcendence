@@ -10,27 +10,29 @@ export function setupSwagger(app) {
 				version: "1.0.0",
 				description: "API for Fall Guys-like game",
 			},
-			servers: [
-				{
+			servers: [{
 					url: "http://localhost:8080/api",
-					description: "Local API server",
-				},
-			],
+				},],
 			components: {
 				securitySchemes: {
-					BearerAuth: {
+					BearerAuth: {               // JWT auth for protected routes
 						type: "http",
 						scheme: "bearer",
 						bearerFormat: "JWT",
+					},
+					BasicAuth: {                // Basic auth for login testing
+						type: "http",
+						scheme: "basic",
 					},
 				},
 			},
 			security: [{ BearerAuth: [] }],
 		},
-		apis: ["./src/controllers/*.js"],
+		apis: ["./src/controllers/*.js"], // Reads JSDoc from your controllers
 	};
 
 	const swaggerSpec = swaggerJsdoc(options);
 
+	// Serve Swagger UI at /api/docs
 	app.use("/api/docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 }

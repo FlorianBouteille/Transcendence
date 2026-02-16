@@ -58,7 +58,7 @@ export async function profiles(req, res) {
 		});
 
 		if (!profiles.length)
-			return res.status(200).json({ msg: "No profiles found"});
+			return res.json({ msg: "No profiles found"});
 
 		return res.json({ data: profiles, metadata: { limit, page, pseudonym } });
 
@@ -180,7 +180,7 @@ export async function profilesMeHistory(req, res){
 		});
 
 		if (!history.rows)
-			return res.status(200).json({ msg: "No history found"});
+			return res.json({ msg: "No history found"});
 
 		return res.json({
 			data: history.rows,
@@ -308,5 +308,139 @@ export async function profilesIdHistory(req, res){
 	} catch (error) {
 		console.error('Error in \'profilesIdHistory\' controller: ', error);
 		res.status(500).json({ error: "Internal server error" });
+	}
+}
+
+/**
+ * @swagger
+ * /profiles/me/pseudonym:
+ *   put:
+ *     summary: Update your pseudonym
+ *     description: Change the current player's pseudonym. Must be unique.
+ *     tags:
+ *       - Profiles
+ *     security:
+ *       - BearerAuth: []
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - pseudonym
+ *             properties:
+ *               pseudonym:
+ *                 type: string
+ *                 example: "NewPseudonym"
+ *     responses:
+ *       200:
+ *         description: Pseudonym updated successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *       400:
+ *         description: Pseudonym already exists or invalid
+ *       500:
+ *         description: Internal server error
+ */
+export async function profilesmePseudonym(req, res) {
+	const { pseudonym } = req.body;
+
+	if (!pseudonym)
+		return res.status(400).json({ error: "Pseudonym is required" });
+
+	const transaction = await db.sequelize.transaction();
+
+	try {
+		// Check for duplicates
+		const exists = await db.models.players.findOne({
+			where: { pseudonym },
+			transaction
+		});
+
+		if (exists) {
+			await transaction.rollback();
+			return res.status(400).json({ error: "Pseudonym already exists" });
+		}
+
+		// Update
+		await db.models.players.update(
+		{ pseudonym },
+		{ where: { id: req.playerId }, transaction }
+		);
+
+		await transaction.commit();
+		return res.json({ message: "Pseudonym updated successfully" });
+
+	} catch (err) {
+		await transaction.rollback();
+		console.error("Error updating pseudonym:", err);
+		return res.status(500).json({ error: "Internal server error" });
+	}
+}
+
+/**
+ * @swagger
+ * /profiles/me/bio:
+ *   put:
+ *     summary: Update your bio
+ *     description: Change the current player's bio.
+ *     tags:
+ *       - Profiles
+ *     security:
+ *       - BearerAuth: []
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - bio
+ *             properties:
+ *               bio:
+ *                 type: string
+ *                 example: "I love jumping through chaos!"
+ *     responses:
+ *       200:
+ *         description: Bio updated successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *       400:
+ *         description: Invalid bio
+ *       500:
+ *         description: Internal server error
+ */
+export async function profilesMeBio(req, res) {
+	const { bio } = req.body;
+
+	if (!bio)
+		return res.status(400).json({ error: "Bio is required" });
+
+	const transaction = await db.sequelize.transaction();
+
+	try {
+		await db.models.players.update(
+			{ bio },
+			{ where: { id: req.playerId }, transaction }
+		);
+
+		await transaction.commit();
+		return res.json({ message: "Bio updated successfully" });
+
+	} catch (err) {
+		await transaction.rollback();
+		console.error("Error updating bio:", err);
+		return res.status(500).json({ error: "Internal server error" });
 	}
 }
