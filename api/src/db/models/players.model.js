@@ -4,7 +4,6 @@ import { DataTypes } from "sequelize";
 export function players(sequelize, models) {
 	const playersTable = sequelize.define("players", {
 		id: { type: DataTypes.INTEGER, autoIncrement: true, primaryKey: true },
-		user_id: { type: DataTypes.INTEGER, allowNull: false },
 		pseudonym: { type: DataTypes.STRING(50), allowNull: false },
 		bio: { type: DataTypes.TEXT },
 		coins: { type: DataTypes.INTEGER, defaultValue: 0 },
