@@ -1,3 +1,4 @@
+//import { CheckPoint } from '../../frontend/CheckPoint.js';
 import { generateCrownPlatforms } from './crownGameBack.js';
 import { createGameMode } from './gameModes/gameModeFactory.js';
 
@@ -150,7 +151,7 @@ function generateColor() {
 	return (Math.round((Math.random() * 0xffffff)));
 }
 
-function addPlayer(id, roomID) {
+function addPlayer(id, roomID, userId, username) {
 
 	if (!gameInstances[roomID]) {
 		console.log('Room: ', roomID, 'dosent exist')
@@ -158,9 +159,13 @@ function addPlayer(id, roomID) {
 	}
 	const player = {
 		id: id,
+		userId: userId || -1,
+		username: username || 'Player',
 		x: 0,
 		y: 2,
 		z: 0,
+		checkPointId: 0,
+		position: 0,
 		vx: 0,
 		vy: 0,
 		vz: 0,
@@ -183,7 +188,7 @@ function addPlayer(id, roomID) {
 		gameInstances[roomID].gameMode.onPlayerJoin(player, gameInstances[roomID]);
 	}
 
-	console.log('Joueur ajouté:', id);
+	console.log(`✅ Player ${username} (DB ID: ${userId}) added to room ${roomID}`);
 }
 
 
@@ -213,6 +218,7 @@ function updatePosition(id, roomID, position) {
 	gameInstances[roomID].players[id].isGrounded = position.isGrounded;
 	gameInstances[roomID].players[id].isJumping = position.isJumping;
 	gameInstances[roomID].players[id].isMoving = position.isMoving;
+	gameInstances[roomID].players[id].checkPointId = position.checkPointId;
 }
 
 function initGameServer(socketIo) {
@@ -236,7 +242,21 @@ function gameLoop() {
 		const elapsedTime = (Date.now() - game.startTime) / 1000;
 
 		const GameState = {
-			players: Object.values(game.players),
+			players: Object.values(game.players).map(p => ({
+				id: p.id,
+				userId: p.userId,
+				username: p.username,
+				x: p.x,
+				y: p.y,
+				z: p.z,
+				rotation: p.rotation,
+				isGrounded: p.isGrounded,
+				isJumping: p.isJumping,
+				isMoving: p.isMoving,
+				checkPointId: p.checkPointId,
+				color: p.color,
+				alive: p.alive
+			})),
 			elapsedTime: elapsedTime
 		};
 
@@ -539,7 +559,10 @@ function initLobbyHandler(socket, io) {
 		}
 	});
 
-	socket.on('joinRoom', (roomID) => {
+	socket.on('joinRoom', (data) => {
+		const { roomId, userId, username } = data;
+		const roomID = roomId;
+		
 		if (!gameInstances[roomID]) {
 			console.log('❌ Room inexistante:', roomID);
 			socket.emit('roomNotFound');
@@ -556,10 +579,14 @@ function initLobbyHandler(socket, io) {
 			socket.emit('roomNotFound');
 			return;
 		}
+		
+		// Stocker les infos utilisateur sur la socket
 		socket.roomID = roomID;
+		socket.userId = userId;
+		socket.username = username;
 		socket.join(roomID);
-		addPlayer(socket.id, roomID);
-		console.log(`✅ ${socket.id} a rejoint la room ${roomID}`);
+		addPlayer(socket.id, roomID, userId, username);
+		console.log(`✅ Player ${username} (DB ID: ${userId}, Socket: ${socket.id}) a rejoint la room ${roomID}`);
 
 		socket.emit('roomJoined', {
 			roomID: roomID,
@@ -578,9 +605,25 @@ function initLobbyHandler(socket, io) {
 	});
 	
 	socket.on('first', (data) => {
-		console.log('🏆 Premier joueur arrivé:', data.playerData, 'en', data.elapsedTime, 'secondes');
+		console.log('🏆 Premier joueur arrivé:', socket.id, 'en', data.elapsedTime, 'secondes');
 		const game = gameInstances[socket.roomID];
-    
+		//console.log(game);
+		// Logger le contenu de chaque joueur
+		//console.log('\n📊 Contenu de tous les joueurs:');
+		const rankedPlayers = Object.entries(game.players)
+			.filter(([playerId, player]) => playerId !== socket.id)
+			.sort(([aId, playerA], [bId, playerB]) => playerB.y - playerA.y);
+		
+		// Attribuer la position 1 au gagnant
+		game.players[socket.id].position = 1;
+		
+		// Attribuer les positions aux autres joueurs (2, 3, 4...)
+		rankedPlayers.forEach(([playerId, player], index) => {
+			game.players[playerId].position = index + 2;
+		});
+		console.log(game.players[socket.id]);
+		console.log(rankedPlayers);
+		
    		const gameData = {
 			roomId: socket.roomID,
 			gameType: game.gameType,
@@ -588,33 +631,60 @@ function initLobbyHandler(socket, io) {
 			elapsedTime: data.elapsedTime,
 			players: Object.values(game.players).map(p => ({
 				id: p.id,
+				position: p.position,
+				checkPoint: p.checkPointId
 				// position finale, etc.
 			})),
 			startTime: game.startTime,
 			endTime: Date.now()
 		};
 		//// ENVOYER LES DONNEES A LA DB !!! 
+		console.log(gameData);
 		io.to(socket.roomID).emit('gameEnd', gameData);
 	});
 
 	socket.on('died', (data) => {
 		console.log('💀 A player has died:', socket.id);
 		
+		const game = gameInstances[socket.roomID];
+		if (!game) {
+			console.error('❌ Game not found for roomID:', socket.roomID);
+			return;
+		}
+		
+		// Marquer le joueur comme mort
+		if (game.players[socket.id]) {
+			game.players[socket.id].alive = false;
+		}
+		
+		// Calculer combien de joueurs sont encore vivants
+		const alivePlayers = Object.entries(game.players)
+			.filter(([id, player]) => player.alive)
+			.map(([id, player]) => id);
+		
+		console.log(`📊 Joueurs restants: ${alivePlayers.length}`);
+		
+		// Enregistrer la position du joueur qui meurt
+		if (game.players[socket.id]) {
+			game.players[socket.id].position = alivePlayers.length + 1;
+			console.log(`📊 ${game.players[socket.id].username || socket.id} termine en position ${game.players[socket.id].position}`);
+		}
+		
 		io.to(socket.roomID).emit('playerDied', {
 			playerId: socket.id,
-			elapsedTime: data.elapsedTime
+			elapsedTime: data.elapsedTime,
 		});
 		
-		if (data.alivePlayers.length <= 1)
+		if (alivePlayers.length <= 1)
 		{
 			let winnerId;
-			if (data.alivePlayers.length == 1) {
-				winnerId = data.alivePlayers[0];
+			if (alivePlayers.length == 1) {
+				winnerId = alivePlayers[0];
+				// Attribuer la position 1 au gagnant
+				game.players[winnerId].position = 1;
 			} else {
 				winnerId = socket.id;
 			}
-			
-			const game = gameInstances[socket.roomID];
 			
 			const gameData = {
 				roomId: socket.roomID,
@@ -622,7 +692,10 @@ function initLobbyHandler(socket, io) {
 				winner: winnerId,
 				elapsedTime: data.elapsedTime,
 				players: Object.values(game.players).map(p => ({
-					id: p.id
+					id: p.id,
+					userId: p.userId,
+					username: p.username,
+					position: p.position
 				})),
 				startTime: game.startTime,
 				endTime: Date.now()

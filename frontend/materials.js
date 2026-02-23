@@ -97,6 +97,13 @@ const organicAoTexture = textureLoader.load('static/Abstract_Organic_004_ambient
 const organicRoughnessTexture = textureLoader.load('static/Abstract_Organic_004_roughness.jpg')
 const organicHeightTexture = textureLoader.load('static/Abstract_Organic_004_height.png')
 
+// Charger les textures stylized stone floor
+const stonefloorColorTexture = textureLoader.load('static/Stylized_Stone_Floor_006_basecolor.png')
+const stonefloorNormalTexture = textureLoader.load('static/Stylized_Stone_Floor_006_normal.png')
+const stonefloorAoTexture = textureLoader.load('static/Stylized_Stone_Floor_006_ambientOcclusion.png')
+const stonefloorRoughnessTexture = textureLoader.load('static/Stylized_Stone_Floor_006_roughness.png')
+const stonefloorHeightTexture = textureLoader.load('static/Stylized_Stone_Floor_006_height.png')
+
 // Configuration du wrapping et repeat pour les textures blocks
 blockRedTexture.wrapS = blockRedTexture.wrapT = THREE.RepeatWrapping
 blockGreenTexture.wrapS = blockGreenTexture.wrapT = THREE.RepeatWrapping
@@ -162,6 +169,13 @@ organicNormalTexture.wrapS = organicNormalTexture.wrapT = THREE.RepeatWrapping
 organicAoTexture.wrapS = organicAoTexture.wrapT = THREE.RepeatWrapping
 organicRoughnessTexture.wrapS = organicRoughnessTexture.wrapT = THREE.RepeatWrapping
 organicHeightTexture.wrapS = organicHeightTexture.wrapT = THREE.RepeatWrapping
+
+// Configuration du wrapping pour les textures stone floor
+stonefloorColorTexture.wrapS = stonefloorColorTexture.wrapT = THREE.RepeatWrapping
+stonefloorNormalTexture.wrapS = stonefloorNormalTexture.wrapT = THREE.RepeatWrapping
+stonefloorAoTexture.wrapS = stonefloorAoTexture.wrapT = THREE.RepeatWrapping
+stonefloorRoughnessTexture.wrapS = stonefloorRoughnessTexture.wrapT = THREE.RepeatWrapping
+stonefloorHeightTexture.wrapS = stonefloorHeightTexture.wrapT = THREE.RepeatWrapping
 
 // Créer les materials
 const blockWhiteMaterial = new THREE.MeshStandardMaterial({
@@ -958,11 +972,23 @@ const organicMaterial = new THREE.MeshStandardMaterial({
 	metalness: 0
 })
 
+const stonefloorMaterial = new THREE.MeshStandardMaterial({
+	map: stonefloorColorTexture,
+	aoMap: stonefloorAoTexture,
+	aoMapIntensity: 1,
+	normalMap: stonefloorNormalTexture,
+	normalScale: new THREE.Vector2(1, 1),
+	roughnessMap: stonefloorRoughnessTexture,
+	roughness: 0.8,
+	metalness: 0
+})
+
 
 setScifiTextureRepeat(1, 1);
 setBlockTexturesRepeat(1, 1);
 setOrganicTextureRepeat(12, 12);
 setLavaTextureRepeat(12, 12);
+setStonefloorTextureRepeat(17, 17);
 // Map de materials disponibles
 export const materials = {
 	normalred: normalRed,
@@ -996,6 +1022,7 @@ export const materials = {
 	scifloorcube: scifiFloorCubeMaterials,
 	lava: lavaMaterial,
 	organic: organicMaterial,
+	stonefloor: stonefloorMaterial,
 	transparent: TransparentMaterial,
 	invisible: InvisibleMaterial
 }
@@ -1034,6 +1061,14 @@ export function setOrganicTextureRepeat(x, y) {
 	organicAoTexture.repeat.set(x, y)
 	organicRoughnessTexture.repeat.set(x, y)
 	organicHeightTexture.repeat.set(x, y)
+}
+
+export function setStonefloorTextureRepeat(x, y) {
+	stonefloorColorTexture.repeat.set(x, y)
+	stonefloorNormalTexture.repeat.set(x, y)
+	stonefloorAoTexture.repeat.set(x, y)
+	stonefloorRoughnessTexture.repeat.set(x, y)
+	stonefloorHeightTexture.repeat.set(x, y)
 }
 
 function setMaterialColorTint(material, color) {
