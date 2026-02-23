@@ -1,7 +1,6 @@
 import { createApp } from "./app.js";
 import { db } from "./db/index.js";
-
-const PORT = process.env.PORT || 3000;
+import { PORT } from "./config.js";
 
 async function start() {
 	try {

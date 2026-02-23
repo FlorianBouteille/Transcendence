@@ -1,19 +1,19 @@
 import jwt from "jsonwebtoken";
+import { JWT_SECRET } from "../config.js";
 
-// Verify the JSON Web Token send by the client
-export const checkAuthToken = (req, res, next) => {
-	const authHeader = req.headers.authorization;
-	if (!authHeader)
-		return res.sendStatus(401);
+export function checkAuthToken(req, res, next) {
+	const token = req.cookies?.auth_token;
 
-	const token = authHeader.split(" ")[1];
-	if (!token)
-		return res.sendStatus(401);
+	if (!token) {
+		return res.status(401).json({ error: "No token, authorization denied" });
+	}
 
 	try {
-		req.user = jwt.verify(token, process.env.JWT_SECRET);
+		const decoded = jwt.verify(token, JWT_SECRET);
+		req.user = decoded;
 		next();
-	} catch {
-		return res.sendStatus(401);
+	} catch (err) {
+		console.error("JWT verification failed:", err);
+		return res.status(401).json({ error: "Token is invalid or expired" });
 	}
-};
+}

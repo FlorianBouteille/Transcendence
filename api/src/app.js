@@ -1,4 +1,5 @@
 import express from "express";
+import cookieParser from 'cookie-parser';
 import { routes } from "./routes.js";
 import { setupSwagger } from "../docs/openapi.js";
 import { pagination } from "./middlewares/pagination.js";
@@ -9,6 +10,7 @@ export function createApp() {
 	// Middlewares
 	app.use(express.json());
 	app.use(express.urlencoded({ extended: true }));
+	app.use(cookieParser());
 
 	// Health check
 	app.get("/health", (req, res) => res.json({ status: "ok" }));

@@ -1,0 +1,4 @@
+
+export const PORT = process.env.PORT || 3000;
+
+export const JWT_SECRET = "bbb194bce7e3598582ab37e7c4896a83ad945fba5bf0513c23b7be88fb1ab5148950400abefb7d92f973174454f3119041fd48800eb02f2983b402c43387bb8e";

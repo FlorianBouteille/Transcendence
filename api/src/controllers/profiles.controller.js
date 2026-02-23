@@ -89,7 +89,7 @@ export async function profilesMe(req, res) {
 	try {
 		const profile = await db.models.players.findOne({
 			subQuery: false,
-			where: { id: req.playerId },
+			where: { id: req.user.id },
 			attributes: [
 				'pseudonym',
 				'bio',
@@ -168,7 +168,7 @@ export async function profilesMeHistory(req, res){
 				as: 'playerStats',
 				attributes: [],
 				required: true,
-				where: { player_id: req.playerId }
+				where: { player_id: req.user.id }
 			}],
 			having: result ? db.sequelize.where(db.sequelize.literal(
 				`CASE WHEN playerStats.position = 1 THEN 'win' ELSE 'lose' END`), result)
@@ -348,7 +348,7 @@ export async function profilesIdHistory(req, res){
  *       500:
  *         description: Internal server error
  */
-export async function profilesmePseudonym(req, res) {
+export async function profilesMePseudonym(req, res) {
 	const { pseudonym } = req.body;
 
 	if (!pseudonym)
@@ -371,7 +371,7 @@ export async function profilesmePseudonym(req, res) {
 		// Update
 		await db.models.players.update(
 		{ pseudonym },
-		{ where: { id: req.playerId }, transaction }
+		{ where: { id: req.user.id }, transaction }
 		);
 
 		await transaction.commit();
@@ -432,7 +432,7 @@ export async function profilesMeBio(req, res) {
 	try {
 		await db.models.players.update(
 			{ bio },
-			{ where: { id: req.playerId }, transaction }
+			{ where: { id: req.user.id }, transaction }
 		);
 
 		await transaction.commit();

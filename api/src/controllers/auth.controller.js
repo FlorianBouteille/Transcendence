@@ -1,6 +1,8 @@
-import { db } from "../db/index.js";
 import bcrypt from "bcrypt";
 import nodemailer from "nodemailer";
+import jwt from "jsonwebtoken";
+import { db } from "../db/index.js";
+import { JWT_SECRET } from "../config.js";
 
 const SALT_ROUNDS = 10;
 
@@ -17,7 +19,6 @@ const transporter = nodemailer.createTransport({
 		pass: process.env.SMTP_PASS
 	}
 });
-
 
 export async function register(req, res) {
 	const { username, email, password, confirmPassword } = req.body;
@@ -115,9 +116,9 @@ export async function login(req, res) {
 			}
 		});
 
-		// if (!user) {
-		// 	return res.status(401).json({ error: "Utilisateur non trouve" });
-		// }
+		if (!user) {
+			return res.status(401).json({ error: "Utilisateur non trouve" });
+		}
 
 		const passwordValid = await bcrypt.compare(password, user.password_hash);
 		if (!user || !passwordValid) {
@@ -147,12 +148,25 @@ export async function login(req, res) {
 			});
 		}
 
-		const token = Buffer.from(`${user.id}:${Date.now()}`).toString('base64');
+		// --- JWT token ---
+		const token = jwt.sign(
+			{ id: user.id, username: user.username},
+			JWT_SECRET,
+			{ expiresIn: "1h" }
+		);
+
+		// --- Send token via cookie ---
+		res.cookie("auth_token", token, {
+			httpOnly: true,
+			sameSite: "strict",
+			maxAge: 60 * 60 * 1000 // 1 hour
+		});
+
+		// const token = Buffer.from(`${user.id}:${Date.now()}`).toString('base64');
 
 		res.json({
 			success: true,
 			requires_2FA: false,
-			token,
 			user: {
 				id: user.id,
 				username: user.username,
@@ -160,7 +174,6 @@ export async function login(req, res) {
 				enable_2FA: user.enable_2FA
 			}
 		});
-
 
 	} catch (err) {
 		console.error("Login error:", err);
@@ -219,4 +232,10 @@ export async function verify2FA(req, res) {
 		console.error("2FA verify error:", err);
 		res.status(500).json({ error: "Erreur serveur" });
 	}
+}
+
+export async function logout(req, res) {
+
+	res.clearCookie("auth_token", { httpOnly: true, sameSite: "strict" }).json({ success: true });
+	return res.status(200).json({ message: "Logged out successfully" });
 }

@@ -158,86 +158,29 @@ export async function gamesIdHistory(req, res) {
 	}
 };
 
-/**
- * '@swagger'
- * /games:
- *   post:
- *     summary: Save a finished game
- *     tags:
- *       - Games
- *     requestBody:
- *       required: true
- *       content:
- *         application/json:
- *           schema:
- *             type: object
- *             required:
- *               - mode
- *               - start_time
- *               - end_time
- *               - players
- *             properties:
- *               mode:
- *                 type: string
- *                 example: classic
- *               start_time:
- *                 type: string
- *                 format: date-time
- *                 example: "2026-02-16T14:00:00Z"
- *               end_time:
- *                 type: string
- *                 format: date-time
- *                 example: "2026-02-16T14:08:45Z"
- *               players:
- *                 type: array
- *                 minItems: 2
- *                 items:
- *                   type: object
- *                   required:
- *                     - player_id
- *                     - position
- *                   properties:
- *                     player_id:
- *                       type: integer
- *                       example: 1
- *                     position:
- *                       type: integer
- *                       example: 1
- *                     chrono:
- *                       type: integer
- *                       example: 525
- *                     eliminated:
- *                       type: boolean
- *                       example: false
- *     responses:
- *       201:
- *         description: Game saved successfully
- *       400:
- *         description: Invalid payload
- *       500:
- *         description: Internal server error
- */
+
+// Internal only
 export async function gamesSave(req, res) {
 	try {
-		const { mode, start_time, end_time, players } = req.body;
+		const { gameType, startTime, endTime, players } = req.body;
 
-		if (!mode || !players || players.length < 2) {
+		if (!gameType || !players || !players.length) {
 			return res.status(400).json({ error: "Invalid game payload." });
 		}
 
 		const transaction = await db.sequelize.transaction();
 
 		try {
-			const game = await db.models.games.create({ mode, start_time, end_time }, { transaction });
+			const game = await db.models.games.create({ gameType, startTime, endTime }, { transaction });
 
-			const ids = players.map(p => p.player_id);
+			const ids = players.map(p => p.id);
 			if (new Set(ids).size !== ids.length) {
 				await transaction.rollback();
 				return res.status(400).json({ error: "Duplicate player_id detected." });
 			}
 
 			const statsRows = players.map(p => ({
-				player_id: p.player_id,
+				player_id: p.id,
 				game_id: game.id,
 				chrono: p.chrono ?? 0,
 				position: p.position ?? null,
