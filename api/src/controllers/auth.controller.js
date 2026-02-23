@@ -18,6 +18,7 @@ const transporter = nodemailer.createTransport({
 	}
 });
 
+
 export async function register(req, res) {
 	const { username, email, password, confirmPassword } = req.body;
 
@@ -41,35 +42,59 @@ export async function register(req, res) {
 		});
 	}
 
+	const transaction = await db.sequelize.transaction();
+
 	try {
 		const existingUser = await db.models.userAccounts.findOne({
-			where: { email }
+			where: { email },
+			transaction
 		});
 
 		if (existingUser) {
+			await transaction.rollback();
 			return res.status(400).json({ error: "Email deja utilise" });
 		}
 
 		const existingUsername = await db.models.userAccounts.findOne({
-			where: { username }
+			where: { username },
+			transaction
 		});
 
 		if (existingUsername) {
+			await transaction.rollback();
 			return res.status(400).json({ error: "Username deja utilise" });
 		}
 
 		const password_hash = await bcrypt.hash(password, SALT_ROUNDS);
 
-		const user = await db.models.userAccounts.create({
-			username,
-			email,
-			password_hash
-		});
+		// Create user
+		const user = await db.models.userAccounts.create(
+			{
+				username,
+				email,
+				password_hash
+			},
+			{ transaction }
+		);
 
-		res.json({ success: true, user: { id: user.id, email: user.email } });
+		// Create associated player with SAME ID
+		await db.models.players.create(
+			{
+				id: user.id,
+				pseudonym: user.username,
+				bio: "Hi there!"
+			},
+			{ transaction }
+		);
+
+		await transaction.commit();
+
+		return res.status(201).json({success: true, user: { id: user.id, email: user.email }});
+
 	} catch (err) {
+		await transaction.rollback();
 		console.error("Register error:", err);
-		res.status(500).json({ error: "Erreur serveur" });
+		return res.status(500).json({ error: "Erreur serveur" });
 	}
 }
 
