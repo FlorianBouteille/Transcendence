@@ -12,7 +12,7 @@
 
 	<main class="landing">
 		<a class="nav-link top-left" href="leaderboard.html">Top games</a>
-		<a class="nav-link top-right" id="auth-link" href="register.html">REGISTER</a>
+		<a class="nav-link top-right" id="auth-link" href="register.html">LOGIN</a>
 		<a class="nav-link top-right-2" href="profil.html">PROFIL</a>
 
 		<section class="hero">
@@ -26,52 +26,72 @@
 	</main>
 
 <script>
-	document.addEventListener('DOMContentLoaded', () => {
-		const existingToken = localStorage.getItem('token');
+	document.addEventListener('DOMContentLoaded', async () => {
 		const playBtn = document.getElementById('play');
 		const authLink = document.getElementById('auth-link');
 
-		if (existingToken) {
-			authLink.textContent = 'DISCONNECT';
-			authLink.href = '#';
-			authLink.addEventListener('click', (e) => {
-				e.preventDefault();
-				localStorage.removeItem('token');
-				localStorage.removeItem('user');
-				window.location.reload();
+		let isLoggedIn = false;
+
+		try {
+			const res = await fetch("/api/me", {
+				method: "GET",
+				credentials: "include"
 			});
+
+			if (res.ok) {
+				isLoggedIn = true;
+			}
+		} catch (err) {
+			isLoggedIn = false;
 		}
 
-		playBtn.addEventListener('click', () => {
-			window.location.href = existingToken ? 'lobby.html' : 'register.html';
+		if (isLoggedIn) {
+			authLink.textContent = "LOGOUT";
+			authLink.href = "#";
+
+			authLink.addEventListener("click", async (e) => {
+				e.preventDefault();
+				await fetch("/api/logout", {
+					method: "POST",
+					credentials: "include"
+				});
+				window.location.reload();
+			});
+		} else {
+			authLink.textContent = "LOGIN";
+			authLink.href = "already.html";
+		}
+
+		playBtn.addEventListener("click", () => {
+			window.location.href = isLoggedIn ? "lobby.html" : "already.html";
 		});
 	});
 </script>
 
 </body>
-        <div class="alien-wrap" data-alien>
-            <img class="alien" src="/perso_color/perso_violet.png" alt="Alien noir">
-        </div>
+		<div class="alien-wrap" data-alien>
+			<img class="alien" src="/perso_color/perso_violet.png" alt="Alien noir">
+		</div>
 
 		<div class="alien-wrap" data-alien>
-            <img class="alien" src="/perso_color/perso_violet.png" alt="Alien noir">
-        </div>
-
-        <div class="alien-wrap" data-alien>
-            <img class="alien" src="/perso_color/perso_jaune.png" alt="Alien jaune">
-        </div>
+			<img class="alien" src="/perso_color/perso_violet.png" alt="Alien noir">
+		</div>
 
 		<div class="alien-wrap" data-alien>
-            <img class="alien" src="/perso_color/perso_vert.png" alt="Alien noir">
-        </div>
+			<img class="alien" src="/perso_color/perso_jaune.png" alt="Alien jaune">
+		</div>
 
 		<div class="alien-wrap" data-alien>
-            <img class="alien" src="/perso_color/perso_vert.png" alt="Alien noir">
-        </div>
+			<img class="alien" src="/perso_color/perso_vert.png" alt="Alien noir">
+		</div>
 
-        <div class="alien-wrap" data-alien>
-            <img class="alien" src="/perso_color/perso_jaune.png" alt="Alien jaune">
-        </div>
-        <script src="./alienMovie.js"></script>
+		<div class="alien-wrap" data-alien>
+			<img class="alien" src="/perso_color/perso_vert.png" alt="Alien noir">
+		</div>
+
+		<div class="alien-wrap" data-alien>
+			<img class="alien" src="/perso_color/perso_jaune.png" alt="Alien jaune">
+		</div>
+		<script src="./alienMovie.js"></script>
 </html>
 
