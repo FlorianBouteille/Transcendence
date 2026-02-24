@@ -105,6 +105,6 @@ export class SurviveGame
         console.log('⏱️  Time:', data.elapsedTime, 'seconds');
         console.log('showing screen');
         console.log(data);
-        window.location.href = `gameRecap.html?winner=${data.winner}&time=${data.elapsedTime}`;
+        window.location.href = `gameRecap.html?id=${data.gameId}`;
     }
 }

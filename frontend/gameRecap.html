@@ -62,8 +62,8 @@
         <script type="module">
             // Récupérer les données depuis l'URL ou localStorage
             const urlParams = new URLSearchParams(window.location.search);
-            const winnerId = urlParams.get('winner');
-            const elapsedTime = urlParams.get('time');
+            const game = await fetch('api/games/' + urlParams.get('id'));
+            console.log(game);
             
             // Remplir les infos
             if (winnerId) {

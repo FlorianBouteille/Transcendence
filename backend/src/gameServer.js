@@ -604,7 +604,7 @@ function initLobbyHandler(socket, io) {
 		}
 	});
 
-	socket.on('first', (data) => {
+	socket.on('first', async (data) => {
 		console.log('🏆 Premier joueur arrivé:', socket.id, 'en', data.elapsedTime, 'secondes');
 		const game = gameInstances[socket.roomID];
 		//console.log(game);
@@ -626,6 +626,7 @@ function initLobbyHandler(socket, io) {
 
 		const gameData = {
 			roomId: socket.roomID,
+			gameId: -1,
 			gameType: game.gameType,
 			winner: socket.id,
 			elapsedTime: data.elapsedTime,
@@ -642,13 +643,12 @@ function initLobbyHandler(socket, io) {
 		};
 
 		//// ENVOYER LES DONNEES A LA DB !!!
-		sendGameResult(gameData);
-
+		gameData.gameId = await sendGameResult(gameData);
 		console.log(gameData);
 		io.to(socket.roomID).emit('gameEnd', gameData);
 	});
 
-	socket.on('died', (data) => {
+	socket.on('died', async (data) => {
 		console.log('💀 A player has died:', socket.id);
 
 		const game = gameInstances[socket.roomID];
@@ -693,6 +693,7 @@ function initLobbyHandler(socket, io) {
 
 			const gameData = {
 				roomId: socket.roomID,
+				gameId: -1,
 				gameType: game.gameType,
 				winner: winnerId,
 				elapsedTime: data.elapsedTime,
@@ -707,7 +708,7 @@ function initLobbyHandler(socket, io) {
 			};
 
 			// ENREGISTRER LA PARTIE DANS LA DB !!!!!!
-			sendGameResult(gameData);
+			gameData.gameId = await sendGameResult(gameData);
 
 			console.log('🏆 Sending gameEnd with:', gameData);
 
@@ -733,6 +734,7 @@ async function sendGameResult(gameData) {
 
 		const data = await response.json();
 		console.log("Game saved:", data);
+		return (data.game_id);
 	} catch (err) {
 		console.error("Error sending game result:", err);
 	}

@@ -48,8 +48,7 @@ export class CrownGame
     }
     showVictoryScreen(data)
     {
-        console.log('salut');
         console.log(data);
-        window.location.href = `gameRecap.html?winner=${data.winner}&time=${data.elapsedTime}`;
+        window.location.href = `gameRecap.html?id=${data.gameId}`;
     }
 }
