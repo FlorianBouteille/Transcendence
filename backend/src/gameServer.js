@@ -164,7 +164,7 @@ function addPlayer(id, roomID, userId, username) {
 		x: 0,
 		y: 2,
 		z: 0,
-		checkPointId: 0,
+		checkPointId: 3,
 		position: 0,
 		vx: 0,
 		vy: 0,
@@ -182,7 +182,7 @@ function addPlayer(id, roomID, userId, username) {
 		alive: true
 	};
 	gameInstances[roomID].players[id] = player;
-	
+
 	// Appeler le hook du gameMode si la méthode existe
 	if (gameInstances[roomID].gameMode && gameInstances[roomID].gameMode.onPlayerJoin) {
 		gameInstances[roomID].gameMode.onPlayerJoin(player, gameInstances[roomID]);
@@ -230,7 +230,7 @@ function initGameServer(socketIo) {
 			socket.emit('serverTime', Date.now());
 		});
 	});
-	
+
 	// Boucle simplifiée : redistribue juste les positions des joueurs
 	setInterval(gameLoop, 16);
 }
@@ -562,7 +562,7 @@ function initLobbyHandler(socket, io) {
 	socket.on('joinRoom', (data) => {
 		const { roomId, userId, username } = data;
 		const roomID = roomId;
-		
+
 		if (!gameInstances[roomID]) {
 			console.log('❌ Room inexistante:', roomID);
 			socket.emit('roomNotFound');
@@ -579,7 +579,7 @@ function initLobbyHandler(socket, io) {
 			socket.emit('roomNotFound');
 			return;
 		}
-		
+
 		// Stocker les infos utilisateur sur la socket
 		socket.roomID = roomID;
 		socket.userId = userId;
@@ -603,7 +603,7 @@ function initLobbyHandler(socket, io) {
 			}
 		}
 	});
-	
+
 	socket.on('first', (data) => {
 		console.log('🏆 Premier joueur arrivé:', socket.id, 'en', data.elapsedTime, 'secondes');
 		const game = gameInstances[socket.roomID];
@@ -613,18 +613,18 @@ function initLobbyHandler(socket, io) {
 		const rankedPlayers = Object.entries(game.players)
 			.filter(([playerId, player]) => playerId !== socket.id)
 			.sort(([aId, playerA], [bId, playerB]) => playerB.y - playerA.y);
-		
+
 		// Attribuer la position 1 au gagnant
 		game.players[socket.id].position = 1;
-		
+
 		// Attribuer les positions aux autres joueurs (2, 3, 4...)
 		rankedPlayers.forEach(([playerId, player], index) => {
 			game.players[playerId].position = index + 2;
 		});
 		console.log(game.players[socket.id]);
 		console.log(rankedPlayers);
-		
-   		const gameData = {
+
+		const gameData = {
 			roomId: socket.roomID,
 			gameType: game.gameType,
 			winner: socket.id,
@@ -632,49 +632,54 @@ function initLobbyHandler(socket, io) {
 			players: Object.values(game.players).map(p => ({
 				id: p.id,
 				position: p.position,
+				userId: p.userId,
+				username: p.username,
 				checkPoint: p.checkPointId
 				// position finale, etc.
 			})),
 			startTime: game.startTime,
 			endTime: Date.now()
 		};
-		//// ENVOYER LES DONNEES A LA DB !!! 
+
+		//// ENVOYER LES DONNEES A LA DB !!!
+		sendGameResult(gameData);
+
 		console.log(gameData);
 		io.to(socket.roomID).emit('gameEnd', gameData);
 	});
 
 	socket.on('died', (data) => {
 		console.log('💀 A player has died:', socket.id);
-		
+
 		const game = gameInstances[socket.roomID];
 		if (!game) {
 			console.error('❌ Game not found for roomID:', socket.roomID);
 			return;
 		}
-		
+
 		// Marquer le joueur comme mort
 		if (game.players[socket.id]) {
 			game.players[socket.id].alive = false;
 		}
-		
+
 		// Calculer combien de joueurs sont encore vivants
 		const alivePlayers = Object.entries(game.players)
 			.filter(([id, player]) => player.alive)
 			.map(([id, player]) => id);
-		
+
 		console.log(`📊 Joueurs restants: ${alivePlayers.length}`);
-		
+
 		// Enregistrer la position du joueur qui meurt
 		if (game.players[socket.id]) {
 			game.players[socket.id].position = alivePlayers.length + 1;
 			console.log(`📊 ${game.players[socket.id].username || socket.id} termine en position ${game.players[socket.id].position}`);
 		}
-		
+
 		io.to(socket.roomID).emit('playerDied', {
 			playerId: socket.id,
 			elapsedTime: data.elapsedTime,
 		});
-		
+
 		if (alivePlayers.length <= 1)
 		{
 			let winnerId;
@@ -685,7 +690,7 @@ function initLobbyHandler(socket, io) {
 			} else {
 				winnerId = socket.id;
 			}
-			
+
 			const gameData = {
 				roomId: socket.roomID,
 				gameType: game.gameType,
@@ -700,17 +705,37 @@ function initLobbyHandler(socket, io) {
 				startTime: game.startTime,
 				endTime: Date.now()
 			};
-			
+
+			// ENREGISTRER LA PARTIE DANS LA DB !!!!!!
+			sendGameResult(gameData);
+
 			console.log('🏆 Sending gameEnd with:', gameData);
-			
-			// ENREGISTRER LA PARTIE DANS LA DB !!!!!! 
-			
+
 			io.to(socket.roomID).emit('gameEnd', gameData);
 		}
 	});
 
 }
 
+async function sendGameResult(gameData) {
+	try {
+		const response = await fetch("http://api:3000/api/games", {
+		method: "POST",
+		headers: {
+			"Content-Type": "application/json",
+		},
+		body: JSON.stringify(gameData),
+		});
 
+		if (!response.ok) {
+			throw new Error(`Failed to save game: ${response.statusText}`);
+		}
+
+		const data = await response.json();
+		console.log("Game saved:", data);
+	} catch (err) {
+		console.error("Error sending game result:", err);
+	}
+}
 
 export { addPlayer, removePlayer, initGameServer, everyOneLoaded, updatePosition, initLobbyHandler };

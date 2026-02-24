@@ -36,7 +36,7 @@ CREATE TABLE playerStats (
 	id INT AUTO_INCREMENT PRIMARY KEY,
 	player_id INT NOT NULL,
 	game_id INT NOT NULL,
-	chrono INT DEFAULT 0,
+	chrono INT,
 	position INT,
 	eliminated BOOLEAN,
 	FOREIGN KEY (player_id) REFERENCES players(id) ON DELETE CASCADE,

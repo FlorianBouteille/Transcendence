@@ -4,9 +4,6 @@ import bcrypt from "bcrypt";
 /**
  * Update your password
  */
-import bcrypt from "bcryptjs";
-import { db } from "../db/index.js";
-
 export async function usersMePassword(req, res) {
 	try {
 		const { oldPassword, newPassword, confirmPassword } = req.body;

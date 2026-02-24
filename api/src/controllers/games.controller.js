@@ -164,6 +164,23 @@ export async function gamesSave(req, res) {
 	try {
 		const { gameType, startTime, endTime, players } = req.body;
 
+		// Debug: print full body
+		console.log("=== req.body ===");
+		console.log(JSON.stringify(req.body, null, 2));
+
+		// Debug: print individual keys
+		// console.log("gameType:", gameType);
+		// console.log("startTime:", startTime);
+		// console.log("endTime:", endTime);
+		// console.log("players:", players);
+
+		// Debug: print each player
+		// if (Array.isArray(req.body.players)) {
+		// 	req.body.players.forEach((p, i) => {
+		// 		console.log(`player[${i}]:`, JSON.stringify(p, null, 2));
+		// 	});
+		// }
+
 		if (!gameType || !players || !players.length) {
 			return res.status(400).json({ error: "Invalid game payload." });
 		}
@@ -180,7 +197,7 @@ export async function gamesSave(req, res) {
 			}
 
 			const statsRows = players.map(p => ({
-				player_id: p.id,
+				player_id: p.userId,
 				game_id: game.id,
 				chrono: p.chrono ?? 0,
 				position: p.position ?? null,
