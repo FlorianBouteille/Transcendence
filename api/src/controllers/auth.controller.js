@@ -237,5 +237,4 @@ export async function verify2FA(req, res) {
 export async function logout(req, res) {
 
 	res.clearCookie("auth_token", { httpOnly: true, sameSite: "strict" }).json({ success: true });
-	return res.status(200).json({ message: "Logged out successfully" });
 }
