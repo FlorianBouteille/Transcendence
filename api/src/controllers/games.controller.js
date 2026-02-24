@@ -132,13 +132,13 @@ export async function gamesIdHistory(req, res) {
 			include: [{
 				model: db.models.playerStats,
 				as: 'playerStats',
-				attributes: [],
+				attributes: ['position'],
 				required: true,
 				order: [['position', 'ASC']],
 				include: [{
 					model: db.models.players,
 					as: 'players',
-					attributes: [],
+					attributes: ['pseudonym'],
 					required: true,
 				}],
 			}],
@@ -147,8 +147,25 @@ export async function gamesIdHistory(req, res) {
 		if (!history.rows)
 			return res.json({ msg: "No history found"});
 
+		// Transform each row to the desired format
+		const formatted = history.rows.map(game => {
+			const playersObj = {};
+			game.playerStats.forEach(ps => {
+				const pos = ps.position;
+				const name = ps.players.pseudonym;
+				playersObj[pos] = name;
+			});
+
+			return {
+				mode: game.mode,
+				date: game.get('date'),
+				duration: game.get('duration'),
+				players: playersObj
+			};
+		});
+
 		return res.json({
-			data: history.rows,
+			data: formatted,
 			metadata: { total: history.count }
 		});
 
@@ -157,7 +174,6 @@ export async function gamesIdHistory(req, res) {
 		res.status(500).json({ error: "Internal server error" });
 	}
 };
-
 
 // Internal only
 export async function gamesSave(req, res) {
