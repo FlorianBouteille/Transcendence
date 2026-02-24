@@ -26,26 +26,59 @@
             letter-spacing: 0.18em;
             text-transform: uppercase;
         }
+
+        .error-message,
+        .nav-link {
+            position: relative;
+            z-index: 2;
+        }
+
+        .error-message {
+            margin-top: 10px;
+            --error-message-offset-x: 0px;
+            --error-message-offset-y: -120px;
+            --error-message-font-size: 16px;
+            left: var(--error-message-offset-x);
+            top: var(--error-message-offset-y);
+            font-size: 3vh;
+        }
         
         .character {
             position: absolute;
             left: 50%;
-            top: 20%;
+            top: 17%;
             transform: translateX(-50%);
-            /* centre horizontal */
-            width: min(1250px, 500vw);
+            width: min(1350px, 500vw);
             height: auto;
             z-index: 1;
         }
+
+
+        a {
+            color: #000000;
+            position: relative;
+            --return-link-offset-x: 0px;
+            --return-link-offset-y: 460px;
+            left: var(--return-link-offset-x);
+            top: var(--return-link-offset-y);
+        }
+        
     </style>
 </head>
     <body>
 
         <img class="character" src="/perso_color/perso_big_eyes.png" alt="">
         <h1>ERROR LOG</h1>
-    <!-- <a class=" nav-link bottom-left " href="javascript:history.back()">retour</a> -->
-     <a class="nav-link bottom-left" href="/" onclick="if (history.length > 1) { history.back(); return false; }">retour</a>
-
+        <!-- <a class=" nav-link bottom-left " href="javascript:history.back()">retour</a> -->
+        <a class="nav-link bottom-left" href="/" onclick="if (history.length > 1) { history.back(); return false; }">return</a>
+        <p class="error-message" id="errorMessage">Failed to connect to the server</p>
+        <script>
+            const storedMessage = sessionStorage.getItem('errorMessage');
+            if (storedMessage) {
+                document.getElementById('errorMessage').textContent = storedMessage;
+                sessionStorage.removeItem('errorMessage');
+            }
+        </script>
 
     </body>
 

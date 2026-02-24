@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sucess Log</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            min-height: 100vh;
+            display: grid;
+            place-items: center;
+            background: #569ded;
+            color: #fffb01;
+            font-family: "Trebuchet MS", "Segoe UI", sans-serif;
+        }
+        
+        h1 {
+            font-size: clamp(4rem, 1vw, 8rem);
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            margin-top: -120px;
+        }
+
+        a {
+            color: #fffb01;
+        }
+        
+        .character {
+            position: absolute;
+            left: 50%;
+            top: 25%;
+            transform: translateX(-50%);
+            /* centre horizontal */
+            width: min(450px, 45vw);
+            height: auto;
+            z-index: 1;
+        }
+    </style>
+</head>
+    <body>
+
+        <img class="character" src="/perso_color/perso_success.png" alt="">
+        <h1>SUCCESS LOG</h1>
+    <a class=" nav-link bottom-left " href="lobby.html">return</a>  
+
+
+    </body>
+
+</html>
+
+
+<!--vw = view width = largeur fenetre : 1vw = 1 % de largeur ecran"-->

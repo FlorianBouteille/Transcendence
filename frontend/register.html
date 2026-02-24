@@ -134,15 +134,16 @@ document.getElementById('registerForm').addEventListener('submit', async (e) => 
         const data = await response.json();
 
         if (response.ok) {
-			message.textContent = `Inscription reussie! Bienvenue ${data.user.email}`;
-			message.style.color = 'green';
+			// message.textContent = `Inscription reussie! Bienvenue ${data.user.email}`;
+			// message.style.color = 'green';
+			setTimeout(() => window.location.href = 'success.html', 1000);
 		} else {
-			message.textContent = data.error;
-			message.style.color = 'red';
+			sessionStorage.setItem('errorMessage', data.error);
+			window.location.href = 'error.html';
 					}
 		} catch (err) {
-			message.textContent = 'Erreur de connexion au serveur';
-			message.style.color = 'red';
+			sessionStorage.setItem('errorMessage', 'Failed to connect to the server');
+			window.location.href = 'error.html';
 		}
 });
 </script>
