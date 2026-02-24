@@ -43,10 +43,13 @@
     </head>
     <body>
         <div class="recap-container">
+            <div id="game-banner">
+                <span id="game-mode">Mode</span>
+                <span id="date">Date</span>
+            </div>
             <div class="winner-banner">
                 <span id="winner-name">Player</span> Won in <span id="completion-time">0</span> seconds!
             </div>
-            <h2>ICI ON PEUT REMPLIR LA PAGE DIRECT DEPUIS LA DB VU QU'ELLE A ETE REMPLIE AVANT</h2> 
             <div class="leaderboard">
                 <h2>Leaderboard</h2>
                 <div id="leaderboard-list">
@@ -62,18 +65,34 @@
         <script type="module">
             // Récupérer les données depuis l'URL ou localStorage
             const urlParams = new URLSearchParams(window.location.search);
-            const game = await fetch('api/games/' + urlParams.get('id'));
-            console.log(game);
+            const response = await fetch('api/games/' + urlParams.get('id'));
+            const game = await response.json();
+            console.log(game.data[0]);
+            const winner = game.data[0].players[1];
+
+       function fill_leaderBoard() 
+       {
+            const list = document.getElementById('leaderboard-list');
+            const players = game.data[0].players;
             
+            const sortedPlayers = Object.entries(players).sort((a, b) => a[0] - b[0]);
+            sortedPlayers.forEach(([position, pseudo]) => {
+                const item = document.createElement('div');
+                item.className = 'leaderboard-item';
+                item.innerHTML = `
+                    <span class="rank">#${position}</span>
+                    <span class="name">${pseudo}</span>
+                `;
+                list.appendChild(item);
+            });
+        }
             // Remplir les infos
-            if (winnerId) {
-                document.getElementById('winner-name').textContent = winnerId;
-            }
-            if (elapsedTime) {
-                document.getElementById('completion-time').textContent = parseFloat(elapsedTime).toFixed(2);
-            }
-            
-            // TODO: Remplir le classement avec les données des joueurs
+            document.getElementById('game-mode').innerText = game.mode;
+            document.getElementById('date').innerText = game.data[0].date;
+            document.getElementById('winner-name').innerText = winner;
+            document.getElementById('completion-time').innerText = game.data[0].duration;
+            fill_leaderBoard();
+     
         </script>
     </body>
 </html>

@@ -117,7 +117,7 @@ socket.on('gameState', (state) => {
 			const remotePlayer = new RemotePlayer(scene, new THREE.Vector3(0, 2, 0), playerData.color);
 			remotePlayers[playerData.id] = remotePlayer;
 			scene.add(remotePlayer.mesh);
-			createPlayerLabel(playerData.id, playerData.name || `Player ${playerData.id.substring(0, 6)}`);
+			createPlayerLabel(playerData.id, playerData.username || `Player ${playerData.id.substring(0, 6)}`);
 		}
 
 		const remotePlayer = remotePlayers[playerData.id];
