@@ -2,9 +2,9 @@ import { Platform } from './Platform.js'
 
 export class DisapearingPlatform extends Platform
 {
-    constructor(scene, position, sizeX, sizeY, sizeZ, duration, life, death, delay, material)
+    constructor(scene, position, sizeX, sizeY, sizeZ, duration, life, death, delay, material, randColor = false)
     {
-        super(scene, position, sizeX, sizeY, sizeZ, material)
+        super(scene, position, sizeX, sizeY, sizeZ, material, randColor)
         this.duration = duration
         this.aliveTime = life
         this.deadTime = death

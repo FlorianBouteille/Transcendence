@@ -10,6 +10,7 @@ export class CrownGame
         this.uiContainer;
         this.create_ui()
         scene.add(crown.mesh);
+        //scene.add(crown.boxHelper);
         socket.on('gameEnd', (data) =>
         {
             this.showVictoryScreen(data);
@@ -47,6 +48,8 @@ export class CrownGame
     }
     showVictoryScreen(data)
     {
+        console.log('salut');
+        console.log(data);
         window.location.href = `gameRecap.html?winner=${data.winner}&time=${data.elapsedTime}`;
     }
 }

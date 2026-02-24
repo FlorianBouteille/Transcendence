@@ -2,8 +2,8 @@ import * as THREE from 'three'
 import { Platform } from './Platform.js'
 
 export class PeriodicPlatform extends Platform {
-    constructor(scene, position, sizeX, sizeY, sizeZ, amplitude, speed, phase, material) {
-        super(scene, position, sizeX, sizeY, sizeZ, material)
+    constructor(scene, position, sizeX, sizeY, sizeZ, amplitude, speed, phase, material, randColor = false) {
+        super(scene, position, sizeX, sizeY, sizeZ, material, randColor)
         this.amplitude = amplitude.clone()
         this.speed = speed.clone()
         this.phase = phase.clone()

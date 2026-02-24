@@ -1,8 +1,8 @@
 import { Platform } from './Platform.js'
 
 export class BouncyPlatform extends Platform {
-    constructor(scene, position, sizeX, sizeY, sizeZ, bounceStrength, material) {
-        super(scene, position, sizeX, sizeY, sizeZ, material)
+    constructor(scene, position, sizeX, sizeY, sizeZ, bounceStrength, material, randColor = false) {
+        super(scene, position, sizeX, sizeY, sizeZ, material, randColor)
         this.bounceStrength = bounceStrength
     }
 
