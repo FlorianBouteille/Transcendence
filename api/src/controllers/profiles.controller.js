@@ -45,14 +45,18 @@ export async function profiles(req, res) {
 			subQuery: false,
 			where : pseudonym ? { pseudonym } : undefined,
 			attributes: [
+				'id',
 				'pseudonym',
 				'bio',
 				'xp',
 				'level',
 				[fn('COUNT', col('playerStats.id')), 'allGames'],
-				[db.sequelize.literal(`COUNT(CASE WHEN playerStats.position = 1 THEN 1 END)`), 'wins']
+				[db.sequelize.literal(`COUNT(CASE WHEN playerStats.position = 1 THEN 1 END)`), 'wins'],
+				[db.sequelize.literal(`(SELECT COUNT(*) FROM player_achievements WHERE player_achievements.player_id = players.id)`), 'achievementCount']
 			],
-			include: [{ model: db.models.playerStats, as: 'playerStats', required: true, attributes: [] }],
+			include: [
+				{ model: db.models.playerStats, as: 'playerStats', required: true, attributes: [] }
+			],
 			group: ['players.id'],
 			limit,
 			offset: (page - 1) * limit,

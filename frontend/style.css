@@ -492,7 +492,7 @@ body {
 
 .history-row {
 	display: grid;
-	grid-template-columns: 1fr 1fr 1fr 1fr; /* four equal columns */
+	grid-template-columns: 1.2fr 2.5fr 1.5fr 1.5fr 2fr; /* 5 columns: Rank, Login, XP, Winrate, Achievements */
 	gap: 12px;
 	align-items: center;
 	justify-items: center; /* center all grid items horizontally */

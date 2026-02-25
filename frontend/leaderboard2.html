@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="fr">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Leaderboard | ft_transcendence</title>
+        <link rel="stylesheet" href="./style.css" />
+    </head>
+    <body>
+        <main class="landing history-page">
+            <a class="nav-link top-left" href="index">retour</a>
+
+            <section class="history-board" aria-labelledby="history-title">
+                <header class="history-header">
+                    <h1 id="history-title" class="history-title">TOTAL SCORE RANKING</h1>
+                </header>
+
+                <div class="history-table">
+                    <div class="history-row history-row--head">
+                        <span>Rank</span>
+                        <span>Login</span>
+                        <span class="sortable" data-sort="xp">XP ▼</span>
+                        <span class="sortable" data-sort="winrate">Winrate</span>
+                        <span class="sortable" data-sort="achievements">Achievements</span>
+                    </div>
+                    <div id="history-body"></div>
+                </div>
+            </section>
+        </main>
+
+        <script>
+            let allPlayers = [];
+            let currentSort = 'xp';
+            
+            async function getPlayers()
+            {
+                const response = await fetch('http://localhost:8080/api/profiles');
+                const players = await response.json();
+                return players;
+            }
+            
+            function sortPlayers(players, sortBy) {
+                const sorted = [...players];
+                
+                switch(sortBy) {
+                    case 'xp':
+                        sorted.sort((a, b) => b.xp - a.xp);
+                        break;
+                    case 'winrate':
+                        sorted.sort((a, b) => {
+                            const winrateA = a.allGames > 0 ? (a.wins / a.allGames) : 0;
+                            const winrateB = b.allGames > 0 ? (b.wins / b.allGames) : 0;
+                            return winrateB - winrateA;
+                        });
+                        break;
+                    case 'achievements':
+                        sorted.sort((a, b) => (b.achievementCount || 0) - (a.achievementCount || 0));
+                        break;
+                }
+                
+                return sorted;
+            }
+            
+            function displayPlayers(players) {
+                const historyBody = document.getElementById('history-body');
+                historyBody.innerHTML = '';
+                
+                players.forEach((player, index) => {
+                    const rank = index + 1;
+                    const winrate = player.allGames > 0 
+                        ? ((player.wins / player.allGames) * 100).toFixed(1) 
+                        : '0.0';
+                    
+                    const row = document.createElement('div');
+                    row.className = 'history-row';
+                    row.innerHTML = `
+                        <span class="history-rank">#${rank}</span>
+                        <span>${player.pseudonym}</span>
+                        <span>${player.xp} XP</span>
+                        <span>${winrate}%</span>
+                        <span>${player.achievementCount || 0}</span>
+                    `;
+                    
+                    historyBody.appendChild(row);
+                });
+                
+                // Update sort indicators
+                document.querySelectorAll('.sortable').forEach(el => {
+                    const sortType = el.getAttribute('data-sort');
+                    if (sortType === currentSort) {
+                        el.textContent = el.textContent.replace(/[▼▲]/g, '') + ' ▼';
+                    } else {
+                        el.textContent = el.textContent.replace(/[▼▲]/g, '');
+                    }
+                });
+            }
+            
+            async function loadLeaderboard() 
+            {
+                const result = await getPlayers();
+                allPlayers = result.data;
+                
+                // Achievement counts are now included in the API response
+                
+                const sortedPlayers = sortPlayers(allPlayers, currentSort);
+                displayPlayers(sortedPlayers);
+            }
+            
+            // Add click handlers to sortable headers
+            document.addEventListener('DOMContentLoaded', () => {
+                document.querySelectorAll('.sortable').forEach(header => {
+                    header.style.cursor = 'pointer';
+                    header.addEventListener('click', () => {
+                        currentSort = header.getAttribute('data-sort');
+                        const sortedPlayers = sortPlayers(allPlayers, currentSort);
+                        displayPlayers(sortedPlayers);
+                    });
+                });
+                
+                loadLeaderboard();
+            });
+        </script>
+    </body>
+</html> 

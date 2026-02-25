@@ -13,8 +13,12 @@ export function playerAchievements(sequelize, models) {
 	});
 
 	// Associations
-	playerAchievementsTable.belongsTo(models.players, { as: 'player', foreignKey: "player_id", onDelete: "CASCADE" });
-	playerAchievementsTable.belongsTo(models.achievements, { as: 'achievement', foreignKey: "achievement_id", onDelete: "CASCADE" });
+	if (models.players) {
+		playerAchievementsTable.belongsTo(models.players, { as: 'player', foreignKey: "player_id", onDelete: "CASCADE" });
+	}
+	if (models.achievements) {
+		playerAchievementsTable.belongsTo(models.achievements, { as: 'achievement', foreignKey: "achievement_id", onDelete: "CASCADE" });
+	}
 
 	return playerAchievementsTable;
 }
