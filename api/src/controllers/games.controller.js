@@ -1,3 +1,4 @@
+import { format } from 'date-fns';
 import { db } from "../db/index.js";
 
 /**
@@ -178,41 +179,35 @@ export async function gamesIdHistory(req, res) {
 // Internal only
 export async function gamesSave(req, res) {
 	try {
-		const { gameType, startTime, endTime, players } = req.body;
+		const gameData = req.body;
 
 		// Debug: print full body
 		console.log("=== req.body ===");
-		console.log(JSON.stringify(req.body, null, 2));
+		console.log(JSON.stringify(gameData, null, 2));
 
-		// Debug: print individual keys
-		// console.log("gameType:", gameType);
-		// console.log("startTime:", startTime);
-		// console.log("endTime:", endTime);
-		// console.log("players:", players);
-
-		// Debug: print each player
-		// if (Array.isArray(req.body.players)) {
-		// 	req.body.players.forEach((p, i) => {
-		// 		console.log(`player[${i}]:`, JSON.stringify(p, null, 2));
-		// 	});
-		// }
-
-		if (!gameType || !players || !players.length) {
+		if (!gameData.roomId || !gameData.gameType || !gameData.players || !gameData.players.length) {
 			return res.status(400).json({ error: "Invalid game payload." });
 		}
+
+		// Retrieve and format gameData
+		const roomId = gameData.roomId;
+		const mode = gameData.gameType;
+		const start_time = format(new Date(gameData.startTime), 'yyyy-MM-dd HH:mm:ss');
+		const end_time = format(new Date(gameData.endTime), 'yyyy-MM-dd HH:mm:ss');
+		// const duration = format(new Date(gameData.elapsedTime * 1000), 'HH:mm:ss');
 
 		const transaction = await db.sequelize.transaction();
 
 		try {
-			const game = await db.models.games.create({ gameType, startTime, endTime }, { transaction });
+			const game = await db.models.games.create({ roomId, mode, start_time, end_time }, { transaction });
 
-			const ids = players.map(p => p.id);
+			const ids = gameData.players.map(p => p.id);
 			if (new Set(ids).size !== ids.length) {
 				await transaction.rollback();
 				return res.status(400).json({ error: "Duplicate player_id detected." });
 			}
 
-			const statsRows = players.map(p => ({
+			const statsRows = gameData.players.map(p => ({
 				player_id: p.userId,
 				game_id: game.id,
 				chrono: p.chrono ?? 0,
@@ -223,6 +218,8 @@ export async function gamesSave(req, res) {
 			await db.models.playerStats.bulkCreate(statsRows, { transaction });
 
 			await transaction.commit();
+
+			console.log("✅ Game saved successfully");
 
 			return res.status(201).json({ message: "Game saved successfully", game_id: game.id });
 

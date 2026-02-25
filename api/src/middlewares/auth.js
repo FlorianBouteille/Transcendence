@@ -1,7 +1,8 @@
 import jwt from "jsonwebtoken";
 import { JWT_SECRET } from "../config.js";
+import { db } from "../db/index.js";
 
-export function checkAuthToken(req, res, next) {
+export async function checkAuthToken(req, res, next) {
 	const token = req.cookies?.auth_token;
 
 	if (!token) {
@@ -9,8 +10,20 @@ export function checkAuthToken(req, res, next) {
 	}
 
 	try {
+		// 1. Verify token validity
 		const decoded = jwt.verify(token, JWT_SECRET);
-		req.user = decoded;
+		console.log("✅ Decoded JWT payload:", decoded);
+
+		// 2. Check that user still exists in database
+		const user = await db.models.userAccounts.findByPk(decoded.id);
+		console.log("✅ User from DB:", user);
+		if (!user) {
+			res.clearCookie("auth_token", { httpOnly: true, sameSite: "strict" });
+			return res.status(401).json({ error: "User no longer exists" });
+		}
+
+		req.user = user;
+
 		next();
 	} catch (err) {
 		console.error("JWT verification failed:", err);

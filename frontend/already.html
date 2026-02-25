@@ -64,18 +64,18 @@
 						localStorage.setItem('token', data.token);
 						localStorage.setItem('user', JSON.stringify(data.user));
 
-						messageEl.textContent = `Connexion reussie! Bienvenue ${data.user.username}`;
-						messageEl.style.color = 'green';
+						// messageEl.textContent = `Connexion reussie! Bienvenue ${data.user.username}`;
+						// messageEl.style.color = 'green';
 
-						setTimeout(() => window.location.href = 'lobby.html', 1000);
+						setTimeout(() => window.location.href = 'success.html', 10);
 					}
 				} else {
-					messageEl.textContent = data.error;
-					messageEl.style.color = 'red';
+					sessionStorage.setItem('errorMessage', data.error);
+					window.location.href = 'error.html';
 				}
 			} catch (err) {
-				messageEl.textContent = 'Erreur de connexion au serveur';
-				messageEl.style.color = 'red';
+				sessionStorage.setItem('errorMessage', 'Failed to connect to the server');
+				window.location.href = 'error.html';
 			}
 				})
 
