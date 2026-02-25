@@ -199,14 +199,6 @@ export async function gamesSave(req, res) {
 		const transaction = await db.sequelize.transaction();
 
 		try {
-			// Check if a game with this roomId already exists
-			// const existingGame = await db.models.games.findOne({ where: { roomId }, transaction });
-			// if (existingGame) {
-			// 	await transaction.rollback();
-			// 	return res.status(409).json({ error: "Game with this roomId already exists." });
-			// }
-
-			// Save the new game
 			const game = await db.models.games.create({ roomId, mode, start_time, end_time }, { transaction });
 
 			const ids = gameData.players.map(p => p.id);
@@ -226,6 +218,8 @@ export async function gamesSave(req, res) {
 			await db.models.playerStats.bulkCreate(statsRows, { transaction });
 
 			await transaction.commit();
+
+			console.log("✅ Game saved successfully");
 
 			return res.status(201).json({ message: "Game saved successfully", game_id: game.id });
 

@@ -133,18 +133,19 @@ ajout :  case au cas ou mauvais mdp, ou deja loggin -->
 
 				const data = await response.json();
 
-				if (response.ok) {
-				message.textContent = `Inscription reussie! Bienvenue ${data.user.email}`;
-				message.style.color = 'green';
-			} else {
-				message.textContent = data.error;
-				message.style.color = 'red';
-						}
-			} catch (err) {
-				message.textContent = 'Erreur de connexion au serveur';
-				message.style.color = 'red';
-			}
-	});
-	</script>
-	</body>
+		if (response.ok) {
+			// message.textContent = `Inscription reussie! Bienvenue ${data.user.email}`;
+			// message.style.color = 'green';
+			setTimeout(() => window.location.href = 'success.html', 1000);
+		} else {
+			sessionStorage.setItem('errorMessage', data.error);
+			window.location.href = 'error.html';
+					}
+		} catch (err) {
+			sessionStorage.setItem('errorMessage', 'Failed to connect to the server');
+			window.location.href = 'error.html';
+		}
+});
+</script>
+</body>
 </html>

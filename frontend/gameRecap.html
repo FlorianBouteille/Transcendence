@@ -4,56 +4,50 @@
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>Game Recap</title>
-        <link rel="stylesheet" href="style.css">
-        <style>
-            .recap-container {
-                text-align: center;
-                padding: 50px;
-                font-family: Arial, sans-serif;
-            }
-            .winner-banner {
-                font-size: 2em;
-                font-weight: bold;
-                margin-bottom: 30px;
-                color: #FFD700;
-            }
-            .leaderboard {
-                max-width: 600px;
-                margin: 0 auto;
-                background: rgba(0, 0, 0, 0.5);
-                border-radius: 10px;
-                padding: 20px;
-            }
-            .leaderboard-item {
-                display: flex;
-                justify-content: space-between;
-                padding: 10px;
-                margin: 5px 0;
-                background: rgba(255, 255, 255, 0.1);
-                border-radius: 5px;
-            }
-            .rank { font-weight: bold; }
-            .back-button {
-                margin-top: 30px;
-                padding: 10px 20px;
-                font-size: 1.2em;
-                cursor: pointer;
-            }
-        </style>
+        <link rel="stylesheet" href="style_gameRecap.css">
     </head>
     <body>
+        <header class="hero-ribbon">
+            <div class="ticker" aria-hidden="true">
+                <div class="ticker-track">
+                    <span>VICTORY</span>
+                    <span>VICTORY</span>
+                    <span>VICTORY</span>
+                    <span>VICTORY</span>
+                    <span>VICTORY</span>
+                    <span>VICTORY</span>
+                    <span>VICTORY</span>
+                    <span>VICTORY</span>
+                    <span>VICTORY</span>
+                    <span>VICTORY</span>
+                </div>
+                <div class="ticker-track" aria-hidden="true">
+                    <span>VICTORY</span>
+                    <span>VICTORY</span>
+                    <span>VICTORY</span>
+                    <span>VICTORY</span>
+                    <span>VICTORY</span>
+                    <span>VICTORY</span>
+                    <span>VICTORY</span>
+                    <span>VICTORY</span>
+                    <span>VICTORY</span>
+                    <span>VICTORY</span>
+                </div>
+            </div>
+        </header>
+
         <div class="recap-container">
             <div class="winner-banner">
                 <span id="winner-name">Player</span> Won in <span id="completion-time">0</span> seconds!
             </div>
-            <h2>ICI ON PEUT REMPLIR LA PAGE DIRECT DEPUIS LA DB VU QU'ELLE A ETE REMPLIE AVANT</h2> 
+            <h2>ICI ON PEUT REMPLIR LA PAGE DIRECT DEPUIS LA DB VU QU'ELLE A ETE REMPLIE AVANT</h2>
             <div class="leaderboard">
-                <h2>Leaderboard</h2>
+                <h2><a class="leaderboard-link" href="leaderboard.html">Leaderboard</a></h2>
                 <div id="leaderboard-list">
                     <!-- Sera rempli dynamiquement -->
                 </div>
             </div>
-            
+
             <button class="back-button" onclick="window.location.href='lobby.html'">
                 Back to Lobby
             </button>
@@ -64,7 +58,7 @@
             const urlParams = new URLSearchParams(window.location.search);
             const game = await fetch('api/games/' + urlParams.get('id'));
             console.log(game);
-            
+
             // Remplir les infos
             if (winnerId) {
                 document.getElementById('winner-name').textContent = winnerId;
@@ -72,8 +66,9 @@
             if (elapsedTime) {
                 document.getElementById('completion-time').textContent = parseFloat(elapsedTime).toFixed(2);
             }
-            
+
             // TODO: Remplir le classement avec les données des joueurs
         </script>
+
     </body>
 </html>
