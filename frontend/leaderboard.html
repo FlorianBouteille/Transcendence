@@ -1,99 +1,118 @@
 <!DOCTYPE html>
 <html lang="fr">
-    <head>
-        <meta charset="UTF-8" />
-        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <title>Historique | ft_transcendence</title>
-        <link rel="stylesheet" href="./style.css" />
-    </head>
-    <body>
-        <main class="landing history-page">
-            <a class="nav-link top-left" href="index">retour</a>
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Leaderboard | ft_transcendence</title>
+  <link rel="stylesheet" href="./assets/styles.css" />
+</head>
+<body>
+  <main class="screen screen--legacy screen--history">
+    <div class="z-10 flex w-full max-w-5xl flex-col items-start gap-2">
+      <section class="history-board" aria-labelledby="history-title">
+        <header class="history-header">
+          <h1 id="history-title" class="history-title">TOP 10 BEST TIMES</h1>
+          <p class="history-subtitle">Classement des meilleures parties (temps les plus bas)</p>
+        </header>
 
-            <section class="history-board" aria-labelledby="history-title">
-                <header class="history-header">
-                    <h1 id="history-title" class="history-title">TOTAL SCORE RANKING</h1>
-                </header>
+        <div class="history-table">
+          <div class="history-row history-row--head history-row--leaderboard">
+            <span>Rank</span>
+            <span>Login</span>
+            <span>Date</span>
+            <span class="history-score">Time</span>
+          </div>
+          <div id="history-body" class="grid gap-3"></div>
+        </div>
+      </section>
 
-                <div class="history-table">
-                    <div class="history-row history-row--head">
-                        <span>Rank</span>
-                        <span>Login</span>
-                        <span>Date</span>
-                        <span>Score</span>
-                    </div>
-                    <div id="history-body"></div>
-                </div>
-            </section>
-        </main>
+      <a class="history-return" href="index.html">retour</a>
+    </div>
+  </main>
 
-        <script>
-            const HISTORY_ENDPOINT = "/api/history?limit=10";
+  <script>
+    const HISTORY_ENDPOINT = '/api/history?limit=100';
+    const historyBody = document.getElementById('history-body');
 
-            const historyBody = document.getElementById("history-body");
+    const formatDate = (value) => {
+      if (!value) return '-';
+      const date = new Date(value);
+      if (Number.isNaN(date.getTime())) return String(value);
+      return new Intl.DateTimeFormat('fr-FR').format(date);
+    };
 
-            const formatDate = (value) => {
-                if (!value) return "-";
-                const date = new Date(value);
-                if (Number.isNaN(date.getTime())) return String(value);
-                return new Intl.DateTimeFormat("fr-FR").format(date);
-            };
+    const toScore = (value) => {
+      const parsed = Number.parseFloat(value);
+      return Number.isFinite(parsed) ? parsed : Infinity;
+    };
 
-            const createRow = ({ rank, login, date, score }) => {
-                const row = document.createElement("div");
-                row.className = "history-row";
+    const toTimestamp = (value) => {
+      const date = new Date(value);
+      return Number.isNaN(date.getTime()) ? Infinity : date.getTime();
+    };
 
-                const rankCell = document.createElement("span");
-                rankCell.textContent = rank ?? "-";
-                rankCell.className = "history-rank";
+    const formatTime = (value) => {
+      const parsed = Number.parseFloat(value);
+      if (!Number.isFinite(parsed)) return value ?? '-';
+      return `${parsed.toFixed(2)}s`;
+    };
 
-                const loginCell = document.createElement("span");
-                loginCell.textContent = login ?? "-";
+    const createRow = ({ rank, login, date, score }) => {
+      const row = document.createElement('div');
+      row.className = 'history-row history-row--leaderboard';
 
-                const dateCell = document.createElement("span");
-                dateCell.textContent = formatDate(date);
+      const rankCell = document.createElement('span');
+      rankCell.textContent = rank ?? '-';
+      rankCell.className = 'history-rank';
 
-                const scoreCell = document.createElement("span");
-                scoreCell.textContent = score ?? "-";
+      const loginCell = document.createElement('span');
+      loginCell.textContent = login ?? '-';
 
-                row.append(rankCell, loginCell, dateCell, scoreCell);
-                return row;
-            };
+      const dateCell = document.createElement('span');
+      dateCell.textContent = formatDate(date);
 
-            const renderHistory = (games) => {
-                historyBody.innerHTML = "";
+      const scoreCell = document.createElement('span');
+      scoreCell.textContent = formatTime(score);
+      scoreCell.className = 'history-score';
 
-                const limited = Array.isArray(games) ? games.slice(0, 10) : [];
-                if (!limited.length) {
-                    const emptyRow = createRow({
-                        rank: "-",
-                        login: "Aucune partie",
-                        date: "",
-                        score: "",
-                    });
-                    historyBody.appendChild(emptyRow);
-                    return;
-                }
+      row.append(rankCell, loginCell, dateCell, scoreCell);
+      return row;
+    };
 
-                limited.forEach((game, index) => {
-                    historyBody.appendChild(createRow({ rank: index + 1, ...game }));
-                });
-            };
+    const renderLeaderboard = (games) => {
+      historyBody.innerHTML = '';
 
-            const loadHistory = async () => {
-                try {
-                    const response = await fetch(HISTORY_ENDPOINT, { credentials: "include" });
-                    if (!response.ok) {
-                        throw new Error(`HTTP ${response.status}`);
-                    }
-                    const data = await response.json();
-                    renderHistory(data);
-                } catch (error) {
-                    renderHistory([]);
-                }
-            };
+      const top = (Array.isArray(games) ? games : [])
+        .slice()
+        .sort((a, b) => {
+          const byScore = toScore(a.score) - toScore(b.score);
+          if (byScore !== 0) return byScore;
+          return toTimestamp(a.date) - toTimestamp(b.date);
+        })
+        .slice(0, 10);
 
-            loadHistory();
-        </script>
-    </body>
-</html> 
+      if (!top.length) {
+        historyBody.appendChild(createRow({ rank: '-', login: 'Aucune partie', date: '', score: '-' }));
+        return;
+      }
+
+      top.forEach((game, index) => {
+        historyBody.appendChild(createRow({ rank: index + 1, ...game }));
+      });
+    };
+
+    const loadLeaderboard = async () => {
+      try {
+        const response = await fetch(HISTORY_ENDPOINT, { credentials: 'include' });
+        if (!response.ok) throw new Error(`HTTP ${response.status}`);
+        const data = await response.json();
+        renderLeaderboard(data);
+      } catch (error) {
+        renderLeaderboard([]);
+      }
+    };
+
+    loadLeaderboard();
+  </script>
+</body>
+</html>

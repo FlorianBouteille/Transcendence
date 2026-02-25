@@ -1,74 +1,78 @@
 <!DOCTYPE html>
 <html lang="en">
-    <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Game Recap</title>
-        <link rel="stylesheet" href="style_gameRecap.css">
-    </head>
-    <body>
-        <header class="hero-ribbon">
-            <div class="ticker" aria-hidden="true">
-                <div class="ticker-track">
-                    <span>VICTORY</span>
-                    <span>VICTORY</span>
-                    <span>VICTORY</span>
-                    <span>VICTORY</span>
-                    <span>VICTORY</span>
-                    <span>VICTORY</span>
-                    <span>VICTORY</span>
-                    <span>VICTORY</span>
-                    <span>VICTORY</span>
-                    <span>VICTORY</span>
-                </div>
-                <div class="ticker-track" aria-hidden="true">
-                    <span>VICTORY</span>
-                    <span>VICTORY</span>
-                    <span>VICTORY</span>
-                    <span>VICTORY</span>
-                    <span>VICTORY</span>
-                    <span>VICTORY</span>
-                    <span>VICTORY</span>
-                    <span>VICTORY</span>
-                    <span>VICTORY</span>
-                    <span>VICTORY</span>
-                </div>
-            </div>
-        </header>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Game Recap</title>
+  <link rel="stylesheet" href="./assets/styles.css">
+</head>
+<body>
+  <header class="hero-ribbon">
+    <div class="ticker" aria-hidden="true">
+      <div class="ticker-track">
+        <span>VICTORY</span><span>VICTORY</span><span>VICTORY</span><span>VICTORY</span><span>VICTORY</span>
+        <span>VICTORY</span><span>VICTORY</span><span>VICTORY</span><span>VICTORY</span><span>VICTORY</span>
+      </div>
+      <div class="ticker-track" aria-hidden="true">
+        <span>VICTORY</span><span>VICTORY</span><span>VICTORY</span><span>VICTORY</span><span>VICTORY</span>
+        <span>VICTORY</span><span>VICTORY</span><span>VICTORY</span><span>VICTORY</span><span>VICTORY</span>
+      </div>
+    </div>
+  </header>
 
-        <div class="recap-container">
-            <div class="winner-banner">
-                <span id="winner-name">Player</span> Won in <span id="completion-time">0</span> seconds!
-            </div>
-            <h2>ICI ON PEUT REMPLIR LA PAGE DIRECT DEPUIS LA DB VU QU'ELLE A ETE REMPLIE AVANT</h2> 
-            <div class="leaderboard">
-                <h2><a class="leaderboard-link" href="leaderboard.html">Leaderboard</a></h2>
-                <div id="leaderboard-list">
-                    <!-- Sera rempli dynamiquement -->
-                </div>
-            </div>
-            
-            <button class="back-button" onclick="window.location.href='lobby.html'">
-                Back to Lobby
-            </button>
-        </div>
+  <main class="mx-auto flex w-full max-w-4xl flex-col gap-6 px-4 py-8">
+    <section class="card card--glass text-center">
+      <h2>
+        <span id="winner-name">Player</span> won in
+        <span id="completion-time" class="text-primary">0.00</span> seconds
+      </h2>
+    </section>
 
-        <script type="module">
-            // Récupérer les données depuis l'URL ou localStorage
-            const urlParams = new URLSearchParams(window.location.search);
-            const winnerId = urlParams.get('winner');
-            const elapsedTime = urlParams.get('time');
-            
-            // Remplir les infos
-            if (winnerId) {
-                document.getElementById('winner-name').textContent = winnerId;
-            }
-            if (elapsedTime) {
-                document.getElementById('completion-time').textContent = parseFloat(elapsedTime).toFixed(2);
-            }
-            
-            // TODO: Remplir le classement avec les données des joueurs
-        </script>
-        
-    </body>
+    <section class="card">
+      <div class="mb-4 flex items-center justify-between gap-3">
+        <h2>Leaderboard</h2>
+        <a class="btn btn--ghost btn--sm" href="leaderboard.html">
+          <svg class="icon"><use href="/assets/icons.svg#icon-trophy"></use></svg>
+          Open full leaderboard
+        </a>
+      </div>
+      <div id="leaderboard-list" class="grid gap-2"></div>
+    </section>
+
+    <button class="btn btn--primary w-full md:w-fit" onclick="window.location.href='lobby.html'">
+      <svg class="icon"><use href="/assets/icons.svg#icon-arrow-left"></use></svg>
+      Back to Lobby
+    </button>
+  </main>
+
+  <script type="module">
+    const urlParams = new URLSearchParams(window.location.search);
+    const winnerId = urlParams.get('winner');
+    const elapsedTime = urlParams.get('time');
+
+    if (winnerId) {
+      document.getElementById('winner-name').textContent = winnerId;
+    }
+
+    if (elapsedTime) {
+      document.getElementById('completion-time').textContent = parseFloat(elapsedTime).toFixed(2);
+    }
+
+    const demoRows = [
+      { rank: 1, name: winnerId || 'Player', score: '1200' },
+      { rank: 2, name: 'Alien_02', score: '980' },
+      { rank: 3, name: 'Alien_03', score: '870' }
+    ];
+
+    const list = document.getElementById('leaderboard-list');
+    list.innerHTML = demoRows.map((row) => `
+      <div class="list-row">
+        <span>#${row.rank}</span>
+        <span>${row.name}</span>
+        <span>Recent</span>
+        <span class="text-right">${row.score}</span>
+      </div>
+    `).join('');
+  </script>
+</body>
 </html>

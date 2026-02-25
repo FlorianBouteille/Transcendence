@@ -1,77 +1,87 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-	<meta charset="UTF-8">
-	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<title>Transcendence</title>
-	<link rel="stylesheet" href="./style.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Transcendence</title>
+  <link rel="stylesheet" href="./assets/styles.css">
 </head>
-
 <body>
+  <main class="screen overflow-hidden">
+    <div class="absolute left-6 top-6 z-20 flex gap-3">
+      <a class="btn btn--ghost btn--sm" href="leaderboard.html">
+        <svg class="icon"><use href="/assets/icons.svg#icon-trophy"></use></svg>
+        Top games
+      </a>
+    </div>
 
-	<main class="landing">
-		<a class="nav-link top-left" href="leaderboard.html">Top games</a>
-		<a class="nav-link top-right" href="register.html">REGISTER</a>
-		<a class="nav-link top-right-2" href="profil.html">PROFIL</a>
+    <div class="absolute right-6 top-6 z-20 flex gap-3">
+      <a class="btn btn--ghost btn--sm" href="profil.html">
+        <svg class="icon"><use href="/assets/icons.svg#icon-user"></use></svg>
+        Profil
+      </a>
+      <a id="auth-link" class="btn btn--secondary btn--sm" href="register.html">
+        Register
+      </a>
+    </div>
 
-		<section class="hero">
-			<h1 class="alien-title">ft_transcendence</h1>
-			<button type="submit" class="hero-cta" id="play" >PLAY</button>
-		</section>
+    <section class="panel z-10 w-full max-w-2xl text-center">
+      <h1 class="alien-title mb-6" data-text="ft_transcendence">ft_transcendence</h1>
+      <button type="button" class="btn btn--primary btn--lg" id="play">
+        <svg class="icon"><use href="/assets/icons.svg#icon-play"></use></svg>
+        Play
+      </button>
+    </section>
 
-		<a class="nav-link bottom-left" href="last_games.html">Last Games</a>
-		<a class="nav-link bottom-mid-left" href="legal.html">Legal Informations</a>
-		<a class="nav-link bottom-right" href="team.html">Team</a>
-	</main>
+    <nav class="absolute bottom-6 left-1/2 z-20 flex w-full max-w-4xl -translate-x-1/2 flex-wrap justify-center gap-3 px-4">
+      <a class="btn btn--ghost btn--sm" href="last_games.html">Last Games</a>
+      <a class="btn btn--ghost btn--sm" href="legal.html">Legal</a>
+      <a class="btn btn--ghost btn--sm" href="team.html">Team</a>
+      <a class="btn btn--ghost btn--sm" href="ui-kit.html">UI Kit</a>
+    </nav>
+  </main>
 
-<script>
-	document.addEventListener('DOMContentLoaded', () => {
-		const existingToken = localStorage.getItem('token');
-		const playBtn = document.getElementById('play');
-		const authLink = document.getElementById('auth-link');
+  <div class="alien-wrap" data-alien>
+    <img class="alien" src="/perso_color/perso_violet.png" alt="Alien violet">
+  </div>
+  <div class="alien-wrap" data-alien>
+    <img class="alien" src="/perso_color/perso_violet.png" alt="Alien violet">
+  </div>
+  <div class="alien-wrap" data-alien>
+    <img class="alien" src="/perso_color/perso_jaune.png" alt="Alien jaune">
+  </div>
+  <div class="alien-wrap" data-alien>
+    <img class="alien" src="/perso_color/perso_vert.png" alt="Alien vert">
+  </div>
+  <div class="alien-wrap" data-alien>
+    <img class="alien" src="/perso_color/perso_vert.png" alt="Alien vert">
+  </div>
+  <div class="alien-wrap" data-alien>
+    <img class="alien" src="/perso_color/perso_jaune.png" alt="Alien jaune">
+  </div>
 
-		if (existingToken) {
-			authLink.textContent = 'DISCONNECT';
-			authLink.href = '#';
-			authLink.addEventListener('click', (e) => {
-				e.preventDefault();
-				localStorage.removeItem('token');
-				localStorage.removeItem('user');
-				window.location.reload();
-			});
-		}
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const existingToken = localStorage.getItem('token');
+      const playBtn = document.getElementById('play');
+      const authLink = document.getElementById('auth-link');
 
-		playBtn.addEventListener('click', () => {
-			window.location.href = existingToken ? 'lobby.html' : 'register.html';
-		});
-	});
-</script>
+      if (existingToken && authLink) {
+        authLink.textContent = 'Disconnect';
+        authLink.href = '#';
+        authLink.addEventListener('click', (e) => {
+          e.preventDefault();
+          localStorage.removeItem('token');
+          localStorage.removeItem('user');
+          window.location.reload();
+        });
+      }
 
+      playBtn.addEventListener('click', () => {
+        window.location.href = existingToken ? 'lobby.html' : 'register.html';
+      });
+    });
+  </script>
+  <script src="./alienMovie.js"></script>
 </body>
-        <div class="alien-wrap" data-alien>
-            <img class="alien" src="/perso_color/perso_violet.png" alt="Alien noir">
-        </div>
-
-		<div class="alien-wrap" data-alien>
-            <img class="alien" src="/perso_color/perso_violet.png" alt="Alien noir">
-        </div>
-
-        <div class="alien-wrap" data-alien>
-            <img class="alien" src="/perso_color/perso_jaune.png" alt="Alien jaune">
-        </div>
-		        
-		<div class="alien-wrap" data-alien>
-            <img class="alien" src="/perso_color/perso_vert.png" alt="Alien noir">
-        </div>
-				        
-		<div class="alien-wrap" data-alien>
-            <img class="alien" src="/perso_color/perso_vert.png" alt="Alien noir">
-        </div>
-
-        <div class="alien-wrap" data-alien>
-            <img class="alien" src="/perso_color/perso_jaune.png" alt="Alien jaune">
-        </div>
-        <script src="./alienMovie.js"></script>
 </html>
-

@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>UI Kit | Transcendence</title>
+  <link rel="stylesheet" href="./assets/styles.css">
+</head>
+<body>
+  <main class="screen py-10">
+    <div class="mx-auto grid w-full max-w-6xl gap-8">
+      <header class="panel text-center">
+        <h1 class="alien-title" data-text="alien ui kit">alien ui kit</h1>
+        <p class="small-text">Tailwind + custom design system components</p>
+      </header>
+
+      <section class="card">
+        <h2 class="mb-4">Palette</h2>
+        <div class="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+          <div class="rounded-lg border border-border p-3"><div class="h-16 rounded-md bg-bg"></div><p class="mt-2 small-text">bg</p></div>
+          <div class="rounded-lg border border-border p-3"><div class="h-16 rounded-md bg-surface"></div><p class="mt-2 small-text">surface</p></div>
+          <div class="rounded-lg border border-border p-3"><div class="h-16 rounded-md bg-primary"></div><p class="mt-2 small-text">primary</p></div>
+          <div class="rounded-lg border border-border p-3"><div class="h-16 rounded-md bg-secondary"></div><p class="mt-2 small-text">secondary</p></div>
+          <div class="rounded-lg border border-border p-3"><div class="h-16 rounded-md bg-accent"></div><p class="mt-2 small-text">accent</p></div>
+          <div class="rounded-lg border border-border p-3"><div class="h-16 rounded-md bg-success"></div><p class="mt-2 small-text">success</p></div>
+          <div class="rounded-lg border border-border p-3"><div class="h-16 rounded-md bg-warning"></div><p class="mt-2 small-text">warning</p></div>
+          <div class="rounded-lg border border-border p-3"><div class="h-16 rounded-md bg-danger"></div><p class="mt-2 small-text">danger</p></div>
+        </div>
+      </section>
+
+      <section class="card">
+        <h2 class="mb-4">Typography</h2>
+        <h1>Heading H1 display</h1>
+        <h2>Heading H2 display</h2>
+        <h3>Heading H3 display</h3>
+        <p>Body text sample in sans font.</p>
+        <p class="small-text">Small helper text sample.</p>
+      </section>
+
+      <section class="card">
+        <h2 class="mb-4">Icons</h2>
+        <div class="grid grid-cols-3 gap-4 sm:grid-cols-4 lg:grid-cols-6">
+          <div class="rounded-md border border-border p-3 text-center"><svg class="icon mx-auto"><use href="/assets/icons.svg#icon-trophy"></use></svg><p class="small-text mt-1">trophy</p></div>
+          <div class="rounded-md border border-border p-3 text-center"><svg class="icon mx-auto"><use href="/assets/icons.svg#icon-user"></use></svg><p class="small-text mt-1">user</p></div>
+          <div class="rounded-md border border-border p-3 text-center"><svg class="icon mx-auto"><use href="/assets/icons.svg#icon-settings"></use></svg><p class="small-text mt-1">settings</p></div>
+          <div class="rounded-md border border-border p-3 text-center"><svg class="icon mx-auto"><use href="/assets/icons.svg#icon-home"></use></svg><p class="small-text mt-1">home</p></div>
+          <div class="rounded-md border border-border p-3 text-center"><svg class="icon mx-auto"><use href="/assets/icons.svg#icon-play"></use></svg><p class="small-text mt-1">play</p></div>
+          <div class="rounded-md border border-border p-3 text-center"><svg class="icon mx-auto"><use href="/assets/icons.svg#icon-pause"></use></svg><p class="small-text mt-1">pause</p></div>
+          <div class="rounded-md border border-border p-3 text-center"><svg class="icon mx-auto"><use href="/assets/icons.svg#icon-lock"></use></svg><p class="small-text mt-1">lock</p></div>
+          <div class="rounded-md border border-border p-3 text-center"><svg class="icon mx-auto"><use href="/assets/icons.svg#icon-check"></use></svg><p class="small-text mt-1">check</p></div>
+          <div class="rounded-md border border-border p-3 text-center"><svg class="icon mx-auto"><use href="/assets/icons.svg#icon-x"></use></svg><p class="small-text mt-1">x</p></div>
+          <div class="rounded-md border border-border p-3 text-center"><svg class="icon mx-auto"><use href="/assets/icons.svg#icon-warning"></use></svg><p class="small-text mt-1">warning</p></div>
+          <div class="rounded-md border border-border p-3 text-center"><svg class="icon mx-auto"><use href="/assets/icons.svg#icon-info"></use></svg><p class="small-text mt-1">info</p></div>
+          <div class="rounded-md border border-border p-3 text-center"><svg class="icon mx-auto"><use href="/assets/icons.svg#icon-arrow-left"></use></svg><p class="small-text mt-1">arrow-left</p></div>
+        </div>
+      </section>
+
+      <section class="card">
+        <h2 class="mb-4">Components</h2>
+        <div class="grid gap-6">
+          <div>
+            <h3 class="mb-2">1) Buttons</h3>
+            <div class="flex flex-wrap gap-2">
+              <button class="btn btn--primary">Primary</button>
+              <button class="btn btn--secondary">Secondary</button>
+              <button class="btn btn--ghost">Ghost</button>
+              <button class="btn btn--danger">Danger</button>
+              <button class="btn btn--primary btn--sm">Small</button>
+              <button class="btn btn--primary btn--lg">Large</button>
+              <button class="btn btn--primary" disabled>Disabled</button>
+              <button class="btn btn--secondary is-loading">Loading</button>
+            </div>
+          </div>
+
+          <div>
+            <h3 class="mb-2">2) Card + card--glass</h3>
+            <div class="grid gap-3 md:grid-cols-2">
+              <div class="card">Standard card</div>
+              <div class="card card--glass">Glass card</div>
+            </div>
+          </div>
+
+          <div>
+            <h3 class="mb-2">3) Input</h3>
+            <div class="grid gap-3 md:grid-cols-2">
+              <label class="field">
+                <span class="field__label">Username</span>
+                <input class="input" placeholder="normal input">
+                <span class="field__helper">Helper text</span>
+              </label>
+              <label class="field">
+                <span class="field__label">Password</span>
+                <input class="input input--error" placeholder="error input">
+                <span class="field__helper field__helper--error">Invalid password</span>
+              </label>
+            </div>
+          </div>
+
+          <div>
+            <h3 class="mb-2">4) Badge</h3>
+            <div class="flex gap-2 flex-wrap">
+              <span class="badge badge--success">success</span>
+              <span class="badge badge--warning">warning</span>
+              <span class="badge badge--danger">danger</span>
+              <span class="badge badge--info">info</span>
+            </div>
+          </div>
+
+          <div>
+            <h3 class="mb-2">5) Modal</h3>
+            <div class="modal is-open static flex">
+              <div class="modal__overlay"></div>
+              <div class="modal__content">
+                <h3>Example modal</h3>
+                <p class="mt-2 small-text">Overlay + content blocks.</p>
+              </div>
+            </div>
+          </div>
+
+          <div>
+            <h3 class="mb-2">6) Toast</h3>
+            <div class="grid gap-2 md:grid-cols-4">
+              <div class="toast toast--success is-visible static translate-x-0">Success toast</div>
+              <div class="toast toast--warning is-visible static translate-x-0">Warning toast</div>
+              <div class="toast toast--danger is-visible static translate-x-0">Danger toast</div>
+              <div class="toast toast--info is-visible static translate-x-0">Info toast</div>
+            </div>
+          </div>
+
+          <div>
+            <h3 class="mb-2">7) Tabs</h3>
+            <div class="tabs">
+              <div class="tabs__list" role="tablist">
+                <button class="tabs__tab is-active" role="tab">Overview</button>
+                <button class="tabs__tab" role="tab">History</button>
+                <button class="tabs__tab" role="tab">Settings</button>
+              </div>
+            </div>
+          </div>
+
+          <div>
+            <h3 class="mb-2">8) Dropdown</h3>
+            <label class="dropdown">
+              <select class="dropdown__select">
+                <option>Solo</option>
+                <option>Match</option>
+                <option>Private Room</option>
+              </select>
+            </label>
+          </div>
+
+          <div>
+            <h3 class="mb-2">9) Spinner</h3>
+            <div class="spinner"></div>
+          </div>
+
+          <div>
+            <h3 class="mb-2">10) List row</h3>
+            <div class="grid gap-2">
+              <div class="list-row list-row--head"><span>Rank</span><span>Player</span><span>Date</span><span class="text-right">Score</span></div>
+              <div class="list-row"><span>1</span><span>Alien_01</span><span>26/02/2026</span><span class="text-right">999</span></div>
+            </div>
+          </div>
+        </div>
+      </section>
+    </div>
+  </main>
+</body>
+</html>

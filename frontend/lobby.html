@@ -1,104 +1,96 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-	<meta charset="UTF-8">
-	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<title>Lobby - Transcendence</title>
-	<link rel="stylesheet" href="./style_lobby.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lobby - Transcendence</title>
+  <link rel="stylesheet" href="./assets/styles.css">
 </head>
-
 <body>
-	<main class="landing lobby-page">
-		<div class="lobby-container">
+  <main class="screen">
+    <div class="w-full max-w-2xl">
+      <div id="game-choice" class="lobby-box mb-4">
+        <h1 class="mb-2">Choose your game</h1>
+        <div class="menu-buttons">
+          <button class="menu-button game-btn" id="crown">Get the Crown !</button>
+          <button class="menu-button game-btn" id="survive">Survive</button>
+        </div>
+      </div>
 
-			<div id="game-choice" class="lobby-box">
-				<h1>Chose your game</h1>
+      <div id="main-menu" class="lobby-box">
+        <h1 class="mb-2">Select Mode</h1>
+        <div class="menu-buttons">
+          <button id="solo-btn" class="menu-button">Solo</button>
+          <button id="random-btn" class="menu-button">Match</button>
+          <button id="private-btn" class="menu-button">Private Room</button>
+        </div>
+      </div>
 
-				<div class="menu-buttons">
-					<button class="menu-button game-btn" id="crown">
-						Get the Crown !
-					</button>
-					<button class="menu-button game-btn" id="survive">
-						Survive
-					</button>
-				</div>
-			</div>
-			<!-- ========== MENU PRINCIPAL ========== -->
-			<div id="main-menu" class="lobby-box">
-				<h1> SELECT MODE </h1>
-				<div class="menu-buttons">
-					<button id="solo-btn" class="menu-button">🎯 Solo</button>
-					<button id="random-btn" class="menu-button">🎲 Match</button>
-					<button id="private-btn" class="menu-button">🔒 Private Room</button>
-				</div>
-			</div>
+      <div id="private-choice" class="lobby-box hidden">
+        <h2 class="mb-2">Private Room</h2>
+        <div class="grid gap-3">
+          <label class="field">
+            <span class="field__label">Custom room code</span>
+            <input type="text" id="custom-room-code" class="input uppercase tracking-[0.25em]" placeholder="optional" maxlength="6">
+          </label>
+          <button id="create-room-btn" class="menu-button">Create Room</button>
+        </div>
 
-			<!-- ========== CHOIX PRIVATE ========== -->
-			<div id="private-choice" class="lobby-box hidden">
-				<h2>Private Room</h2>
+        <div class="menu-buttons">
+          <button id="join-room-btn" class="menu-button">Join Room</button>
+          <button id="back-btn-1" class="back-button">Back</button>
+        </div>
+      </div>
 
-				<!-- 🆕 Ajouter un input pour créer avec un code custom -->
-				<div class="create-room-section">
-					<input type="text" id="custom-room-code" class="code-input"
-						placeholder="Enter custom code (optional)" maxlength="6">
-					<button id="create-room-btn" class="menu-button">Create Room</button>
-				</div>
+      <div id="join-room-section" class="lobby-box hidden">
+        <h2 class="mb-2">Enter Room Code</h2>
+        <input type="text" id="room-code-input" class="input text-center uppercase tracking-[0.25em]" placeholder="ABC123" maxlength="6">
+        <div class="menu-buttons">
+          <button id="confirm-join-btn" class="menu-button">Join</button>
+          <button id="back-btn-2" class="back-button">Back</button>
+        </div>
+      </div>
 
-				<button id="join-room-btn" class="menu-button">Join Room</button>
-				<button id="back-btn-1" class="back-button">← Back</button>
-			</div>
+      <div id="room-view" class="lobby-box hidden">
+        <h2 class="mb-2">Room: <span id="room-code" class="text-primary">------</span></h2>
 
-			<!-- ========== REJOINDRE UNE ROOM ========== -->
-			<div id="join-room-section" class="lobby-box hidden">
-				<h2>Enter Room Code</h2>
-				<input type="text" id="room-code-input" class="code-input" placeholder="ABC123" maxlength="6">
-				<div class="menu-buttons">
-					<button id="confirm-join-btn" class="menu-button">Join</button>
-					<button id="back-btn-2" class="back-button">← Back</button>
-				</div>
-			</div>
+        <div class="rounded-lg border border-border/40 bg-bg/40 p-4">
+          <p id="status-text">Waiting for players...</p>
+          <p>Players: <span id="player-count">1</span> / 8</p>
+          <p id="game-countdown" class="hidden text-xl font-bold text-success">Starting in: <span id="countdown-seconds">5</span></p>
+        </div>
 
-			<!-- ========== ROOM CRÉÉE / REJOINTE ========== -->
-			<div id="room-view" class="lobby-box hidden">
-				<h2>Room: <span id="room-code">------</span></h2>
+        <div class="mt-4 grid gap-2" id="players-list"></div>
 
-				<div class="lobby-status">
-					<p id="status-text">Waiting for players...</p>
-					<p>Players: <span id="player-count">1</span> / 8</p>
-					<p id="game-countdown" class="hidden" style="font-size: 2em; color: #00ff00;">Starting in: <span
-							id="countdown-seconds">5</span></p>
-				</div>
+        <div class="mt-4 grid gap-2">
+          <button id="start-game-btn" class="ready-button hidden">START GAME</button>
+          <button id="cancel-game-btn" class="cancel-button hidden">CANCEL</button>
+          <button id="ready-btn" class="ready-button">READY</button>
+          <button id="leave-room-btn" class="back-button">Leave Room</button>
+        </div>
+      </div>
 
-				<div class="players-list" id="players-list"></div>
+      <div id="queue-view" class="lobby-box hidden">
+        <h2 class="mb-2">Searching for players...</h2>
+        <p id="countdown-timer" class="text-3xl font-bold text-secondary">10</p>
+        <div class="rounded-lg border border-border/40 bg-bg/40 p-4">
+          <p>Players in queue: <span id="queue-count">1</span></p>
+          <div class="mx-auto mt-3 spinner"></div>
+        </div>
+        <button id="cancel-queue-btn" class="back-button mt-3">Cancel</button>
+      </div>
+    </div>
 
-				<button id="start-game-btn" class="ready-button hidden">START GAME</button>
-				<button id="cancel-game-btn" class="cancel-button hidden">CANCEL</button>
-				<button id="ready-btn" class="ready-button">READY</button>
-				<button id="leave-room-btn" class="back-button">Leave Room</button>
-			</div>
-			<!-- ========== FILE D'ATTENTE RANDOM ========== -->
-			<div id="queue-view" class="lobby-box hidden">
-				<h2>🔍 Searching for players...</h2>
-				<div id="countdown-timer">10</div>
-				<div class="lobby-status">
-					<p>Players in queue: <span id="queue-count">1</span></p>
-					<div class="loading-spinner"></div>
-				</div>
-				<button id="cancel-queue-btn" class="back-button">Cancel</button>
-			</div>
+    <a class="absolute left-6 top-6 btn btn--ghost btn--sm" href="index.html">
+      <svg class="icon"><use href="/assets/icons.svg#icon-arrow-left"></use></svg>
+      Return
+    </a>
+  </main>
 
-		</div>
-		
-		<a class="nav-link-l bottom-left" href="index.html">Return</a>
-	</main>
-	
-	<!-- Notification Toast -->
-	<div id="notification" class="notification hidden">
-		<span id="notification-message"></span>
-	</div>
+  <div id="notification" class="notification hidden">
+    <span id="notification-message"></span>
+  </div>
 
-	<script type="module" src="./lobby.js"></script>
+  <script type="module" src="./lobby.js"></script>
 </body>
-
 </html>
