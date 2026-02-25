@@ -1,5 +1,58 @@
 import { format } from 'date-fns';
 import { db } from "../db/index.js";
+import { checkAndUnlockAchievements } from "./achievements.controller.js";
+
+// Fonction pour calculer l'XP en fonction de la position
+function calculateXP(position, totalPlayers) {
+	// XP de base
+	const baseXP = 10;
+	
+	// Bonus selon la position
+	if (position === 1) {
+		return baseXP + 50; // 1er: 60 XP
+	} else if (position === 2) {
+		return baseXP + 30; // 2ème: 40 XP
+	} else if (position === 3) {
+		return baseXP + 20; // 3ème: 30 XP
+	} else {
+		// Les autres reçoivent l'XP de base
+		return baseXP; // 10 XP
+	}
+}
+
+// Fonction pour calculer le niveau en fonction de l'XP
+function calculateLevel(xp) {
+	// Système simple: 100 XP par niveau
+	return Math.floor(xp / 100);
+}
+
+// Fonction pour attribuer l'XP aux joueurs
+async function awardXP(players, transaction) {
+	const totalPlayers = players.length;
+	
+	for (const player of players) {
+		// Ignorer les joueurs non authentifiés (userId = -1)
+		if (player.userId === -1) continue;
+		
+		// Calculer l'XP gagné
+		const xpGained = calculateXP(player.position, totalPlayers);
+		
+		// Récupérer le joueur actuel
+		const dbPlayer = await db.models.players.findByPk(player.userId, { transaction });
+		
+		if (dbPlayer) {
+			const newXP = dbPlayer.xp + xpGained;
+			const newLevel = calculateLevel(newXP);
+			
+			await dbPlayer.update({
+				xp: newXP,
+				level: newLevel
+			}, { transaction });
+			
+			console.log(`💫 ${dbPlayer.pseudonym} gagne ${xpGained} XP (position ${player.position}). Total: ${newXP} XP, Level: ${newLevel}`);
+		}
+	}
+}
 
 /**
  * @swagger
@@ -216,6 +269,19 @@ export async function gamesSave(req, res) {
 			}));
 
 			await db.models.playerStats.bulkCreate(statsRows, { transaction });
+
+			// Attribution de l'XP en fonction de la position
+			await awardXP(gameData.players, transaction);
+
+			// Vérifier et débloquer les achievements pour chaque joueur
+			for (const player of gameData.players) {
+				if (player.userId !== -1) {
+					const unlockedAchievements = await checkAndUnlockAchievements(player.userId, gameData, transaction);
+					if (unlockedAchievements.length > 0) {
+						console.log(`🏆 Player ${player.userId} unlocked ${unlockedAchievements.length} achievement(s)`);
+					}
+				}
+			}
 
 			await transaction.commit();
 

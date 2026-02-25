@@ -592,7 +592,13 @@ function initLobbyHandler(socket, io) {
 			roomID: roomID,
 			platforms: gameInstances[roomID].platforms,
 			checkpoints: gameInstances[roomID].checkpoints,
-			gameType: gameInstances[roomID].gameType
+			gameType: gameInstances[roomID].gameType,
+			totalPlayers: Object.keys(gameInstances[roomID].players).length
+		});
+
+		// Notifier tous les joueurs de la room du nouveau nombre total
+		io.to(roomID).emit('playersCountUpdate', {
+			totalPlayers: Object.keys(gameInstances[roomID].players).length
 		});
 
 		if (gameInstances[roomID].type === 'random' && gameInstances[roomID].expectedPlayers) {

@@ -1,3 +1,19 @@
 private:
 	survie, marche pas ?
 	gerer le ctrl r en partie
+
+/!\ DANS LES REQUIREMENTS /!\
+Il faut une "styling solution" genre tailwind ou bootstrap, la on a que des fichiers css. 
+
+Style du gameRecap
+
+User management : 
+	-updater infos profil	
+	-ajouter un avatar
+	-ajouter des amis et voir les amis en ligne
+
+Badges, achievements, XP system (je suis en train de faire ca) 
+
+Faire un readme.md
+
+

@@ -16,6 +16,8 @@ CREATE TABLE players (
 	id INT PRIMARY KEY,
 	pseudonym VARCHAR(50) NOT NULL,
 	bio TEXT,
+	xp INT DEFAULT 0,
+	`level` INT DEFAULT 0,
 	coins INT DEFAULT 0,
 	avatar_url VARCHAR(255),
 	created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
@@ -52,6 +54,24 @@ CREATE TABLE items (
 	item_type VARCHAR(50),
 	acquired_at DATETIME DEFAULT CURRENT_TIMESTAMP,
 	FOREIGN KEY (player_id) REFERENCES players(id) ON DELETE CASCADE
+);
+
+CREATE TABLE achievements (
+	id INT AUTO_INCREMENT PRIMARY KEY,
+	achievement_name VARCHAR(50) NOT NULL,
+	achievement_description VARCHAR(200) NOT NULL,
+	icon VARCHAR (100),
+	category VARCHAR(50)
+);
+
+CREATE TABLE player_achievements (
+	id INT AUTO_INCREMENT PRIMARY KEY,
+	player_id INT NOT NULL,
+	achievement_id INT NOT NULL,
+	acquired_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+	FOREIGN KEY (player_id) REFERENCES players(id) ON DELETE CASCADE,
+	FOREIGN KEY (achievement_id) REFERENCES achievements(id) ON DELETE CASCADE,
+	UNIQUE KEY unique_player_achievement (player_id, achievement_id)
 );
 
 -- Leaderboard table

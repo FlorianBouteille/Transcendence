@@ -3,6 +3,7 @@ import { register, login, verify2FA, logout } from "./controllers/auth.controlle
 import { usersMePassword, usersMe2fa, usersMeDelete } from "./controllers/users.controller.js";
 import * as prfls from "./controllers/profiles.controller.js";
 import { gamesHistory, gamesIdHistory, gamesSave } from "./controllers/games.controller.js";
+import { getAllAchievements, getMyAchievements, getPlayerAchievements } from "./controllers/achievements.controller.js";
 import { checkPlayerId } from "./middlewares/check_player_id.js"
 import { parseParams } from "./middlewares/params.js";
 import { checkAuthToken } from "./middlewares/auth.js";
@@ -37,3 +38,8 @@ routes.get("/games", gamesHistory);
 routes.get("/games/:id", parseParams({id: 'int'}), gamesIdHistory);
 
 routes.post("/games", gamesSave);
+
+// ---------- Achievements ----------
+routes.get("/achievements", getAllAchievements);
+routes.get("/achievements/me", checkAuthToken, getMyAchievements);
+routes.get("/profiles/:id/achievements", checkAuthToken, getPlayerAchievements);

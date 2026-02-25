@@ -305,6 +305,7 @@ socket.on('roomJoined', (data) => {
 	console.log('✅ Room jointe, création des plateformes');
 	gameType = data.gameType || 'crown';
 	console.log('🎮 Mode de jeu:', gameType);
+	console.log('👥 Nombre total de joueurs:', data.totalPlayers);
 
 	// Configurer l'environment map en fonction du gameType
 	if (gameType === 'crown') {
@@ -314,8 +315,16 @@ socket.on('roomJoined', (data) => {
 	} else {
 		scene.background = environmentMap;
 		scene.environment = environmentMap;
-		currentGame = new SurviveGame(scene, player, remotePlayers, movingPlatformsFromBack, socket);
+		currentGame = new SurviveGame(scene, player, remotePlayers, movingPlatformsFromBack, socket, data.totalPlayers);
 	}
+
+	// Mettre à jour le nombre total de joueurs si on reçoit une mise à jour
+	socket.on('playersCountUpdate', (updateData) => {
+		if (currentGame && currentGame.updateTotalPlayers) {
+			currentGame.updateTotalPlayers(updateData.totalPlayers);
+			console.log('👥 Mise à jour du nombre de joueurs:', updateData.totalPlayers);
+		}
+	});
 
 	if (data.platforms) {
 		createPlatforms(data.platforms);

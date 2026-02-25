@@ -165,3 +165,17 @@ INSERT INTO leaderboard (player_id, total_score, global_rank) VALUES
 (12, 480, 18),
 (19, 450, 19),
 (20, 430, 20);
+
+-- =========================================================
+-- achievements
+-- =========================================================
+INSERT INTO achievements (id, achievement_name, achievement_description, icon, category) VALUES
+(1, 'First Win', 'Win your first game', '🏆', 'bronze'),
+(2, '10 Wins', 'Win 10 games', '🥇', 'silver'),
+(3, '50 Wins', 'Win 50 games', '👑', 'gold'),
+(4, 'First Game', 'Play your first game', '🎮', 'bronze'),
+(5, '100 Games', 'Play 100 games', '🎯', 'gold'),
+(6, 'Level 5', 'Reach level 5', '⭐', 'silver'),
+(7, 'Level 10', 'Reach level 10', '✨', 'gold'),
+(8, 'Crown Master', 'Win a game in Crown mode', '👑', 'silver'),
+(9, 'Survivor', 'Win a game in Survive mode', '💪', 'silver');

@@ -29,6 +29,15 @@
 				<p class="cloud-title" id="profile-pseudonym">Loading...</p>
 				<p class="cloud-text" id="profile-bio"></p>
 				<p class="cloud-stats" id="profile-stats"></p>
+				<div class="xp-container">
+					<div class="xp-header">
+						<span class="level-badge" id="profile-level">Level 1</span>
+						<span class="xp-text" id="profile-xp">0 / 100 XP</span>
+					</div>
+					<div class="xp-bar-bg">
+						<div class="xp-bar-fill" id="xp-bar-fill"></div>
+					</div>
+				</div>
 			</div>
 		</div>
 		<!-- <div id="cloud-bg" aria-label="Message du jour">
@@ -44,6 +53,14 @@
 			<img id="personnage-img" src="" alt="Personnage">
 		</div>
 		<img id="podium" src="perso_color/podium.png" alt="Podium">
+		
+		<!-- Achievements Section -->
+		<div class="achievements-section">
+			<h2 class="achievements-title">🏆 Achievements</h2>
+			<div id="achievements-container" class="achievements-grid">
+				<p class="loading-achievements">Loading achievements...</p>
+			</div>
+		</div>
 	</main>
 
 	<script defer>
@@ -59,12 +76,28 @@
 				if (!response.ok) throw new Error("Not logged in");
 
 				const data = await response.json();
-
+				const winrate = data.wins / data.allGames * 100;
+				console.log(data);
 				document.getElementById("profile-pseudonym").textContent = data.pseudonym;
 				document.getElementById("profile-bio").textContent = data.bio;
 				document.getElementById("profile-stats").textContent =
-					`Games: ${data.allGames} • Wins: ${data.wins}`;
-
+					`Games: ${data.allGames} • Wins: ${data.wins}\nWinrate: ${winrate}%`; 		
+				// Afficher l'XP et le niveau
+				const level = data.level || 0;
+				const xp = data.xp || 0;
+				const xpForCurrentLevel = level * 100;
+				const xpForNextLevel = (level + 1) * 100;
+				const xpInCurrentLevel = xp - xpForCurrentLevel;
+				const xpNeededForNextLevel = xpForNextLevel - xpForCurrentLevel;
+				const progressPercent = (xpInCurrentLevel / xpNeededForNextLevel) * 100;
+				
+				document.getElementById("profile-level").textContent = `Level ${level}`;
+				document.getElementById("profile-xp").textContent = `${xpInCurrentLevel} / ${xpNeededForNextLevel} XP`;
+				document.getElementById("xp-bar-fill").style.width = `${progressPercent}%`;
+				
+				// Fetch and display achievements
+				fetchAchievements();
+				
 				// Show page after successful fetch
 				main.classList.remove("hidden");
 
@@ -74,6 +107,39 @@
 				window.location.href = "login.html";
 			}
 		});
+
+		async function fetchAchievements() {
+			try {
+				const response = await fetch("http://localhost:8080/api/achievements/me", {
+					method: "GET",
+					credentials: "include"
+				});
+
+				if (!response.ok) throw new Error("Failed to fetch achievements");
+
+				const result = await response.json();
+				const achievementsContainer = document.getElementById("achievements-container");
+				
+				if (result.data && result.data.length > 0) {
+					achievementsContainer.innerHTML = result.data.map(item => `
+						<div class="achievement-card">
+							<div class="achievement-icon">${item.achievement.icon}</div>
+							<div class="achievement-info">
+								<h3 class="achievement-name">${item.achievement.achievement_name}</h3>
+								<p class="achievement-desc">${item.achievement.achievement_description}</p>
+								<span class="achievement-date">Unlocked: ${new Date(item.acquired_at).toLocaleDateString()}</span>
+							</div>
+							<span class="achievement-badge ${item.achievement.category}">${item.achievement.category}</span>
+						</div>
+					`).join('');
+				} else {
+					achievementsContainer.innerHTML = '<p class="no-achievements">No achievements yet. Play some games to unlock them! 🎮</p>';
+				}
+			} catch (error) {
+				console.error("Error fetching achievements:", error);
+				document.getElementById("achievements-container").innerHTML = '<p class="no-achievements">Failed to load achievements</p>';
+			}
+		}
 
         const personnages = [
             'perso_color/perso_1.png',

@@ -3,7 +3,7 @@ import { LinearPlatform } from './LinearPlatform.js'
 
 export class SurviveGame
 {
-    constructor(scene, player, otherPlayers, platforms, socket)
+    constructor(scene, player, otherPlayers, platforms, socket, totalPlayers)
     {
         this.socket = socket;
         this.player = player;
@@ -13,7 +13,8 @@ export class SurviveGame
         // Liste complète des joueurs vivants (incluant moi-même)
         this.alivePlayers = { ...otherPlayers };
         this.alivePlayers[socket.id] = player;
-        this.totalPlayers = Object.keys(this.alivePlayers).length;
+        this.totalPlayers = totalPlayers || Object.keys(this.alivePlayers).length;
+        this.remaining = totalPlayers;
         this.newPlayerDied = false;
         this.create_ui();
         
@@ -21,6 +22,7 @@ export class SurviveGame
         {
             delete this.alivePlayers[data.playerId];
             this.newPlayerDied = true;
+            this.remaining--;
             
             console.log(`💀 ${data.playerId} est mort! Restants: ${Object.keys(this.alivePlayers).length}`);
             
@@ -51,8 +53,17 @@ export class SurviveGame
         this.uiContainer.appendChild(timeContainer);
         const counterContainer = document.createElement('h2');
         counterContainer.id = 'counter';
-        counterContainer.innerText = "Remaining Players : " + this.totalPlayers + "/" + this.totalPlayers;
+        counterContainer.innerText = "Remaining Players : " + this.remaining + "/" + this.totalPlayers;
         this.uiContainer.appendChild(counterContainer);
+    }
+
+    updateTotalPlayers(newTotal)
+    {
+        this.totalPlayers = newTotal;
+        this.remaining = this.totalPlayers;
+        const counterContainer = document.getElementById('counter');
+        const alivePlayers = Object.keys(this.alivePlayers).length;
+        counterContainer.innerText = "Remaining Players : " + this.remaining + "/" + this.totalPlayers;
     }
 
     updateUi(elapsedTime)
@@ -63,7 +74,7 @@ export class SurviveGame
         {
             const counterContainer = document.getElementById('counter');
             const alivePlayers = Object.keys(this.alivePlayers).length;
-            counterContainer.innerText = "Remaining Players : " + alivePlayers + "/" + this.totalPlayers;
+            counterContainer.innerText = "Remaining Players : " + this.remaining + "/" + this.totalPlayers;
             this.newPlayerDied = false;
         }
     }

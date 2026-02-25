@@ -47,6 +47,8 @@ export async function profiles(req, res) {
 			attributes: [
 				'pseudonym',
 				'bio',
+				'xp',
+				'level',
 				[fn('COUNT', col('playerStats.id')), 'allGames'],
 				[db.sequelize.literal(`COUNT(CASE WHEN playerStats.position = 1 THEN 1 END)`), 'wins']
 			],
@@ -93,6 +95,8 @@ export async function profilesMe(req, res) {
 			attributes: [
 				'pseudonym',
 				'bio',
+				'xp',
+				'level',
 				[fn('COUNT', col('playerStats.id')), 'allGames'],
 				[db.sequelize.literal(`COUNT(CASE WHEN playerStats.position = 1 THEN 1 END)`), 'wins']
 			],
@@ -222,6 +226,8 @@ export async function profilesId(req, res) {
 			attributes: [
 				'pseudonym',
 				'bio',
+				'xp',
+				'level',
 				[fn('COUNT', col('playerStats.id')), 'allGames'],
 				[db.sequelize.literal(`COUNT(CASE WHEN playerStats.position = 1 THEN 1 END)`), 'wins']
 			],
