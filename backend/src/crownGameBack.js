@@ -338,7 +338,7 @@ function generateElevator(platforms, platformIdCounter) {
 	platforms.push({
 		id: platformIdCounter.value++,
 		type: 'periodic',
-		position: { x: 32, y: 51, z: -3.4 },
+		position: { x: 36, y: 51, z: -3.4 },
 		size: { x: 4, y: 0.5, z: 4 },
 		amplitude: { x: 0, y: 6, z: 0 },
 		speed: { x: 0, y: 2, z: 0 },
@@ -351,7 +351,7 @@ function generateElevator(platforms, platformIdCounter) {
 	platforms.push({
 		id: platformIdCounter.value++,
 		type: 'periodic',
-		position: { x: 32, y: 58, z: 1.4 },
+		position: { x: 32, y: 55, z: 1.4 },
 		size: { x: 4, y: 0.5, z: 4 },
 		amplitude: { x: 0, y: 6, z: 0 },
 		speed: { x: 0, y: 2, z: 0 },

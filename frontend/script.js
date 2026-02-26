@@ -337,7 +337,7 @@ socket.on('roomJoined', (data) => {
 		checkpointsCreated = true;
 		//Modifier le checkPoint initial du joueur pour tester
 		if (checkpointsFromBack.length > 0) {
-			player.checkPoint = checkpointsFromBack[4].mesh.position.clone();
+			player.checkPoint = checkpointsFromBack[3].mesh.position.clone();
 		}
 	}
 
@@ -368,6 +368,7 @@ const tick = () => {
 		movingPlatformsFromBack[i].update(elapsedTime);
 	}
 	// Mettre à jour tous les joueurs distants (interpolation + animation)
+	console.log(Object.keys(remotePlayers).length);
 	Object.values(remotePlayers).forEach(remotePlayer => {
 		remotePlayer.update(deltaTime);
 	});
