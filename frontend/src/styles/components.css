@@ -1,7 +1,33 @@
 @layer components {
+  /* ==========================================================================
+     COMPONENTS INDEX
+     01) Core primitives (panel/card/buttons/forms/badges/modal/tabs/dropdown)
+     02) Game recap ribbon + ticker
+     03) Lobby + notifications + player list
+     04) Legacy base layer (shared stars/grid legacy pages + orbit links + nav)
+     05) Auth pages (already/register/2FA)
+     06) Status pages (success/error)
+     07) Profile page (orange vibe + cloud + podium + pingpong rain)
+     08) Team/game helper pages
+     09) History pages (last games / leaderboard)
+     10) Legal & Privacy cards
+     ========================================================================== */
+
+  /* ========================= 01) CORE PRIMITIVES ========================= */
   .panel {
     @apply rounded-xl border border-border/45 bg-surface/70 p-6 shadow-glass backdrop-blur-md;
     background-image: var(--surface-glow);
+    container-type: inline-size;
+  }
+
+  .hero-title-fit {
+    /* Scales against the panel width so the title stays inside the card */
+    font-size: clamp(1.45rem, 8.7cqi, 3.85rem);
+    letter-spacing: clamp(0.01em, 0.55cqi, 0.08em);
+    line-height: 1.04;
+    white-space: nowrap;
+    max-inline-size: 100%;
+    margin-inline: auto;
   }
 
   .card {
@@ -196,6 +222,7 @@
     stroke: currentColor;
   }
 
+  /* ==================== 02) GAME RECAP RIBBON/TICKER ==================== */
   .hero-ribbon {
     @apply relative min-h-52 overflow-hidden border-b border-danger/40 bg-gradient-to-r from-danger via-accent to-danger;
   }
@@ -210,6 +237,7 @@
     animation: ticker 14s linear infinite;
   }
 
+  /* ==================== 03) LOBBY + TOAST + PLAYER LIST ==================== */
   .lobby-box {
     @apply w-full max-w-2xl rounded-xl border border-primary/35 bg-surface/55 p-6 text-center shadow-neon backdrop-blur;
     background-image: var(--surface-glow);
@@ -259,6 +287,7 @@
     @apply rounded-md border border-border/40 bg-surface/70 px-3 py-2 font-semibold;
   }
 
+  /* ======================= 04) LEGACY BASE LAYER ======================= */
   .alien-wrap {
     position: fixed;
     left: 0;
@@ -394,6 +423,7 @@
     background: linear-gradient(180deg, #6b5aa3 0%, #8a75bb 35%, #d3a2c9 65%, #f6d2d5 100%);
   }
 
+  /* ========================= 05) AUTH PAGES ========================= */
   .auth-return {
     position: absolute;
     left: 32px;
@@ -504,6 +534,7 @@
     text-decoration: underline;
   }
 
+  /* ======================== 06) STATUS PAGES ======================== */
   .screen--status {
     overflow: hidden;
   }
@@ -593,6 +624,7 @@
     text-shadow: 0 0 10px rgba(255, 251, 1, 0.45);
   }
 
+  /* ======================== 07) PROFILE PAGE ======================== */
   .screen--profile {
     background: linear-gradient(180deg, #ff8a3d 0%, #ffb647 40%, #ffe4a1 70%, #fff6e6 100%);
     overflow: hidden;
@@ -727,6 +759,7 @@
   .pingpong-ball.is-three { animation-name: pingpong-fall-3; }
   .pingpong-ball.is-four { animation-name: pingpong-fall-4; }
 
+  /* ==================== 08) TEAM/GAME HELPER PAGES ==================== */
   .screen--landing-classic {
     background: linear-gradient(180deg, #6b5aa3 0%, #8a75bb 35%, #d3a2c9 65%, #f6d2d5 100%);
   }
@@ -760,6 +793,7 @@
     outline: none;
   }
 
+  /* ==================== 09) HISTORY PAGES (LAST/TOP) ==================== */
   .history-board {
     width: min(760px, calc(100% - 40px));
     border-radius: 28px;
@@ -893,6 +927,7 @@
     }
   }
 
+  /* ======================= 10) LEGAL & PRIVACY ======================= */
   .legal-card {
     position: relative;
     max-width: 760px;
@@ -1009,6 +1044,7 @@
 }
 
 @layer utilities {
+  /* ============================== KEYFRAMES ============================== */
   @keyframes spin {
     to { transform: rotate(360deg); }
   }
