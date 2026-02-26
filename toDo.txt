@@ -14,6 +14,8 @@ User management :
 
 Badges, achievements, XP system (je suis en train de faire ca) 
 
+Tout passer en HTTPS
+
 Faire un readme.md
 
 

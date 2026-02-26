@@ -7,6 +7,7 @@ export class CrownGame
         this.crown = crown;
         this.socket = socket;
         this.player = player;
+        this.over = false;
         this.uiContainer;
         this.create_ui()
         scene.add(crown.mesh);
@@ -37,8 +38,12 @@ export class CrownGame
     tick(elapsedTime)
     {
         this.crown.update(elapsedTime);
-        if (this.crown.getBox().intersectsBox(this.player.getBox()))
+        if (this.crown.getBox().intersectsBox(this.player.getBox()) && this.over == false)
+        {
+            this.over = true;
             this.socket.emit("first", { playerData: this.player.data, elapsedTime: elapsedTime });
+            console.log('I arrived first !!');
+        }
         if (this.player.alive == false)
         {
             this.player.respawn();
