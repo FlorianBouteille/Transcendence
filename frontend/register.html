@@ -1,119 +1,49 @@
-<!--
-
 <!DOCTYPE html>
 <html lang="fr">
-    <head>
-        <meta charset="UTF-8" />
-        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <title>Register | ft_transcendence</title>
-        <link rel="stylesheet" href="./style.css" />
-    </head>
-    <body>
-        <main class="landing register-page">
-            <a class="nav-link bottom-left" href="index">retour</a>
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Register | ft_transcendence</title>
+  <link rel="stylesheet" href="./assets/styles.css" />
+</head>
+<body>
+  <main class="screen screen--legacy screen--auth">
+    <a class="auth-return" href="index.html">retour</a>
 
-            <section class="register-card" aria-labelledby="register-title">
-                <h1 id="register-title" class="register-title">Register your account</h1>
-                <form class="register-form" id="registerForm" autocomplete="on">
-                    <label class="register-field">
-                        <span>Username</span>
-                        <input type="text" id="username" name="username" placeholder="Enter a username..." required />
-                    </label>
-                    <label class="register-field">
-                        <span>Email address</span>
-                        <input type="email" id="email" name="email" placeholder="Enter your email address..." required />
-                    </label>
-                    <label class="register-field">
-                        <span>Password</span>
-                        <input type="password" id="password" name="password" placeholder="Enter your password..." required />
-                    </label>
-                    <label class="register-field">
-                        <span>Confirm Password</span>
-                        <input type="password" id="confirmPassword" name="confirmPassword" placeholder="Enter your password again..." required />
-                    </label>
+    <section class="auth-card" aria-labelledby="register-title">
+      <h1 id="register-title" class="auth-title">Create Account</h1>
 
-                    <button class="register-submit" type="submit">Sign up</button>
-					<p id="message"></p>
-                </form>
-            </section>
-            <p class="register-footer">Already have an account ? <a href="already.html">Sign in !</a>
-            </p>
-        </main>
+      <form id="registerForm" class="auth-form" autocomplete="on">
+        <label class="auth-field">
+          <span>Username</span>
+          <input class="auth-input" type="text" id="username" name="username" placeholder="Enter a username..." required />
+        </label>
 
-		<script>
-			document.getElementById('registerForm').addEventListener('submit', async (e) => {
-				e.preventDefault();
+        <label class="auth-field">
+          <span>Email address</span>
+          <input class="auth-input" type="email" id="email" name="email" placeholder="Enter your email address..." required />
+        </label>
 
-				const username = document.getElementById('username').value;
-				const email = document.getElementById('email').value;
-				const password = document.getElementById('password').value;
-				const confirmPassword = document.getElementById('confirmPassword').value;
-				const message = document.getElementById('message');
+        <label class="auth-field">
+          <span>Password</span>
+          <input class="auth-input" type="password" id="password" name="password" placeholder="Enter your password..." required />
+        </label>
 
-				try {
-					const response = await fetch('/api/register', {
-						method: 'POST',
-						headers: {'Content-Type' : 'application/json'},
-						body: JSON.stringify({username, email, password, confirmPassword})
-					});
+        <label class="auth-field">
+          <span>Confirm Password</span>
+          <input class="auth-input" type="password" id="confirmPassword" name="confirmPassword" placeholder="Enter your password again..." required />
+        </label>
 
-					const data = await response.json();
+        <button class="auth-submit" type="submit">Sign up</button>
+        <p id="message" class="auth-helper"></p>
+      </form>
 
-					if (response.ok) {
-						message.textContent = `Inscription reussie! Bienvenue ${data.user.email}`;
-						message.style.color = 'green';
-					} else {
-						message.textContent = data.error;
-						message.style.color = 'red';
-					}
-				} catch (err) {
-					message.textContent = 'Erreur de connexion au serveur';
-					message.style.color = 'red';
-				}
-			});
-		</script>
-    </body>
-</html>
-
-ajout :  case au cas ou mauvais mdp, ou deja loggin -->
-
-<!DOCTYPE html>
-<html lang="fr">
-	<head>
-	<meta charset="UTF-8" />
-	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-	<title>Register | ft_transcendence</title>
-	<link rel="stylesheet" href="./style.css" />
-	</head>
-	<body>
-	<main class="landing register-page">
-	<a class="nav-link bottom-left" href="index">retour</a>
-	<section class="register-card" aria-labelledby="register-title">
-	<h1 id="register-title" class="register-title">Register your account</h1>
-	<form class="register-form" id="registerForm" autocomplete="on">
-	<label class="register-field">
-	<span>Username</span>
-	<input type="text" id="username" name="username" placeholder="Enter a username..." required />
-	</label>
-	<label class="register-field">
-	<span>Email address</span>
-	<input type="email" id="email" name="email" placeholder="Enter your email address..." required />
-	</label>
-	<label class="register-field">
-	<span>Password</span>
-	<input type="password" id="password" name="password" placeholder="Enter your password..." required />
-	</label>
-	<label class="register-field">
-	<span>Confirm Password</span>
-	<input type="password" id="confirmPassword" name="confirmPassword" placeholder="Enter your password again..." required />
-	</label>
-	<p id="message" style="margin-top: 10px; font-weight: bold;"></p>
-	<button class="register-submit" type="submit">Sign up</button>
-	</form>
-	</section>
-	<p class="register-footer">Already have an account ? <a href="already.html">Sign in !</a>
-	</p>
-	</main>
+      <p class="auth-switch">
+        Already have an account?
+        <a href="already.html">Sign in</a>
+      </p>
+    </section>
+  </main>
 
 	<script>
 	document.getElementById('registerForm').addEventListener('submit', async (e) => {

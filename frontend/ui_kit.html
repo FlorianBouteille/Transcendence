@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>UI Kit | Transcendence</title>
+  <link rel="stylesheet" href="./assets/styles.css">
+</head>
+<body>
+  <main class="screen py-10">
+    <div class="mx-auto grid w-full max-w-5xl gap-6">
+      <header class="panel text-center">
+        <h1 class="alien-title" data-text="ui kit">ui kit</h1>
+        <p class="small-text">Quick visual reference for the project styles and components.</p>
+      </header>
+
+      <section class="card">
+        <h2 class="mb-3">Core Styles</h2>
+        <div class="grid gap-4 md:grid-cols-2">
+          <div>
+            <h3 class="mb-2">Palette</h3>
+            <div class="grid grid-cols-3 gap-2">
+              <div class="rounded-md border border-border p-2"><div class="h-8 rounded bg-bg"></div><p class="small-text mt-1">bg</p></div>
+              <div class="rounded-md border border-border p-2"><div class="h-8 rounded bg-surface"></div><p class="small-text mt-1">surface</p></div>
+              <div class="rounded-md border border-border p-2"><div class="h-8 rounded bg-primary"></div><p class="small-text mt-1">primary</p></div>
+              <div class="rounded-md border border-border p-2"><div class="h-8 rounded bg-secondary"></div><p class="small-text mt-1">secondary</p></div>
+              <div class="rounded-md border border-border p-2"><div class="h-8 rounded bg-accent"></div><p class="small-text mt-1">accent</p></div>
+              <div class="rounded-md border border-border p-2"><div class="h-8 rounded bg-danger"></div><p class="small-text mt-1">danger</p></div>
+            </div>
+          </div>
+          <div>
+            <h3 class="mb-2">Typography</h3>
+            <h1>Heading H1</h1>
+            <h2>Heading H2</h2>
+            <p>Body text.</p>
+            <p class="small-text">Helper text.</p>
+            <p class="small-text mt-2">Tokens source: <code>src/styles/tokens.css</code></p>
+          </div>
+        </div>
+      </section>
+
+      <section class="card">
+        <h2 class="mb-3">Reusable Components</h2>
+        <div class="grid gap-4">
+          <div>
+            <h3 class="mb-2">Buttons</h3>
+            <div class="flex flex-wrap gap-2">
+              <button class="btn btn--primary">Primary</button>
+              <button class="btn btn--secondary">Secondary</button>
+              <button class="btn btn--ghost">Ghost</button>
+              <button class="btn btn--danger">Danger</button>
+            </div>
+          </div>
+
+          <div>
+            <h3 class="mb-2">Form</h3>
+            <label class="field max-w-md">
+              <span class="field__label">Email</span>
+              <input class="input" placeholder="example@mail.com">
+              <span class="field__helper">Validation/helper area</span>
+            </label>
+          </div>
+
+          <div>
+            <h3 class="mb-2">History Row</h3>
+            <div class="grid gap-2">
+              <div class="history-row history-row--head history-row--leaderboard"><span>Rank</span><span>Login</span><span>Date</span><span class="history-score">Time</span></div>
+              <div class="history-row history-row--leaderboard"><span class="history-rank">1</span><span>Alien_01</span><span>26/02/2026</span><span class="history-score">12.42s</span></div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="card">
+        <h2 class="mb-3">Project Pages (Patterns)</h2>
+        <div class="flex flex-wrap gap-2">
+          <a class="btn btn--ghost btn--sm" href="register.html">Auth</a>
+          <a class="btn btn--ghost btn--sm" href="last_games.html">History</a>
+          <a class="btn btn--ghost btn--sm" href="legal.html">Legal</a>
+          <a class="btn btn--ghost btn--sm" href="success.html">Status</a>
+          <a class="btn btn--ghost btn--sm" href="profil.html">Profile</a>
+          <a class="btn btn--ghost btn--sm" href="lobby.html">Lobby</a>
+        </div>
+      </section>
+
+      <section class="card">
+        <h2 class="mb-3">Icons</h2>
+        <div class="grid grid-cols-4 gap-2 sm:grid-cols-6 md:grid-cols-8">
+          <div class="rounded-md border border-border p-2 text-center"><svg class="icon mx-auto"><use href="/assets/icons.svg#icon-home"></use></svg><p class="small-text mt-1">home</p></div>
+          <div class="rounded-md border border-border p-2 text-center"><svg class="icon mx-auto"><use href="/assets/icons.svg#icon-user"></use></svg><p class="small-text mt-1">user</p></div>
+          <div class="rounded-md border border-border p-2 text-center"><svg class="icon mx-auto"><use href="/assets/icons.svg#icon-play"></use></svg><p class="small-text mt-1">play</p></div>
+          <div class="rounded-md border border-border p-2 text-center"><svg class="icon mx-auto"><use href="/assets/icons.svg#icon-lock"></use></svg><p class="small-text mt-1">lock</p></div>
+          <div class="rounded-md border border-border p-2 text-center"><svg class="icon mx-auto"><use href="/assets/icons.svg#icon-trophy"></use></svg><p class="small-text mt-1">trophy</p></div>
+          <div class="rounded-md border border-border p-2 text-center"><svg class="icon mx-auto"><use href="/assets/icons.svg#icon-settings"></use></svg><p class="small-text mt-1">settings</p></div>
+          <div class="rounded-md border border-border p-2 text-center"><svg class="icon mx-auto"><use href="/assets/icons.svg#icon-check"></use></svg><p class="small-text mt-1">check</p></div>
+          <div class="rounded-md border border-border p-2 text-center"><svg class="icon mx-auto"><use href="/assets/icons.svg#icon-warning"></use></svg><p class="small-text mt-1">warning</p></div>
+        </div>
+      </section>
+    </div>
+  </main>
+</body>
+</html>

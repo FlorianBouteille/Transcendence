@@ -1,85 +1,42 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Error Log</title>
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-        
-        body {
-            min-height: 100vh;
-            display: grid;
-            place-items: center;
-            background: #f70303;
-            color: #000;
-            font-family: "Trebuchet MS", "Segoe UI", sans-serif;
-        }
-        
-        h1 {
-            font-size: clamp(3rem, 10vw, 7rem);
-            letter-spacing: 0.18em;
-            text-transform: uppercase;
-        }
-
-        .error-message,
-        .nav-link {
-            position: relative;
-            z-index: 2;
-        }
-
-        .error-message {
-            margin-top: 10px;
-            --error-message-offset-x: 0px;
-            --error-message-offset-y: -120px;
-            --error-message-font-size: 16px;
-            left: var(--error-message-offset-x);
-            top: var(--error-message-offset-y);
-            font-size: 3vh;
-        }
-        
-        .character {
-            position: absolute;
-            left: 50%;
-            top: 17%;
-            transform: translateX(-50%);
-            width: min(1350px, 500vw);
-            height: auto;
-            z-index: 1;
-        }
-
-
-        a {
-            color: #000000;
-            position: relative;
-            --return-link-offset-x: 0px;
-            --return-link-offset-y: 460px;
-            left: var(--return-link-offset-x);
-            top: var(--return-link-offset-y);
-        }
-        
-    </style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Error Log</title>
+  <link rel="stylesheet" href="./assets/styles.css" />
 </head>
-    <body>
+<body>
+  <main class="screen screen--status screen--status-error">
+    <div class="status-wrap">
+      <h1 class="status-title">ERROR LOG</h1>
+      <img class="status-character status-character--error" src="/perso_color/perso_big_eyes.png" alt="Error character" />
+      <p class="status-message" id="errorMessage">Failed to connect to the server</p>
+      <a class="status-return" id="errorReturn" href="register.html">return</a>
+    </div>
+  </main>
 
-        <img class="character" src="/perso_color/perso_big_eyes.png" alt="">
-        <h1>ERROR LOG</h1>
-        <!-- <a class=" nav-link bottom-left " href="javascript:history.back()">retour</a> -->
-        <a class="nav-link bottom-left" href="/" onclick="if (history.length > 1) { history.back(); return false; }">return</a>
-        <p class="error-message" id="errorMessage">Failed to connect to the server</p>
-        <script>
-            const storedMessage = sessionStorage.getItem('errorMessage');
-            if (storedMessage) {
-                document.getElementById('errorMessage').textContent = storedMessage;
-                sessionStorage.removeItem('errorMessage');
-            }
-        </script>
+  <script>
+    const messageEl = document.getElementById('errorMessage');
+    const returnEl = document.getElementById('errorReturn');
 
-    </body>
+    const storedMessage = sessionStorage.getItem('errorMessage');
+    const backTo = sessionStorage.getItem('errorBackTo');
 
+    if (storedMessage) {
+      messageEl.textContent = storedMessage;
+      sessionStorage.removeItem('errorMessage');
+    }
+
+    if (backTo === 'already.html' || backTo === 'register.html') {
+      returnEl.href = backTo;
+    } else if (document.referrer.includes('already.html')) {
+      returnEl.href = 'already.html';
+    } else {
+      returnEl.href = 'register.html';
+    }
+
+    sessionStorage.removeItem('errorBackTo');
+  </script>
+</body>
 </html>

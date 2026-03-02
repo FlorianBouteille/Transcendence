@@ -1,26 +1,29 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-	<meta charset="UTF-8">
-	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<title>2FA | ft_transcendence</title>
-	<link rel="stylesheet" href="./style.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>2FA | ft_transcendence</title>
+  <link rel="stylesheet" href="./assets/styles.css">
 </head>
 <body>
-	<main class="landing register-page">
-		<a class="nav-link bottom-left" href="already.html">retour</a>
+  <main class="screen screen--legacy screen--auth">
+    <a class="auth-return" href="already.html">retour</a>
 
-		<section class="register-card" aria-labelledby="2fa-title">
-			<h1 id="2fa-title" class="register-title">Verification 2FA</h1>
-			<form class="register-form" id="2faForm" autocomplete="off">
-				<label class="register-field">
-					<span>Code a 6 chiffres</span>
-					<input type="text" id="code" name="code" placeholder="Entrez le code..." maxlength="6" pattern="[0-9]{6}" required />
-				</label>
-				<p id="message" style="margin-top: 10px; font-weight: bold;"></p>
-				<button class="register-submit" type="submit">Valider</button>
-			</form>
-		</section>
+    <section class="auth-card" aria-labelledby="2fa-title">
+      <h1 id="2fa-title" class="auth-title">Verification 2FA</h1>
+
+      <form class="auth-form" id="2faForm" autocomplete="off">
+        <label class="auth-field">
+          <span>Code a 6 chiffres</span>
+          <input class="auth-input" type="text" id="code" name="code" placeholder="Entrez le code..." maxlength="6" pattern="[0-9]{6}" required />
+        </label>
+
+        <button class="auth-submit" type="submit">Valider</button>
+        <p id="message" class="auth-helper"></p>
+      </form>
+    </section>
+  </main>on>
 	</main>
 
 	<script>

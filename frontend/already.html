@@ -1,32 +1,39 @@
 <!DOCTYPE html>
 <html lang="fr">
-	<head>
-		<meta charset="UTF-8" />
-		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-		<title>Already | ft_transcendence</title>
-		<link rel="stylesheet" href="./style.css" />
-	</head>
-	<body>
-		<main class="landing already-page">
-			<a class="nav-link bottom-left" href="index">retour</a>
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Already | ft_transcendence</title>
+  <link rel="stylesheet" href="./assets/styles.css" />
+</head>
+<body>
+  <main class="screen screen--legacy screen--auth">
+    <a class="auth-return" href="index.html">retour</a>
 
-			<section class="register-card" aria-labelledby="login-title">
-				<h1 id="login-title" class="register-title"> </h1>
-				<form id="loginForm" class="register-form" autocomplete="on">
-					<label class="register-field">
-						<span>Login</span>
-						<input type="text" id="login" name="login" placeholder="Enter your login or mail..." required />
-					</label>
-					<label class="register-field">
-						<span>Password</span>
-						<input type="password" id="password" name="password" placeholder="Enter your password..." required />
-					</label>
-					<button class="register-submit" type="submit">Sign in</button>
-					<p id="message"></p>
-				</form>
+    <section class="auth-card" aria-labelledby="login-title">
+      <h1 id="login-title" class="auth-title">Login</h1>
 
-				<p class="register-footer"> New user ? <a href="register.html">Register</a> </p>
-		</main>
+      <form id="loginForm" class="auth-form" autocomplete="on">
+        <label class="auth-field">
+          <span>Login</span>
+          <input class="auth-input" type="text" id="login" name="login" placeholder="Enter your login or mail..." required />
+        </label>
+
+        <label class="auth-field">
+          <span>Password</span>
+          <input class="auth-input" type="password" id="password" name="password" placeholder="Enter your password..." required />
+        </label>
+
+        <button class="auth-submit" type="submit">Sign in</button>
+        <p id="message" class="auth-helper"></p>
+      </form>
+
+      <p class="auth-switch">
+        No account yet?
+        <a href="register.html">Sign up</a>
+      </p>
+    </section>
+  </main>
 
 		<script>
 				const messageEl = document.getElementById('message');
