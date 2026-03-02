@@ -6,6 +6,7 @@ import { items } from "./items.model.js";
 import { leaderboard } from "./leaderboard.model.js";
 import { achievements } from "./achievements.model.js";
 import { playerAchievements } from "./player-achievements.model.js";
+import { friends } from "./friends.model.js";
 
 // export the initModels function
 export async function initModels(sequelize, { sync = false, alter = false, force = false } = {}) {
@@ -22,6 +23,7 @@ export async function initModels(sequelize, { sync = false, alter = false, force
 	modelsInst.items = items(sequelize, modelsInst);
 	modelsInst.leaderboard = leaderboard(sequelize, modelsInst);
 	modelsInst.playerAchievements = playerAchievements(sequelize, modelsInst);
+	modelsInst.friends = friends(sequelize, modelsInst);
 
 	if (sync) {
 		await sequelize.sync({ alter, force });
