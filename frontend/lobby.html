@@ -24,7 +24,6 @@
 					</button>
 				</div>
 			</div>
-			<!-- ========== MENU PRINCIPAL ========== -->
 			<div id="main-menu" class="lobby-box">
 				<h1> SELECT MODE </h1>
 				<div class="menu-buttons">
@@ -34,11 +33,9 @@
 				</div>
 			</div>
 
-			<!-- ========== CHOIX PRIVATE ========== -->
 			<div id="private-choice" class="lobby-box hidden">
 				<h2>Private Room</h2>
 
-				<!-- 🆕 Ajouter un input pour créer avec un code custom -->
 				<div class="create-room-section">
 					<input type="text" id="custom-room-code" class="code-input"
 						placeholder="Enter custom code (optional)" maxlength="6">
@@ -49,7 +46,6 @@
 				<button id="back-btn-1" class="back-button">← Back</button>
 			</div>
 
-			<!-- ========== REJOINDRE UNE ROOM ========== -->
 			<div id="join-room-section" class="lobby-box hidden">
 				<h2>Enter Room Code</h2>
 				<input type="text" id="room-code-input" class="code-input" placeholder="ABC123" maxlength="6">
@@ -59,7 +55,6 @@
 				</div>
 			</div>
 
-			<!-- ========== ROOM CRÉÉE / REJOINTE ========== -->
 			<div id="room-view" class="lobby-box hidden">
 				<h2>Room: <span id="room-code">------</span></h2>
 
@@ -77,7 +72,6 @@
 				<button id="ready-btn" class="ready-button">READY</button>
 				<button id="leave-room-btn" class="back-button">Leave Room</button>
 			</div>
-			<!-- ========== FILE D'ATTENTE RANDOM ========== -->
 				<div id="queue-view" class="lobby-box hidden">
 				<h2>🔍 Searching for players...</h2>
 				<div id="countdown-timer">10</div>
@@ -93,7 +87,6 @@
 		<a class="lobby-return" href="index.html">Return</a>
 	</main>
 	
-	<!-- Notification Toast -->
 	<div id="notification" class="notification hidden">
 		<span id="notification-message"></span>
 	</div>
