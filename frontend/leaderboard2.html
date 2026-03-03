@@ -1,124 +1,176 @@
 <!DOCTYPE html>
 <html lang="fr">
-    <head>
-        <meta charset="UTF-8" />
-        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <title>Leaderboard | ft_transcendence</title>
-        <link rel="stylesheet" href="./style.css" />
-    </head>
-    <body>
-        <main class="landing history-page">
-            <a class="nav-link top-left" href="index">retour</a>
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Leaderboard | ft_transcendence</title>
+    <link rel="stylesheet" href="./assets/styles.css" />
+    <style>
+        .leaderboard-page {
+            min-height: 100vh;
+            padding: clamp(16px, 4vh, 40px) 16px 56px;
+            overflow-y: auto;
+        }
 
+        .leaderboard-wrap {
+            width: min(760px, 100%);
+            margin-inline: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 18px;
+            align-items: flex-start;
+        }
+
+    .leaderboard-row {
+      grid-template-columns: 0.6fr 1.45fr 1fr 1fr 1fr;
+    }
+
+    .leaderboard-return {
+      margin-left: 8px;
+      margin-top: 2px;
+    }
+
+    @media (max-width: 700px) {
+      .leaderboard-row {
+        grid-template-columns: 1fr;
+      }
+
+      .leaderboard-return {
+        margin-left: 0;
+      }
+    }
+  </style>
+</head>
+<body>
+    <main class="screen screen--legacy screen--history leaderboard-page">
+        <div class="relative z-10 leaderboard-wrap">
             <section class="history-board" aria-labelledby="history-title">
                 <header class="history-header">
                     <h1 id="history-title" class="history-title">TOTAL SCORE RANKING</h1>
+                    <p class="history-subtitle">Top 10 players</p>
                 </header>
 
                 <div class="history-table">
-                    <div class="history-row history-row--head">
+                    <div class="history-row history-row--head leaderboard-row">
                         <span>Rank</span>
                         <span>Login</span>
-                        <span class="sortable" data-sort="xp">XP ▼</span>
-                        <span class="sortable" data-sort="winrate">Winrate</span>
-                        <span class="sortable" data-sort="achievements">Achievements</span>
+                        <span class="sortable history-score" data-sort="xp">XP ▼</span>
+                        <span class="sortable history-score" data-sort="winrate">Winrate</span>
+                        <span class="sortable history-score" data-sort="achievements">Achievements</span>
                     </div>
-                    <div id="history-body"></div>
+                    <div id="history-body" class="grid gap-3"></div>
                 </div>
             </section>
-        </main>
 
-        <script>
-            let allPlayers = [];
-            let currentSort = 'xp';
-            
-            async function getPlayers()
-            {
-                const response = await fetch('http://localhost:8080/api/profiles');
-                const players = await response.json();
-                return players;
+            <a id="history-return" class="history-return leaderboard-return" href="index.html">retour</a>
+        </div>
+    </main>
+
+    <script>
+        let allPlayers = [];
+        let currentSort = "xp";
+
+        async function getPlayers() {
+            const response = await fetch("http://localhost:8080/api/profiles", { credentials: "include" });
+            const players = await response.json();
+            return players;
+        }
+
+        function sortPlayers(players, sortBy) {
+            const sorted = [...players];
+
+            switch (sortBy) {
+                case "xp":
+                    sorted.sort((a, b) => (b.xp || 0) - (a.xp || 0));
+                    break;
+                case "winrate":
+                    sorted.sort((a, b) => {
+                        const winrateA = a.allGames > 0 ? a.wins / a.allGames : 0;
+                        const winrateB = b.allGames > 0 ? b.wins / b.allGames : 0;
+                        return winrateB - winrateA;
+                    });
+                    break;
+                case "achievements":
+                    sorted.sort((a, b) => (b.achievementCount || 0) - (a.achievementCount || 0));
+                    break;
             }
-            
-            function sortPlayers(players, sortBy) {
-                const sorted = [...players];
-                
-                switch(sortBy) {
-                    case 'xp':
-                        sorted.sort((a, b) => b.xp - a.xp);
-                        break;
-                    case 'winrate':
-                        sorted.sort((a, b) => {
-                            const winrateA = a.allGames > 0 ? (a.wins / a.allGames) : 0;
-                            const winrateB = b.allGames > 0 ? (b.wins / b.allGames) : 0;
-                            return winrateB - winrateA;
-                        });
-                        break;
-                    case 'achievements':
-                        sorted.sort((a, b) => (b.achievementCount || 0) - (a.achievementCount || 0));
-                        break;
-                }
-                
-                return sorted;
+
+            return sorted;
+        }
+
+        function createCell(text, className = "") {
+            const cell = document.createElement("span");
+            cell.className = className;
+            cell.textContent = text;
+            return cell;
+        }
+
+        function displayPlayers(players) {
+            const historyBody = document.getElementById("history-body");
+            historyBody.innerHTML = "";
+
+            const topPlayers = players.slice(0, 10);
+            if (!topPlayers.length) {
+                const empty = document.createElement("div");
+                empty.className = "history-row leaderboard-row";
+                empty.append(
+                    createCell("#-"),
+                    createCell("Aucun joueur"),
+                    createCell("-"),
+                    createCell("-"),
+                    createCell("-"),
+                );
+                historyBody.appendChild(empty);
+                return;
             }
-            
-            function displayPlayers(players) {
-                const historyBody = document.getElementById('history-body');
-                historyBody.innerHTML = '';
-                
-                players.forEach((player, index) => {
-                    const rank = index + 1;
-                    const winrate = player.allGames > 0 
-                        ? ((player.wins / player.allGames) * 100).toFixed(1) 
-                        : '0.0';
-                    
-                    const row = document.createElement('div');
-                    row.className = 'history-row';
-                    row.innerHTML = `
-                        <span class="history-rank">#${rank}</span>
-                        <span>${player.pseudonym}</span>
-                        <span>${player.xp} XP</span>
-                        <span>${winrate}%</span>
-                        <span>${player.achievementCount || 0}</span>
-                    `;
-                    
-                    historyBody.appendChild(row);
-                });
-                
-                // Update sort indicators
-                document.querySelectorAll('.sortable').forEach(el => {
-                    const sortType = el.getAttribute('data-sort');
-                    if (sortType === currentSort) {
-                        el.textContent = el.textContent.replace(/[▼▲]/g, '') + ' ▼';
-                    } else {
-                        el.textContent = el.textContent.replace(/[▼▲]/g, '');
-                    }
-                });
-            }
-            
-            async function loadLeaderboard() 
-            {
+
+            topPlayers.forEach((player, index) => {
+                const rank = index + 1;
+                const winrate = player.allGames > 0 ? ((player.wins / player.allGames) * 100).toFixed(1) : "0.0";
+
+                const row = document.createElement("div");
+                row.className = "history-row leaderboard-row";
+                row.append(
+                    createCell(`#${rank}`, "history-rank"),
+                    createCell(player.pseudonym || "Unknown"),
+                    createCell(`${player.xp || 0} XP`, "history-score"),
+                    createCell(`${winrate}%`, "history-score"),
+                    createCell(String(player.achievementCount || 0), "history-score"),
+                );
+
+                historyBody.appendChild(row);
+            });
+
+            document.querySelectorAll(".sortable").forEach((el) => {
+                const baseText = el.textContent.replace(/[▼▲]/g, "").trim();
+                const sortType = el.getAttribute("data-sort");
+                el.textContent = sortType === currentSort ? `${baseText} ▼` : baseText;
+            });
+        }
+
+        async function loadLeaderboard() {
+            try {
                 const result = await getPlayers();
-                allPlayers = result.data;
-                
-                // Achievement counts are now included in the API response
-                
+                allPlayers = Array.isArray(result?.data) ? result.data : [];
                 const sortedPlayers = sortPlayers(allPlayers, currentSort);
                 displayPlayers(sortedPlayers);
+            } catch (error) {
+                displayPlayers([]);
             }
-            
-            // Add click handlers to sortable headers
-            document.addEventListener('DOMContentLoaded', () => {
-                document.querySelectorAll('.sortable').forEach(header => {
-                    header.style.cursor = 'pointer';
-                    header.addEventListener('click', () => {
-                        currentSort = header.getAttribute('data-sort');
-                        const sortedPlayers = sortPlayers(allPlayers, currentSort);
-                        displayPlayers(sortedPlayers);
-                    });
+        }
+
+        document.addEventListener("DOMContentLoaded", () => {
+            document.querySelectorAll(".sortable").forEach((header) => {
+                header.style.cursor = "pointer";
+                header.addEventListener("click", () => {
+                    currentSort = header.getAttribute("data-sort");
+                    const sortedPlayers = sortPlayers(allPlayers, currentSort);
+                    displayPlayers(sortedPlayers);
                 });
-                
-                loadLeaderboard();
             });
-        </script>
-    </body>
+
+            loadLeaderboard();
+        });
+    </script>
+</body>
 </html> 

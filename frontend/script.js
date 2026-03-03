@@ -245,6 +245,7 @@ window.addEventListener('keyup', onKey)
 const renderer = new THREE.WebGLRenderer({
 	canvas: canvas
 })
+renderer.setClearColor(0x000000, 1)
 renderer.setSize(sizes.width, sizes.height)
 renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2))
 

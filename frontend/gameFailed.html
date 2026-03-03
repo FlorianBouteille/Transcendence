@@ -3,26 +3,26 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Game Recap</title>
+    <title>Game Failed</title>
     <link rel="stylesheet" href="./assets/styles.css" />
     <style>
       .recap-screen {
-        background: linear-gradient(180deg, #0857b3 0%, #569ded 100%);
+        background: linear-gradient(180deg, #2c0404 0%, #f70303 100%);
       }
 
       .recap-screen .hero-ribbon {
-        background: #fffb01;
-        border-bottom-color: rgba(86, 157, 237, 0.35);
+        background: #000;
+        border-bottom-color: rgba(247, 3, 3, 0.4);
       }
 
       .recap-screen .ticker-track {
-        color: #569ded;
+        color: #f70303;
         text-shadow: 0 3px 0 rgba(0, 0, 0, 0.18);
-        animation: recap-ticker 8.5s linear infinite;
+        animation: failed-ticker 8.5s linear infinite;
       }
 
       .recap-screen .history-board {
-        background: rgba(231, 234, 241, 0.9);
+        background: rgba(231, 241, 232, 0.9);
         border: 1px solid rgba(210, 215, 224, 0.95);
       }
 
@@ -30,8 +30,8 @@
         border-color: #ff4fd8;
       }
 
-      .recap-screen .alien[src*="perso_success"] {
-        width: 165px;
+      .recap-screen .alien[src*="perso_big_eyes"] {
+        width: 660px;
         height: auto;
       }
 
@@ -67,7 +67,7 @@
         text-shadow: none;
       }
 
-      @keyframes recap-ticker {
+      @keyframes failed-ticker {
         0% {
           transform: translateX(0);
         }
@@ -82,12 +82,12 @@
       <header class="hero-ribbon w-full">
         <div class="ticker" aria-hidden="true">
           <div class="ticker-track">
-            <span>VICTORY</span><span>VICTORY</span><span>VICTORY</span><span>VICTORY</span><span>VICTORY</span>
-            <span>VICTORY</span><span>VICTORY</span><span>VICTORY</span><span>VICTORY</span><span>VICTORY</span>
+            <span>DEFEAT</span><span>DEFEAT</span><span>DEFEAT</span><span>DEFEAT</span><span>DEFEAT</span>
+            <span>DEFEAT</span><span>DEFEAT</span><span>DEFEAT</span><span>DEFEAT</span><span>DEFEAT</span>
           </div>
           <div class="ticker-track" aria-hidden="true">
-            <span>VICTORY</span><span>VICTORY</span><span>VICTORY</span><span>VICTORY</span><span>VICTORY</span>
-            <span>VICTORY</span><span>VICTORY</span><span>VICTORY</span><span>VICTORY</span><span>VICTORY</span>
+            <span>DEFEAT</span><span>DEFEAT</span><span>DEFEAT</span><span>DEFEAT</span><span>DEFEAT</span>
+            <span>DEFEAT</span><span>DEFEAT</span><span>DEFEAT</span><span>DEFEAT</span><span>DEFEAT</span>
           </div>
         </div>
       </header>
@@ -97,7 +97,7 @@
           <h1 id="recap-title" class="history-title">Game Recap</h1>
           <p class="mt-4 text-xl font-bold text-[#2a1748] sm:text-2xl">
             <span id="winner-name" class="text-[#ff4fd8]">Player</span>
-            won in
+            lose in
             <span id="completion-time" class="text-[#39FF14]">0</span>
             seconds!
           </p>
@@ -121,11 +121,11 @@
       </section>
 
       <a class="back-to-lobby-outline mt-5" href="lobby.html">Back to Lobby</a>
-      		<div class="alien-wrap" data-alien>
-			<img class="alien" src="/perso_color/perso_success.png" alt="Alien success">
+            		<div class="alien-wrap" data-alien>
+			<img class="alien" src="/perso_color/perso_big_eyes.png" alt="Alien error">
 		</div>
-          		<div class="alien-wrap" data-alien>
-			<img class="alien" src="/perso_color/perso_success.png" alt="Alien success">
+            		<div class="alien-wrap" data-alien>
+			<img class="alien" src="/perso_color/perso_big_eyes.png" alt="Alien error">
 		</div>
     </main>
 

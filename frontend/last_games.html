@@ -1,98 +1,204 @@
 <!DOCTYPE html>
 <html lang="fr">
-	<head>
-		<meta charset="UTF-8" />
-		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-		<title>Last Games | ft_transcendence</title>
-		<link rel="stylesheet" href="./style.css" />
-	</head>
-	<body>
-		<main class="landing history-page">
-			<a class="nav-link top-left" href="index">retour</a>
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Last Games | ft_transcendence</title>
+  <link rel="stylesheet" href="./assets/styles.css" />
+  <style>
+    .lastgames-page {
+      min-height: 100vh;
+      padding: clamp(16px, 4vh, 40px) 16px 56px;
+      overflow-y: auto;
+    }
 
-			<section class="history-board" aria-labelledby="history-title">
-				<header class="history-header">
-					<h1 id="history-title" class="history-title">LAST GAMES</h1>
-				</header>
+    .lastgames-wrap {
+      width: min(760px, 100%);
+      margin-inline: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 18px;
+      align-items: flex-start;
+    }
 
-				<div class="history-table">
-					<div class="history-row history-row--head history-row--no-rank">
-						<span>Game mode</span>
-						<span>Date</span>
-						<span>Duration</span>
-						<span>Winner</span>
-					</div>
-					<div id="history-body"></div>
-				</div>
-			</section>
-		</main>
+    .lastgames-row {
+      grid-template-columns: 1.2fr 1.6fr 1fr 1.1fr;
+    }
 
-		<script>
-			const HISTORY_ENDPOINT = "/api/games?limit=10";
+    .lastgames-return {
+      margin-left: 8px;
+      margin-top: 2px;
+    }
 
-			const historyBody = document.getElementById("history-body");
+    @media (max-width: 700px) {
+      .lastgames-row {
+        grid-template-columns: 1fr;
+      }
 
-			// const formatDate = (value) => {
-			// 	if (!value) return "-";
-			// 	const date = new Date(value);
-			// 	if (Number.isNaN(date.getTime())) return String(value);
-			// 	return new Intl.DateTimeFormat("fr-FR").format(date);
-			// };
+      .lastgames-return {
+        margin-left: 0;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main class="screen screen--legacy screen--history lastgames-page">
+    <div class="relative z-10 lastgames-wrap">
+      <section class="history-board" aria-labelledby="history-title">
+        <header class="history-header">
+          <h1 id="history-title" class="history-title">LAST GAMES</h1>
+          <p class="history-subtitle">Historique recent: plus recente vers plus ancienne</p>
+        </header>
 
-			const createRow = ({ mode, date, duration, winner }) => {
-				const row = document.createElement("div");
-				row.className = "history-row history-row--no-rank";
+        <div class="history-table">
+          <div class="history-row history-row--head lastgames-row">
+            <span>Game mode</span>
+            <span>Date</span>
+            <span class="history-score">Duration</span>
+            <span class="history-score">Winner</span>
+          </div>
+          <div id="history-body" class="grid gap-3"></div>
+        </div>
+      </section>
 
-				const gameModeCell = document.createElement("span");
-				gameModeCell.textContent = mode ?? "-";
+      <a id="history-return" class="history-return lastgames-return" href="index.html">retour</a>
+    </div>
+  </main>
 
-				const dateCell = document.createElement("span");
-				dateCell.textContent = date ?? "-";
+    <script>
+      const HISTORY_ENDPOINT = "/api/games?limit=200";
 
-				const durationCell = document.createElement("span");
-				durationCell.textContent = duration ?? "-";
+      const historyBody = document.getElementById("history-body");
 
-				const winnerCell = document.createElement("span");
-				winnerCell.textContent = winner ?? "-";
+      const formatDate = (value) => {
+        if (!value) return "-";
+        const date = new Date(value);
+        if (Number.isNaN(date.getTime())) return String(value);
+        return `${new Intl.DateTimeFormat("fr-FR").format(date)} ${date.toLocaleTimeString("fr-FR", {
+          hour: "2-digit",
+          minute: "2-digit",
+          second: "2-digit",
+        })}`;
+      };
 
-				row.append(gameModeCell, dateCell, durationCell, winnerCell);
-				return row;
-			};
+      const formatDuration = (value) => {
+        if (value === null || value === undefined || value === "") return "-";
+        if (typeof value === "string" && value.includes(":")) return value;
 
-			const renderHistory = (games) => {
-				historyBody.innerHTML = "";
+        const totalSeconds = Number(value);
+        if (Number.isNaN(totalSeconds)) return String(value);
 
-				const limited = Array.isArray(games) ? games.slice(0, 10) : [];
-				if (!limited.length) {
-					const emptyRow = createRow({
-						mode: "Aucune partie",
-						date: "",
-						duration: "",
-						winner: "",
-					});
-					historyBody.appendChild(emptyRow);
-					return;
-				}
+        const hours = Math.floor(totalSeconds / 3600)
+          .toString()
+          .padStart(2, "0");
+        const minutes = Math.floor((totalSeconds % 3600) / 60)
+          .toString()
+          .padStart(2, "0");
+        const seconds = Math.floor(totalSeconds % 60)
+          .toString()
+          .padStart(2, "0");
+        return `${hours}:${minutes}:${seconds}`;
+      };
 
-				limited.forEach((game) => {
-					historyBody.appendChild(createRow(game));
-				});
-			};
+      const createCell = (text, className = "") => {
+        const cell = document.createElement("span");
+        cell.className = className;
+        cell.textContent = text;
+        return cell;
+      };
 
-			const loadHistory = async () => {
-				try {
-					const response = await fetch(HISTORY_ENDPOINT, { credentials: "include" });
-					if (!response.ok) {
-						throw new Error(`HTTP ${response.status}`);
-					}
-					const result = await response.json();
-					renderHistory(result.data);
-				} catch (error) {
-					renderHistory([]);
-				}
-			};
+      const createRow = ({ mode, date, duration, winner }) => {
+        const row = document.createElement("div");
+        row.className = "history-row lastgames-row";
 
-			loadHistory();
-		</script>
-	</body>
+        row.append(
+          createCell(mode ?? "-"),
+          createCell(formatDate(date)),
+          createCell(formatDuration(duration), "history-score"),
+          createCell(winner ?? "-", "history-score"),
+        );
+        return row;
+      };
+
+      const normalizeGame = (game) => ({
+        mode:
+          game?.mode ??
+          game?.game_mode ??
+          game?.gameMode ??
+          game?.type ??
+          game?.mode_name ??
+          game?.modeName ??
+          "-",
+        date:
+          game?.date ??
+          game?.played_at ??
+          game?.playedAt ??
+          game?.created_at ??
+          game?.createdAt ??
+          game?.game_date ??
+          game?.gameDate ??
+          "",
+        duration:
+          game?.duration ??
+          game?.duration_seconds ??
+          game?.durationSeconds ??
+          game?.game_duration ??
+          game?.gameDuration ??
+          game?.duration_time ??
+          game?.durationTime ??
+          "",
+        winner:
+          game?.winner ??
+          game?.winner_login ??
+          game?.winnerLogin ??
+          game?.winner_username ??
+          game?.winnerUsername ??
+          game?.login ??
+          game?.username ??
+          "-",
+      });
+
+      const renderHistory = (games) => {
+        historyBody.innerHTML = "";
+
+        const orderedGames = Array.isArray(games) ? [...games] : [];
+        orderedGames.sort((a, b) => {
+          const aTime = new Date(a?.date ?? a?.played_at ?? a?.playedAt ?? a?.created_at ?? a?.createdAt ?? 0).getTime();
+          const bTime = new Date(b?.date ?? b?.played_at ?? b?.playedAt ?? b?.created_at ?? b?.createdAt ?? 0).getTime();
+          return bTime - aTime;
+        });
+
+        const limited = orderedGames.slice(0, 200);
+        if (limited.length > 10) {
+          historyBody.classList.add("max-h-[55vh]", "overflow-y-auto", "pr-1");
+        } else {
+          historyBody.classList.remove("max-h-[55vh]", "overflow-y-auto", "pr-1");
+        }
+
+        if (!limited.length) {
+          historyBody.appendChild(
+            createRow({ mode: "Aucune partie", date: "", duration: "", winner: "" }),
+          );
+          return;
+        }
+
+        limited.forEach((game) => {
+          historyBody.appendChild(createRow(normalizeGame(game)));
+        });
+      };
+
+      const loadHistory = async () => {
+        try {
+          const response = await fetch(HISTORY_ENDPOINT, { credentials: "include" });
+          if (!response.ok) throw new Error(`HTTP ${response.status}`);
+          const result = await response.json();
+          renderHistory(result?.data ?? result);
+        } catch (error) {
+          renderHistory([]);
+        }
+      };
+
+      loadHistory();
+    </script>
+</body>
 </html>

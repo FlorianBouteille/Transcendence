@@ -5,24 +5,262 @@
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<title>Transcendence</title>
-	<link rel="stylesheet" href="./style.css">
+	<link rel="stylesheet" href="./assets/styles.css">
+	<style>
+		.home-nav {
+			position: absolute;
+			z-index: 20;
+			text-decoration: none;
+			color: #39FF14;
+			font-weight: 600;
+			font-size: 0.95rem;
+			letter-spacing: 0.08em;
+			text-transform: uppercase;
+			transition: color 0.2s ease, text-shadow 0.2s ease;
+			text-shadow: 0 0 10px rgba(57, 255, 20, 0.5);
+		}
+
+		.home-nav:hover {
+			color: #6b5aa3;
+			text-shadow: 0 0 20px rgba(0, 255, 65, 0.8), 0 0 30px rgba(0, 255, 65, 0.4);
+		}
+
+		.home-hero {
+			position: relative;
+			z-index: 10;
+			display: grid;
+			place-items: center;
+			gap: 16px;
+			text-align: center;
+			isolation: isolate;
+		}
+
+		.home-hero>* {
+			position: relative;
+			z-index: 2;
+		}
+
+		.home-hero::after {
+			content: "";
+			position: fixed;
+			left: 50%;
+			top: 50%;
+			width: 58vw;
+			height: 58vw;
+			max-width: 920px;
+			max-height: 920px;
+			border-radius: 50%;
+			pointer-events: none;
+			z-index: 1;
+			opacity: 0;
+			transform: translate(-50%, -50%) scale(0.08);
+			background:
+				radial-gradient(circle,
+					rgba(255, 251, 168, 0.95) 0%,
+					rgba(255, 241, 88, 0.74) 14%,
+					rgba(255, 219, 61, 0.48) 32%,
+					rgba(255, 208, 0, 0.2) 52%,
+					rgba(255, 208, 0, 0) 72%);
+			mix-blend-mode: screen;
+			animation: title-yellow-flash 3s cubic-bezier(0.15, 0.73, 0.21, 1) infinite;
+		}
+
+		.home-title {
+			font-size: clamp(2.8rem, 7vw, 5.8rem);
+			letter-spacing: 0.14em;
+			position: relative;
+			white-space: nowrap;
+		}
+
+		.home-title::before {
+			content: attr(data-text);
+			position: absolute;
+			inset: 0;
+			z-index: -1;
+			color: rgba(255, 243, 128, 0.28);
+			text-shadow:
+				0 0 12px rgba(255, 241, 123, 0.35),
+				0 0 22px rgba(255, 226, 48, 0.35),
+				0 0 34px rgba(255, 205, 0, 0.28);
+			filter: blur(0.5px);
+			opacity: 0;
+			transform: scale(1);
+			animation: title-shadow-bloom 3s ease-out infinite;
+		}
+
+		.home-cta {
+			border-radius: 9999px;
+			border: 1px solid rgba(0, 0, 0, 0.15);
+			background: rgba(255, 255, 255, 0.7);
+			padding: 10px 32px;
+			font-size: 0.95rem;
+			font-weight: 600;
+			text-transform: uppercase;
+			letter-spacing: 0.14em;
+			color: #1e1630;
+			box-shadow: 0 8px 20px rgba(37, 23, 58, 0.2);
+			transition: transform 0.2s ease, box-shadow 0.2s ease;
+		}
+
+		.home-cta:hover {
+			transform: translateY(-2px);
+			box-shadow: 0 12px 26px rgba(37, 23, 58, 0.28);
+		}
+
+		@keyframes title-shadow-bloom {
+			0%,
+			60%,
+			100% {
+				opacity: 0;
+				filter: blur(0.5px);
+				transform: scale(1);
+			}
+
+			70% {
+				opacity: 0.16;
+			}
+
+			79% {
+				opacity: 0.35;
+				filter: blur(1.4px);
+				transform: scale(1.03);
+			}
+
+			86% {
+				opacity: 0.66;
+				filter: blur(3px);
+				transform: scale(1.08);
+			}
+
+			91% {
+				opacity: 1;
+				filter: blur(5.2px);
+				transform: scale(1.14);
+			}
+
+			96% {
+				opacity: 0.18;
+				filter: blur(9px);
+				transform: scale(1.24);
+			}
+		}
+
+		@keyframes title-yellow-flash {
+			0%,
+			82% {
+				opacity: 0;
+				transform: translate(-50%, -50%) scale(0.08);
+			}
+
+			89% {
+				opacity: 0.22;
+				transform: translate(-50%, -50%) scale(0.42);
+			}
+
+			93% {
+				opacity: 0.56;
+				transform: translate(-50%, -50%) scale(0.95);
+			}
+
+			96% {
+				opacity: 0.92;
+				transform: translate(-50%, -50%) scale(1.92);
+			}
+
+			98% {
+				opacity: 0.88;
+				transform: translate(-50%, -50%) scale(3.25);
+			}
+
+			100% {
+				opacity: 0;
+				transform: translate(-50%, -50%) scale(5.55);
+			}
+		}
+	</style>
 </head>
 
 <body>
+	<main class="screen screen--legacy screen--landing-classic overflow-hidden">
+		<a
+			class="home-nav"
+			style="left: 32px; top: 28px;"
+			href="leaderboard2.html"
+		>
+			Leaderboard
+		</a>
+		<a
+			class="home-nav"
+			style="right: 32px; top: 110px;"
+			id="auth-link"
+			href="register.html"
+		>
+			LOGIN
+		</a>
+		<a
+			class="home-nav"
+			style="right: 32px; top: 28px;"
+			href="profil.html"
+		>
+			PROFIL
+		</a>
 
-	<main class="landing">
-		<a class="nav-link top-left" href="leaderboard2.html">Leaderboard</a>
-		<a class="nav-link top-right" id="auth-link" href="register.html">LOGIN</a>
-		<a class="nav-link top-right-2" href="profil.html">PROFIL</a>
-
-		<section class="hero">
-			<h1 class="alien-title">ft_transcendence</h1>
-			<button type="submit" class="hero-cta" id="play" >PLAY</button>
+		<section class="home-hero">
+			<h1 class="alien-title home-title" data-text="ft_transcendence">ft_transcendence</h1>
+			<button
+				type="button"
+				class="home-cta"
+				id="play"
+			>
+				Play
+			</button>
 		</section>
 
-		<a class="nav-link bottom-left" href="last_games.html">Last Games</a>
-		<a class="nav-link bottom-mid-left" href="legal.html">Legal Informations</a>
-		<a class="nav-link bottom-right" href="team.html">Team</a>
+		<a
+			class="home-nav"
+			style="left: 32px; bottom: 168px;"
+			href="last_games.html"
+		>
+			Last Games
+		</a>
+		<a
+			class="home-nav"
+			style="left: 50%; bottom: 12px; transform: translateX(-50%);"
+			href="legal.html"
+		>
+			Legal Informations
+		</a>
+		<a
+			class="home-nav"
+			style="right: 32px; bottom: 12px;"
+			href="team.html"
+		>
+			Team
+		</a>
+
+		<div class="alien-wrap" data-alien>
+			<img class="alien" src="/perso_color/perso_violet.png" alt="Alien violet">
+		</div>
+
+		<div class="alien-wrap" data-alien>
+			<img class="alien" src="/perso_color/perso_violet.png" alt="Alien violet">
+		</div>
+
+		<div class="alien-wrap" data-alien>
+			<img class="alien" src="/perso_color/perso_jaune.png" alt="Alien jaune">
+		</div>
+
+		<div class="alien-wrap" data-alien>
+			<img class="alien" src="/perso_color/perso_vert.png" alt="Alien vert">
+		</div>
+
+		<div class="alien-wrap" data-alien>
+			<img class="alien" src="/perso_color/perso_vert.png" alt="Alien vert">
+		</div>
+
+		<div class="alien-wrap" data-alien>
+			<img class="alien" src="/perso_color/perso_jaune.png" alt="Alien jaune">
+		</div>
 	</main>
 
 <script>
@@ -68,30 +306,6 @@
 	});
 </script>
 
+	<script src="./alienMovie.js"></script>
 </body>
-		<div class="alien-wrap" data-alien>
-			<img class="alien" src="/perso_color/perso_violet.png" alt="Alien noir">
-		</div>
-
-		<div class="alien-wrap" data-alien>
-			<img class="alien" src="/perso_color/perso_violet.png" alt="Alien noir">
-		</div>
-
-		<div class="alien-wrap" data-alien>
-			<img class="alien" src="/perso_color/perso_jaune.png" alt="Alien jaune">
-		</div>
-
-		<div class="alien-wrap" data-alien>
-			<img class="alien" src="/perso_color/perso_vert.png" alt="Alien noir">
-		</div>
-
-		<div class="alien-wrap" data-alien>
-			<img class="alien" src="/perso_color/perso_vert.png" alt="Alien noir">
-		</div>
-
-		<div class="alien-wrap" data-alien>
-			<img class="alien" src="/perso_color/perso_jaune.png" alt="Alien jaune">
-		</div>
-		<script src="./alienMovie.js"></script>
 </html>
-

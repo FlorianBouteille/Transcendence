@@ -4,29 +4,26 @@
 	<meta charset="UTF-8" />
 	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 	<title>Profil | ft_transcendence</title>
-	<link rel="stylesheet" href="./style_profil.css" />
+	<link rel="stylesheet" href="./assets/styles.css" />
 </head>
 <body>
-	<main id="profile-main" class="landing profile-page hidden">
-		<a class="nav-link bottom-left" href="index.html">return</a>
-		<div id="pingpong-rain" aria-hidden="true"></div>
+	<main id="profile-main" class="screen screen--legacy screen--profile profile-page hidden">
+		<a class="profile-return" href="index.html">return</a>
+		<div id="pingpong-rain" class="pingpong-rain" aria-hidden="true"></div>
 		<section class="profile-hero">
 			<svg class="profile-arc" viewBox="0 0 500 240" role="img" aria-hidden="true">
 				<defs>
 					<path id="arc-text" d="M 40 210 A 210 210 0 0 1 460 210" />
 				</defs>
 				<text>
-					<textPath href="#arc-text" startOffset="50%" text-anchor="middle">WELCOME BEAUGOSS</textPath>
+					<textPath id="profile-welcome" href="#arc-text" startOffset="50%" text-anchor="middle">WELCOME PLAYER</textPath>
 				</text>
 			</svg>
-			<h1 class="profile-title">User Profile</h1>
 		</section>
 
-		<!-- Espace pour les stats et le profil -->
-		<div id="cloud-bg" aria-label="Profil">
+		<div id="cloud-bg" class="profile-cloud" aria-label="Profil">
 			<img src="perso_color/cloud.png" alt="" aria-hidden="true">
-			<div id="cloud-message">
-				<p class="cloud-title" id="profile-pseudonym">Loading...</p>
+			<div id="cloud-message" class="profile-cloud-message">
 				<p class="cloud-text" id="profile-bio"></p>
 				<p class="cloud-stats" id="profile-stats"></p>
 				<div class="xp-container">
@@ -40,27 +37,18 @@
 				</div>
 			</div>
 		</div>
-		<!-- <div id="cloud-bg" aria-label="Message du jour">
-			<img src="perso_color/cloud.png" alt="" aria-hidden="true">
-			<div id="cloud-message">
-				<p class="cloud-title">Petit bio t'as capte</p>
-				<p class="cloud-text">Stats: 12 victoires • 3 défaites • Rang 8</p>
-			</div>
-		</div> -->
 
-		<!-- Espace pour les personnages -->
-		<div id="personnage-container">
-			<img id="personnage-img" src="" alt="Personnage">
-		</div>
-		<img id="podium" src="perso_color/podium.png" alt="Podium">
-		
-		<!-- Achievements Section -->
 		<div class="achievements-section">
 			<h2 class="achievements-title">🏆 Achievements</h2>
 			<div id="achievements-container" class="achievements-grid">
 				<p class="loading-achievements">Loading achievements...</p>
 			</div>
 		</div>
+
+		<div id="personnage-container" class="profile-character-wrap">
+			<img id="personnage-img" class="profile-character" src="" alt="Personnage">
+		</div>
+		<img id="podium" class="profile-podium" src="perso_color/podium.png" alt="Podium">
 	</main>
 
 	<script defer>
@@ -76,12 +64,15 @@
 				if (!response.ok) throw new Error("Not logged in");
 
 				const data = await response.json();
-				const winrate = data.wins / data.allGames * 100;
+				const wins = Number(data.wins || 0);
+				const totalGames = Number(data.allGames || 0);
+				const login = data.username || data.login || data.pseudonym || "PLAYER";
+				const winrate = totalGames > 0 ? ((wins / totalGames) * 100).toFixed(1) : "0.0";
 				console.log(data);
-				document.getElementById("profile-pseudonym").textContent = data.pseudonym;
-				document.getElementById("profile-bio").textContent = data.bio;
+					document.getElementById("profile-welcome").textContent = `WELCOME ${String(login).toUpperCase()}`;
+				document.getElementById("profile-bio").textContent = data.bio || "Hi there!";
 				document.getElementById("profile-stats").textContent =
-					`Games: ${data.allGames} • Wins: ${data.wins}\nWinrate: ${winrate}%`; 		
+					`Games: ${totalGames} • Wins: ${wins}\nWinrate: ${winrate}%`; 		
 				// Afficher l'XP et le niveau
 				const level = data.level || 0;
 				const xp = data.xp || 0;
@@ -104,7 +95,7 @@
 			} catch (error) {
 				console.error(error);
 				// redirect immediately if not authenticated
-				window.location.href = "login.html";
+				window.location.href = "already.html";
 			}
 		});
 
@@ -176,17 +167,18 @@
 
 		const rainLayer = document.getElementById('pingpong-rain');
 		const ballImage = 'perso_color/pingpong.png';
-		const minDurationMs = 15000;
-		const maxDurationMs = 30000;
+		const minDurationMs = 120000;
+		const maxDurationMs = 240000;
 		const rainDurationMs = Math.floor(minDurationMs + Math.random() * (maxDurationMs - minDurationMs));
 		const rainEndsAt = performance.now() + rainDurationMs;
 
 		const spawnBall = () => {
 			const ball = document.createElement('img');
-			const size = Math.floor(28 + Math.random() * 41);
-			const duration = (3.8 + Math.random() * 3.5).toFixed(2);
-			const delay = (Math.random() * 0.6).toFixed(2);
-			const bounceClass = Math.random() > 0.5 ? 'is-three' : 'is-four';
+			const size = Math.floor(24 + Math.random() * 58);
+			const duration = (2.2 + Math.random() * 2.2).toFixed(2);
+			const delay = (Math.random() * 0.25).toFixed(2);
+			const variant = Math.random();
+			const bounceClass = variant < 0.35 ? 'is-mid' : (variant < 0.675 ? 'is-three' : 'is-four');
 			const maxX = Math.max(0, window.innerWidth - size);
 			const x = Math.floor(Math.random() * maxX);
 
@@ -209,14 +201,12 @@
                 return;
             }
             spawnBall();
-            const nextIn = Math.floor(100 + Math.random() * 260);
+            const nextIn = Math.floor(45 + Math.random() * 90);
             window.setTimeout(spawnLoop, nextIn);
         };
 
 		spawnLoop();
 
 </script>
-
-	</script>
 </body>
 </html>
