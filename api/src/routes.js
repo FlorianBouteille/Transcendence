@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { register, login, verify2FA, logout } from "./controllers/auth.controller.js";
+import { register, login, verify2FA, logout, sessionStatus } from "./controllers/auth.controller.js";
 import { usersMePassword, usersMe2fa, usersMeDelete } from "./controllers/users.controller.js";
 import * as prfls from "./controllers/profiles.controller.js";
 import { gamesHistory, gamesIdHistory, gamesSave } from "./controllers/games.controller.js";
@@ -12,6 +12,7 @@ export const routes = Router();
 
 // ---------- Authentication ----------
 routes.get("/me", checkAuthToken, (req, res) => res.status(200).json(req.user));
+routes.get("/session", sessionStatus);
 
 routes.post("/register", register);
 routes.post("/login", login);

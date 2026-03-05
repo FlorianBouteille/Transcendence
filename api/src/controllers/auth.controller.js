@@ -234,6 +234,36 @@ export async function verify2FA(req, res) {
 	}
 }
 
+export async function sessionStatus(req, res) {
+	const token = req.cookies?.auth_token;
+
+	if (!token) {
+		return res.status(200).json({ loggedIn: false });
+	}
+
+	try {
+		const decoded = jwt.verify(token, JWT_SECRET);
+		const user = await db.models.userAccounts.findByPk(decoded.id);
+
+		if (!user) {
+			res.clearCookie("auth_token", { httpOnly: true, sameSite: "strict" });
+			return res.status(200).json({ loggedIn: false });
+		}
+
+		return res.status(200).json({
+			loggedIn: true,
+			user: {
+				id: user.id,
+				username: user.username,
+				email: user.email
+			}
+		});
+	} catch (err) {
+		res.clearCookie("auth_token", { httpOnly: true, sameSite: "strict" });
+		return res.status(200).json({ loggedIn: false });
+	}
+}
+
 export async function logout(req, res) {
 
 	res.clearCookie("auth_token", { httpOnly: true, sameSite: "strict" }).json({ success: true });

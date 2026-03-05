@@ -5,6 +5,7 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 	<title>Profil | ft_transcendence</title>
 	<link rel="stylesheet" href="./style_profil.css" />
+	<link rel="icon" href="./static/favicon.ico">
 </head>
 <body>
 	<main id="profile-main" class="landing profile-page hidden">
@@ -68,12 +69,15 @@
 			const main = document.getElementById("profile-main");
 
 			try {
-				const response = await fetch("http://localhost:8080/api/profiles/me", {
+				const response = await fetch("/api/profiles/me", {
 					method: "GET",
 					credentials: "include" // send JWT cookie
 				});
 
-				if (!response.ok) throw new Error("Not logged in");
+				if (!response.ok) {
+					window.location.href = "already.html";
+					return;
+				}
 
 				const data = await response.json();
 				const winrate = data.wins / data.allGames * 100;
@@ -102,9 +106,7 @@
 				main.classList.remove("hidden");
 
 			} catch (error) {
-				console.error(error);
-				// redirect immediately if not authenticated
-				window.location.href = "login.html";
+				window.location.href = "already.html";
 			}
 		});
 
