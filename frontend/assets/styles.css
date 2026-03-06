@@ -2460,10 +2460,6 @@ p {
   margin-top: 0.5rem;
 }
 
-.mt-4{
-  margin-top: 1rem;
-}
-
 .mt-5{
   margin-top: 1.25rem;
 }
@@ -2645,15 +2641,6 @@ p {
   line-height: 2rem;
 }
 
-.text-xl{
-  font-size: 1.25rem;
-  line-height: 1.75rem;
-}
-
-.font-bold{
-  font-weight: 700;
-}
-
 .uppercase{
   text-transform: uppercase;
 }
@@ -2662,24 +2649,9 @@ p {
   letter-spacing: 0.12em;
 }
 
-.text-\[\#2a1748\]{
-  --tw-text-opacity: 1;
-  color: rgb(42 23 72 / var(--tw-text-opacity, 1));
-}
-
-.text-\[\#39FF14\]{
-  --tw-text-opacity: 1;
-  color: rgb(57 255 20 / var(--tw-text-opacity, 1));
-}
-
 .text-\[\#3f2a65\]{
   --tw-text-opacity: 1;
   color: rgb(63 42 101 / var(--tw-text-opacity, 1));
-}
-
-.text-\[\#ff4fd8\]{
-  --tw-text-opacity: 1;
-  color: rgb(255 79 216 / var(--tw-text-opacity, 1));
 }
 
 .text-current{
@@ -2828,11 +2800,6 @@ p {
 @media (min-width: 640px){
   .sm\:grid-cols-6{
     grid-template-columns: repeat(6, minmax(0, 1fr));
-  }
-
-  .sm\:text-2xl{
-    font-size: 1.5rem;
-    line-height: 2rem;
   }
 }
 
