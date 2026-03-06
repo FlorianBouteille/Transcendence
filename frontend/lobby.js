@@ -62,13 +62,13 @@ let gameType;
 crownBtn.onclick = () => {
 	surviveBtn.classList.remove('active');
 	crownBtn.classList.add('active');
-	gameType = 'crown'
+	gameType = 'crown';
 }
 
 surviveBtn.onclick = () => {
 	crownBtn.classList.remove('active');
 	surviveBtn.classList.add('active');
-	gameType = 'survive'
+	gameType = 'survive';
 }
 
 //=========GAME SOLO=========
