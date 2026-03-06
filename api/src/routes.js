@@ -32,6 +32,8 @@ routes.get("/profiles/:id/history", checkAuthToken, prfls.profilesIdHistory);
 
 routes.put("/profiles/me/pseudonym", checkAuthToken, prfls.profilesMePseudonym);
 routes.put("/profiles/me/bio", checkAuthToken, prfls.profilesMeBio);
+routes.post("/profiles/me/avatar", checkAuthToken, prfls.profilesMeAvatar);
+routes.delete("/profiles/me/avatar", checkAuthToken, prfls.profilesMeAvatarDelete);
 
 // ---------- Games ----------
 routes.get("/games", gamesHistory);

@@ -169,6 +169,19 @@ body {
 	pointer-events: none;
 }
 
+/* Profile Avatar */
+.profile-avatar {
+	width: 80px;
+	height: 80px;
+	border-radius: 50%;
+	object-fit: cover;
+	border: 3px solid rgba(255, 255, 255, 0.7);
+	box-shadow: 0 4px 12px rgba(90, 42, 0, 0.2);
+	margin: 0 auto 8px;
+	display: block;
+	background: rgba(255, 255, 255, 0.5);
+}
+
 .cloud-title {
 	font-size: clamp(1rem, 1.4vw, 1.35rem);
 	letter-spacing: 0.06em;

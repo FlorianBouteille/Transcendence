@@ -28,6 +28,7 @@
 		<div id="cloud-bg" aria-label="Profil">
 			<img src="perso_color/cloud.png" alt="" aria-hidden="true">
 			<div id="cloud-message">
+				<img id="profile-avatar" class="profile-avatar" src="" alt="Profile Picture">
 				<p class="cloud-title" id="profile-pseudonym">Loading...</p>
 				<p class="cloud-text" id="profile-bio"></p>
 				<p class="cloud-stats" id="profile-stats"></p>
@@ -69,6 +70,7 @@
 	<script defer>
 		document.addEventListener("DOMContentLoaded", async () => {
 			const main = document.getElementById("profile-main");
+			const DEFAULT_AVATAR = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ccircle cx='50' cy='50' r='50' fill='%23ffb647'/%3E%3Ccircle cx='50' cy='40' r='15' fill='%235a2a00'/%3E%3Cpath d='M 25 70 Q 50 85 75 70' stroke='%235a2a00' stroke-width='5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E";
 
 			try {
 				const response = await fetch("http://localhost:8080/api/profiles/me", {
@@ -81,6 +83,10 @@
 				const data = await response.json();
 				const winrate = data.wins / data.allGames * 100;
 				console.log(data);
+				
+				// Set avatar
+				document.getElementById("profile-avatar").src = data.avatar_url || DEFAULT_AVATAR;
+				
 				document.getElementById("profile-pseudonym").textContent = data.pseudonym;
 				document.getElementById("profile-bio").textContent = data.bio;
 				document.getElementById("profile-stats").textContent =
