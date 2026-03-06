@@ -9,7 +9,8 @@ services:
     depends_on:
       - frontend
     ports:
-      - "${NGINX_PORT:-8080}:80"
+      - "${NGINX_PORT:-8080}:443"
+      - "${NGINX_HTTP_PORT:-8081}:80"
     networks:
       - transcendence
 
@@ -78,7 +79,7 @@ services:
       mariadb:
         condition: service_healthy
     ports:
-      - 8081:8080
+      - 8082:8080
     networks:
       - transcendence
       - api_mariadb_net
