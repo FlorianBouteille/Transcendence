@@ -12,6 +12,8 @@ User management :
 	-ajouter un avatar
 	-ajouter des amis et voir les amis en ligne
 
+
+
 Badges, achievements, XP system (je suis en train de faire ca) 
 
 Faire un readme.md

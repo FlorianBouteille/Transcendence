@@ -19,23 +19,23 @@ routes.post("/2fa/verify", verify2FA);
 routes.post("/logout", logout);
 
 // ---------- Users ----------
-routes.put("/users/me/password", usersMePassword);
-routes.put("/users/me/2fa", usersMe2fa);
-routes.put("/users/me", usersMeDelete);
+routes.put("/users/me/password", checkAuthToken, usersMePassword);
+routes.put("/users/me/2fa", checkAuthToken, usersMe2fa);
+routes.put("/users/me", checkAuthToken, usersMeDelete);
 
 // ---------- Profiles ----------
 routes.get("/profiles", prfls.profiles);
 routes.get("/profiles/me", checkAuthToken, prfls.profilesMe);
 routes.get("/profiles/me/history", checkAuthToken, prfls.profilesMeHistory);
-routes.get("/profiles/:id", checkAuthToken , prfls.profilesId);
+routes.get("/profiles/:id", checkAuthToken, prfls.profilesId);
 routes.get("/profiles/:id/history", checkAuthToken, prfls.profilesIdHistory);
 
-routes.put("/profiles/me/pseudonym", prfls.profilesMePseudonym);
-routes.put("/profiles/me/bio", prfls.profilesMeBio);
+routes.put("/profiles/me/pseudonym", checkAuthToken, prfls.profilesMePseudonym);
+routes.put("/profiles/me/bio", checkAuthToken, prfls.profilesMeBio);
 
 // ---------- Games ----------
 routes.get("/games", gamesHistory);
-routes.get("/games/:id", parseParams({id: 'int'}), gamesIdHistory);
+routes.get("/games/:id", parseParams({ id: 'int' }), gamesIdHistory);
 
 routes.post("/games", gamesSave);
 

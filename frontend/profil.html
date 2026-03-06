@@ -1,11 +1,13 @@
 <!DOCTYPE html>
 <html lang="fr">
+
 <head>
 	<meta charset="UTF-8" />
 	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 	<title>Profil | ft_transcendence</title>
 	<link rel="stylesheet" href="./style_profil.css" />
 </head>
+
 <body>
 	<main id="profile-main" class="landing profile-page hidden">
 		<a class="nav-link bottom-left" href="index.html">return</a>
@@ -29,6 +31,7 @@
 				<p class="cloud-title" id="profile-pseudonym">Loading...</p>
 				<p class="cloud-text" id="profile-bio"></p>
 				<p class="cloud-stats" id="profile-stats"></p>
+				<a href="edit_profil.html" class="edit-profile-btn">✏️ Edit Profile</a>
 				<div class="xp-container">
 					<div class="xp-header">
 						<span class="level-badge" id="profile-level">Level 1</span>
@@ -53,7 +56,7 @@
 			<img id="personnage-img" src="" alt="Personnage">
 		</div>
 		<img id="podium" src="perso_color/podium.png" alt="Podium">
-		
+
 		<!-- Achievements Section -->
 		<div class="achievements-section">
 			<h2 class="achievements-title">🏆 Achievements</h2>
@@ -81,7 +84,7 @@
 				document.getElementById("profile-pseudonym").textContent = data.pseudonym;
 				document.getElementById("profile-bio").textContent = data.bio;
 				document.getElementById("profile-stats").textContent =
-					`Games: ${data.allGames} • Wins: ${data.wins}\nWinrate: ${winrate}%`; 		
+					`Games: ${data.allGames} • Wins: ${data.wins}\nWinrate: ${winrate}%`;
 				// Afficher l'XP et le niveau
 				const level = data.level || 0;
 				const xp = data.xp || 0;
@@ -90,21 +93,22 @@
 				const xpInCurrentLevel = xp - xpForCurrentLevel;
 				const xpNeededForNextLevel = xpForNextLevel - xpForCurrentLevel;
 				const progressPercent = (xpInCurrentLevel / xpNeededForNextLevel) * 100;
-				
+
 				document.getElementById("profile-level").textContent = `Level ${level}`;
 				document.getElementById("profile-xp").textContent = `${xpInCurrentLevel} / ${xpNeededForNextLevel} XP`;
 				document.getElementById("xp-bar-fill").style.width = `${progressPercent}%`;
-				
+
 				// Fetch and display achievements
 				fetchAchievements();
-				
+
 				// Show page after successful fetch
 				main.classList.remove("hidden");
 
 			} catch (error) {
 				console.error(error);
 				// redirect immediately if not authenticated
-				window.location.href = "login.html";
+				//voir pour show une notif
+				window.location.href = "already.html";
 			}
 		});
 
@@ -119,7 +123,7 @@
 
 				const result = await response.json();
 				const achievementsContainer = document.getElementById("achievements-container");
-				
+
 				if (result.data && result.data.length > 0) {
 					achievementsContainer.innerHTML = result.data.map(item => `
 						<div class="achievement-card">
@@ -141,34 +145,34 @@
 			}
 		}
 
-        const personnages = [
-            'perso_color/perso_1.png',
-            'perso_color/perso_2.png',
-            'perso_color/perso_3.png',
-            'perso_color/perso_4.png',
-            'perso_color/perso_5.png',
-            'perso_color/perso_6.png',
-            'perso_color/perso_7.png',
-            'perso_color/perso_8.png',
-            'perso_color/perso_9.png',
-            'perso_color/perso_10.png',
-            'perso_color/perso_11.png',
-            'perso_color/perso_12.png',
-            'perso_color/perso_13.png',
-            'perso_color/perso_14.png',
-            'perso_color/perso_15.png',
-            'perso_color/perso_16.png',
-            'perso_color/perso_17.png',
-            'perso_color/perso_18.png',
-            'perso_color/perso_19.png',
-            'perso_color/perso_20.png',
+		const personnages = [
+			'perso_color/perso_1.png',
+			'perso_color/perso_2.png',
+			'perso_color/perso_3.png',
+			'perso_color/perso_4.png',
+			'perso_color/perso_5.png',
+			'perso_color/perso_6.png',
+			'perso_color/perso_7.png',
+			'perso_color/perso_8.png',
+			'perso_color/perso_9.png',
+			'perso_color/perso_10.png',
+			'perso_color/perso_11.png',
+			'perso_color/perso_12.png',
+			'perso_color/perso_13.png',
+			'perso_color/perso_14.png',
+			'perso_color/perso_15.png',
+			'perso_color/perso_16.png',
+			'perso_color/perso_17.png',
+			'perso_color/perso_18.png',
+			'perso_color/perso_19.png',
+			'perso_color/perso_20.png',
 			'perso_color/perso_21.png',
-            'perso_color/perso_22.png',
-            'perso_color/perso_23.png',
-            'perso_color/perso_24.png',
-            'perso_color/perso_25.png',
-            'perso_color/perso_26.png'
-        ];
+			'perso_color/perso_22.png',
+			'perso_color/perso_23.png',
+			'perso_color/perso_24.png',
+			'perso_color/perso_25.png',
+			'perso_color/perso_26.png'
+		];
 
 		const personnageAleatoire = personnages[Math.floor(Math.random() * personnages.length)];
 
@@ -204,19 +208,20 @@
 
 			rainLayer.appendChild(ball);
 		};
-        const spawnLoop = () => {
-            if (performance.now() > rainEndsAt) {
-                return;
-            }
-            spawnBall();
-            const nextIn = Math.floor(100 + Math.random() * 260);
-            window.setTimeout(spawnLoop, nextIn);
-        };
+		const spawnLoop = () => {
+			if (performance.now() > rainEndsAt) {
+				return;
+			}
+			spawnBall();
+			const nextIn = Math.floor(100 + Math.random() * 260);
+			window.setTimeout(spawnLoop, nextIn);
+		};
 
 		spawnLoop();
 
-</script>
+	</script>
 
 	</script>
 </body>
+
 </html>

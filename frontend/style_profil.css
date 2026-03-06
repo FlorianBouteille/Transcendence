@@ -57,7 +57,8 @@ body {
 	position: relative;
 	text-align: center;
 	display: flex;
-	z-index: 10; /* Met le titre au-dessus */
+	z-index: 10;
+	/* Met le titre au-dessus */
 	flex-direction: column;
 	gap: 12px;
 	transform: translateY(-420px);
@@ -66,8 +67,10 @@ body {
 .profile-title {
 	font-size: clamp(2rem, 3vw, 3.1rem);
 	letter-spacing: 0.08em;
-	position: relative; /*ici*/
-    z-index: 1; /*ici*/
+	position: relative;
+	/*ici*/
+	z-index: 1;
+	/*ici*/
 	text-transform: uppercase;
 	font-weight: 700;
 	color: #5a2a00;
@@ -95,6 +98,7 @@ body {
 	font-weight: 700;
 	text-transform: uppercase;
 }
+
 /*fin WELCOME BEAUGOSS*/
 
 .nav-link {
@@ -121,11 +125,13 @@ body {
 }
 
 #podium {
-    position: absolute;
-    bottom: -60px; /* Ajustez selon vos besoins */
-    left: 51%;
-    transform: translateX(-50%);
-    width: 800px; /* Ajustez la taille */
+	position: absolute;
+	bottom: -60px;
+	/* Ajustez selon vos besoins */
+	left: 51%;
+	transform: translateX(-50%);
+	width: 800px;
+	/* Ajustez la taille */
 	z-index: 2;
 }
 
@@ -136,7 +142,7 @@ body {
 	left: 35%;
 	transform: translateX(-50%);
 	width: min(1000px, 120vw);
-	max-width:1180px;
+	max-width: 1180px;
 	opacity: 0.9;
 	z-index: 1;
 	pointer-events: none;
@@ -245,7 +251,8 @@ body {
 /*personnage */
 #personnage-container {
 	position: absolute;
-	margin-top: 150px; /* laisse de l'espace pour le titre */
+	margin-top: 150px;
+	/* laisse de l'espace pour le titre */
 	left: 50%;
 	bottom: 190px;
 	transform: translateX(-50%);
@@ -293,26 +300,33 @@ body {
 		transform: translateY(-20vh) rotate(0deg);
 		opacity: 0;
 	}
+
 	6% {
 		opacity: 1;
 	}
+
 	36% {
 		transform: translateY(68vh) rotate(140deg);
 	}
+
 	50% {
 		transform: translateY(66vh) rotate(220deg);
 	}
+
 	72% {
 		transform: translateY(94vh) rotate(330deg);
 	}
+
 	84% {
 		transform: translateY(114vh) rotate(410deg);
 	}
+
 	100% {
 		transform: translateY(174vh) rotate(520deg);
 		opacity: 0;
 	}
 }
+
 /* Achievements Section */
 .achievements-section {
 	position: absolute;
@@ -447,31 +461,60 @@ body {
 .achievements-grid::-webkit-scrollbar-thumb:hover {
 	background: #ff8a3d;
 }
+
 @keyframes pingpong-fall-4 {
 	0% {
 		transform: translateY(-20vh) rotate(0deg);
 		opacity: 0;
 	}
+
 	5% {
 		opacity: 1;
 	}
+
 	30% {
 		transform: translateY(72vh) rotate(120deg);
 	}
+
 	42% {
 		transform: translateY(60vh) rotate(200deg);
 	}
+
 	60% {
 		transform: translateY(110vh) rotate(300deg);
 	}
+
 	72% {
 		transform: translateY(84vh) rotate(380deg);
 	}
+
 	88% {
 		transform: translateY(120vh) rotate(460deg);
 	}
+
 	100% {
 		transform: translateY(140vh) rotate(560deg);
 		opacity: 0;
 	}
+}
+
+/* Edit Profile button */
+.edit-profile-btn {
+	display: inline-block;
+	margin: 6px 0 8px;
+	padding: 6px 16px;
+	pointer-events: auto;
+	background: #5a2a00;
+	color: #fff6e6;
+	border-radius: 20px;
+	font-size: 0.82rem;
+	font-weight: 700;
+	text-decoration: none;
+	letter-spacing: 0.04em;
+	transition: background 0.18s, transform 0.13s;
+}
+
+.edit-profile-btn:hover {
+	background: #a04a00;
+	transform: scale(1.04);
 }
