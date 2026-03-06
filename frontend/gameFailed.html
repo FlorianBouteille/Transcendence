@@ -95,12 +95,6 @@
       <section class="history-board mt-2" aria-labelledby="recap-title">
         <header class="history-header">
           <h1 id="recap-title" class="history-title">Game Recap</h1>
-          <p class="mt-4 text-xl font-bold text-[#2a1748] sm:text-2xl">
-            <span id="winner-name" class="text-[#ff4fd8]">Player</span>
-            lose in
-            <span id="completion-time" class="text-[#39FF14]">0</span>
-            seconds!
-          </p>
         </header>
 
         <div class="history-table">
@@ -207,17 +201,9 @@
         const duration = formatDuration(game.duration);
 
         const players = game.players || {};
-        const winner = Array.isArray(players)
-          ? players[1] || players[0] || "Player"
-          : players[1] || players["1"] || Object.values(players)[0] || "Player";
-
-        document.getElementById("winner-name").textContent = winner;
-        document.getElementById("completion-time").textContent = duration;
 
         fillLeaderboard(players, date, mode, duration);
       } catch (error) {
-        document.getElementById("winner-name").textContent = "Player";
-        document.getElementById("completion-time").textContent = "0";
         fillLeaderboard([], "-", "-", "-");
       }
     </script>

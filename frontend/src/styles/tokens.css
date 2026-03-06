@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@400;500;600;700&family=Orbitron:wght@500;700;800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700;800&display=swap');
 
 :root {
   --bg: 10 12 24;
@@ -13,7 +13,7 @@
   --danger: 255 95 109;
   --border: 111 132 176;
 
-  --font-sans: 'Chakra Petch', 'Segoe UI', 'Trebuchet MS', sans-serif;
+  --font-sans: 'Segoe UI', 'Trebuchet MS', 'Verdana', sans-serif;
   --font-display: 'Orbitron', 'Bungee', Impact, sans-serif;
 
   --text-h1: clamp(2rem, 5vw, 4rem);

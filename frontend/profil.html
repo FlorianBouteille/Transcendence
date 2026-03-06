@@ -48,9 +48,15 @@
 		<div id="personnage-container" class="profile-character-wrap">
 			<img id="personnage-img" class="profile-character" src="" alt="Personnage">
 		</div>
-		<img id="podium" class="profile-podium" src="perso_color/podium.png" alt="Podium">
 	</main>
-
+<!-- 		<div class="profile-stage">
+			<div id="personnage-container" class="profile-character-wrap">
+				<img id="personnage-img" class="profile-character" src="" alt="Personnage">
+			</div>
+			<img id="podium" class="profile-podium" src="perso_color/podium.png" alt="Podium">
+		</div>
+	</main>
+-->
 	<script defer>
 		document.addEventListener("DOMContentLoaded", async () => {
 			const main = document.getElementById("profile-main");
@@ -133,32 +139,30 @@
 		}
 
         const personnages = [
-            'perso_color/perso_1.png',
-            'perso_color/perso_2.png',
-            'perso_color/perso_3.png',
-            'perso_color/perso_4.png',
-            'perso_color/perso_5.png',
-            'perso_color/perso_6.png',
-            'perso_color/perso_7.png',
-            'perso_color/perso_8.png',
-            'perso_color/perso_9.png',
-            'perso_color/perso_10.png',
-            'perso_color/perso_11.png',
-            'perso_color/perso_12.png',
-            'perso_color/perso_13.png',
-            'perso_color/perso_14.png',
-            'perso_color/perso_15.png',
-            'perso_color/perso_16.png',
-            'perso_color/perso_17.png',
-            'perso_color/perso_18.png',
-            'perso_color/perso_19.png',
-            'perso_color/perso_20.png',
-			'perso_color/perso_21.png',
-            'perso_color/perso_22.png',
-            'perso_color/perso_23.png',
-            'perso_color/perso_24.png',
-            'perso_color/perso_25.png',
-            'perso_color/perso_26.png'
+            'perso_color/alien_1.png',
+            'perso_color/alien_2.png',
+            'perso_color/alien_3.png',
+            'perso_color/alien_4.png',
+            'perso_color/alien_5.png',
+            'perso_color/alien_6.png',
+            'perso_color/alien_7.png',
+            'perso_color/alien_8.png',
+            'perso_color/alien_9.png',
+            'perso_color/alien_10.png',
+            'perso_color/alien_11.png',
+            'perso_color/alien_12.png',
+            'perso_color/alien_13.png',
+            'perso_color/alien_14.png',
+            'perso_color/alien_15.png',
+            'perso_color/alien_16.png',
+            'perso_color/alien_17.png',
+            'perso_color/alien_18.png',
+            'perso_color/alien_19.png',
+            'perso_color/alien_20.png',
+            'perso_color/alien_21.ng',
+            'perso_color/alien_22.png',
+            'perso_color/alien_23.png',
+            'perso_color/perso_24.png'
         ];
 
 		const personnageAleatoire = personnages[Math.floor(Math.random() * personnages.length)];

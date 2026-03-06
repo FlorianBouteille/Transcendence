@@ -35,6 +35,11 @@
         height: auto;
       }
 
+      .recap-screen .alien[src*="perso_victory"] {
+        width: 275px;
+        height: auto;
+      }
+
       .recap-row--five {
         grid-template-columns: 0.55fr 1.2fr 1.1fr 1fr 0.8fr;
       }
@@ -95,16 +100,10 @@
       <section class="history-board mt-2" aria-labelledby="recap-title">
         <header class="history-header">
           <h1 id="recap-title" class="history-title">Game Recap</h1>
-          <p class="mt-4 text-xl font-bold text-[#2a1748] sm:text-2xl">
-            <span id="winner-name" class="text-[#ff4fd8]">Player</span>
-            won in
-            <span id="completion-time" class="text-[#39FF14]">0</span>
-            seconds!
-          </p>
         </header>
 
         <div class="history-table">
-          <h2 class="text-center font-display text-2xl uppercase tracking-[0.12em] text-[#3f2a65]">Leaderboard</h2>
+          <h2 class="text-center font-display text-2xl uppercase tracking-[0.12em] text-[#3f2a65]">Tu feras mieux la prochaine fois</h2>
           <div class="history-row history-row--head history-row--leaderboard recap-row--five">
             <span>Rank</span>
             <span>Login</span>
@@ -122,7 +121,7 @@
 
       <a class="back-to-lobby-outline mt-5" href="lobby.html">Back to Lobby</a>
       		<div class="alien-wrap" data-alien>
-			<img class="alien" src="/perso_color/perso_success.png" alt="Alien success">
+			<img class="alien" src="/perso_color/perso_victory.png" alt="Alien success">
 		</div>
           		<div class="alien-wrap" data-alien>
 			<img class="alien" src="/perso_color/perso_success.png" alt="Alien success">
@@ -207,17 +206,9 @@
         const duration = formatDuration(game.duration);
 
         const players = game.players || {};
-        const winner = Array.isArray(players)
-          ? players[1] || players[0] || "Player"
-          : players[1] || players["1"] || Object.values(players)[0] || "Player";
-
-        document.getElementById("winner-name").textContent = winner;
-        document.getElementById("completion-time").textContent = duration;
 
         fillLeaderboard(players, date, mode, duration);
       } catch (error) {
-        document.getElementById("winner-name").textContent = "Player";
-        document.getElementById("completion-time").textContent = "0";
         fillLeaderboard([], "-", "-", "-");
       }
     </script>
