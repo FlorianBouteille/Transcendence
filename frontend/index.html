@@ -278,13 +278,14 @@
 		let isLoggedIn = false;
 
 		try {
-			const res = await fetch("/api/me", {
+			const res = await fetch("/api/session", {
 				method: "GET",
 				credentials: "include"
 			});
 
 			if (res.ok) {
-				isLoggedIn = true;
+				const data = await res.json();
+				isLoggedIn = data.loggedIn === true;
 			}
 		} catch (err) {
 			isLoggedIn = false;

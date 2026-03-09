@@ -62,12 +62,15 @@
 			const main = document.getElementById("profile-main");
 
 			try {
-				const response = await fetch("http://localhost:8080/api/profiles/me", {
+				const response = await fetch("/api/profiles/me", {
 					method: "GET",
 					credentials: "include" // send JWT cookie
 				});
 
-				if (!response.ok) throw new Error("Not logged in");
+				if (!response.ok) {
+					window.location.href = "already.html";
+					return;
+				}
 
 				const data = await response.json();
 				const wins = Number(data.wins || 0);
@@ -99,8 +102,6 @@
 				main.classList.remove("hidden");
 
 			} catch (error) {
-				console.error(error);
-				// redirect immediately if not authenticated
 				window.location.href = "already.html";
 			}
 		});

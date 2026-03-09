@@ -369,6 +369,7 @@ const tick = () => {
 		movingPlatformsFromBack[i].update(elapsedTime);
 	}
 	// Mettre à jour tous les joueurs distants (interpolation + animation)
+	console.log(Object.keys(remotePlayers).length);
 	Object.values(remotePlayers).forEach(remotePlayer => {
 		remotePlayer.update(deltaTime);
 	});

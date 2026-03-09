@@ -18,4 +18,7 @@ Tout passer en HTTPS
 
 Faire un readme.md
 
+A fix : 
+
+-Quand on est pas logged in ya du rouge dans la console ! 
 
