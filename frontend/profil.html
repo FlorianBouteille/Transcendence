@@ -10,6 +10,7 @@
 <body>
 	<main id="profile-main" class="screen screen--legacy screen--profile profile-page hidden">
 		<a class="profile-return" href="index.html">return</a>
+		<a class="profile-friends" href="friends.html">friends</a>
 		<div id="pingpong-rain" class="pingpong-rain" aria-hidden="true"></div>
 		<section class="profile-hero">
 			<svg class="profile-arc" viewBox="0 0 500 240" role="img" aria-hidden="true">
@@ -80,7 +81,7 @@
 				const winrate = totalGames > 0 ? ((wins / totalGames) * 100).toFixed(1) : "0.0";
 				console.log(data);
 					document.getElementById("profile-welcome").textContent = `WELCOME ${String(login).toUpperCase()}`;
-				document.getElementById("profile-bio").textContent = data.bio || "Hi there!";
+				document.getElementById("profile-bio").textContent = data.bio || "Ready for the next match?";
 				document.getElementById("profile-stats").textContent =
 					`Games: ${totalGames} • Wins: ${wins}\nWinrate: ${winrate}%`; 		
 				// Afficher l'XP et le niveau

@@ -1,16 +1,39 @@
 @layer components {
   /* ==========================================================================
      COMPONENTS INDEX
-     01) Core primitives (panel/card/buttons/forms/badges/modal/tabs/dropdown)
-     02) Game recap ribbon + ticker
-     03) Lobby + notifications + player list
-     04) Legacy base layer (shared stars/grid legacy pages + orbit links + nav)
-     05) Auth pages (already/register/2FA)
-     06) Status pages (success/error)
-     07) Profile page (orange vibe + cloud + podium + pingpong rain)
-     08) Team/game helper pages
-     09) History pages (last games / leaderboard)
-     10) Legal & Privacy cards
+
+     01) Shared UI primitives
+         Used across multiple pages for cards, buttons, forms, modals and tabs.
+
+     02) Game recap helpers
+         Used by: gameRecap.html, gameFailed.html
+
+     03) Lobby screen
+         Used by: lobby.html
+
+     04) Legacy shared layer
+         Used by: index.html, legal.html, privacy-policy.html, terms-of-service.html,
+         already.html, register.html, 2FA.html, profil.html, lobby.html,
+         leaderboard2.html, last_games.html, gameRecap.html, gameFailed.html, team.html
+
+     05) Authentication screens
+         Used by: already.html, register.html, 2FA.html
+
+     06) Status screens
+         Used by: success.html, error.html
+
+     07) Profile screen
+         Used by: profil.html
+
+     08) Team / 3D helper pages
+         Used by: team.html, game.html
+
+     09) History and leaderboard
+         Used by: last_games.html, leaderboard.html, leaderboard2.html,
+         plus shared base for gameRecap.html and gameFailed.html
+
+     10) Legal and privacy content cards
+         Used by: legal.html, privacy-policy.html, terms-of-service.html
      ========================================================================== */
 
   /* ========================= 01) CORE PRIMITIVES ========================= */
@@ -237,7 +260,7 @@
     animation: ticker 14s linear infinite;
   }
 
-  /* ==================== 03) LOBBY + TOAST + PLAYER LIST ==================== */
+  /* ===================== 03) LOBBY SCREEN (lobby.html) ===================== */
   .screen--lobby-sunset {
     background: linear-gradient(180deg, #2c0ce6 0%, #e89b3c 40%, #f0c24d 70%, #fff6e6 100%);
   }
@@ -426,16 +449,23 @@
     @apply rounded-md border border-border/40 bg-surface/70 px-3 py-2 font-semibold;
   }
 
+  /* Shared placement for bottom-left “return” links on full-screen pages. */
+  .auth-return,
+  .team-return,
+  .profile-return,
   .lobby-return {
     position: absolute;
-    bottom: 28px;
     left: 32px;
+    bottom: 28px;
     text-decoration: none;
-    color: #2c0ce6;
     font-weight: 700;
     font-size: 0.95rem;
     letter-spacing: 0.08em;
     text-transform: uppercase;
+  }
+
+  .lobby-return {
+    color: #2c0ce6;
     transition: color 0.2s ease, text-shadow 0.2s ease;
     text-shadow: 0 0 10px rgb(255, 200, 0);
   }
@@ -445,7 +475,8 @@
     text-shadow: 0 0 20px rgba(255, 0, 212, 0.8), 0 0 30px rgba(251, 0, 255, 0.4);
   }
 
-  /* ======================= 04) LEGACY BASE LAYER ======================= */
+  /* ===================== 04) LEGACY SHARED LAYER ====================== */
+  /* Decorative alien used on legal/policy pages. */
   .alien-wrap {
     position: fixed;
     left: 0;
@@ -464,7 +495,7 @@
     animation: alien-spin var(--spin-dur, 1.1s) ease-in-out infinite;
   }
 
-  /* Legacy legal/policy look preserved while using Tailwind output */
+  /* Shared background texture for “legacy” full-screen pages. */
   .screen--legacy {
     overflow: hidden;
     isolation: isolate;
@@ -497,14 +528,20 @@
     z-index: -1;
   }
 
+  /* Shared gradient used by several “card in the middle” legacy pages. */
+  .screen--policy,
+  .screen--history,
+  .screen--auth,
+  .screen--landing-classic {
+    background: linear-gradient(180deg, #6b5aa3 0%, #8a75bb 35%, #d3a2c9 65%, #f6d2d5 100%);
+  }
+
+  /* legal.html only */
   .screen--legal-hub {
     background: linear-gradient(180deg, #39FF14 0%, #89c48c 35%, #b679f8 65%, #f6d2d5 100%);
   }
 
-  .screen--policy {
-    background: linear-gradient(180deg, #6b5aa3 0%, #8a75bb 35%, #d3a2c9 65%, #f6d2d5 100%);
-  }
-
+  /* legal.html orbit links */
   .screen--legal-hub .nav-link {
     position: absolute;
     text-decoration: none;
@@ -573,25 +610,9 @@
     text-shadow: 0 0 14px rgba(106, 0, 255, 0.6);
   }
 
-  .screen--history {
-    background: linear-gradient(180deg, #6b5aa3 0%, #8a75bb 35%, #d3a2c9 65%, #f6d2d5 100%);
-  }
-
-  .screen--auth {
-    background: linear-gradient(180deg, #6b5aa3 0%, #8a75bb 35%, #d3a2c9 65%, #f6d2d5 100%);
-  }
-
-  /* ========================= 05) AUTH PAGES ========================= */
+  /* ================= 05) AUTHENTICATION (already/register/2FA) ================= */
   .auth-return {
-    position: absolute;
-    left: 32px;
-    bottom: 28px;
-    text-decoration: none;
     color: #7a2cff;
-    font-weight: 700;
-    font-size: 0.95rem;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
     transition: color 0.2s ease, text-shadow 0.2s ease;
   }
 
@@ -692,7 +713,7 @@
     text-decoration: underline;
   }
 
-  /* ======================== 06) STATUS PAGES ======================== */
+  /* ===================== 06) STATUS SCREENS (success/error) ===================== */
   .screen--status {
     overflow: hidden;
   }
@@ -782,7 +803,7 @@
     text-shadow: 0 0 10px rgba(255, 251, 1, 0.45);
   }
 
-  /* ======================== 07) PROFILE PAGE ======================== */
+  /* ======================= 07) PROFILE SCREEN (profil.html) ====================== */
   .screen--profile {
     background: linear-gradient(180deg, #ff8a3d 0%, #ffb647 40%, #ffe4a1 70%, #fff6e6 100%);
     overflow: hidden;
@@ -793,9 +814,26 @@
     padding: 0;
   }
 
+  /* Bottom-left return link */
   .profile-return {
+    color: #ff8a3d;
+    letter-spacing: 0.1em;
+    transition: color 0.2s ease, text-shadow 0.2s ease, transform 0.2s ease;
+    text-shadow: 0 0 10px rgba(255, 138, 61, 0.35);
+    z-index: 20;
+  }
+
+  .profile-return:hover {
+    color: #ffb647;
+    text-shadow: 0 0 18px rgba(255, 182, 71, 0.6);
+    transform: translateY(-2px);
+  }
+
+  /* Matching bottom-right link used to reach the friends page. */
+  .profile-friends,
+  .friends-profile-link {
     position: absolute;
-    left: 32px;
+    right: 32px;
     bottom: 28px;
     text-decoration: none;
     color: #ff8a3d;
@@ -808,12 +846,14 @@
     z-index: 20;
   }
 
-  .profile-return:hover {
+  .profile-friends:hover,
+  .friends-profile-link:hover {
     color: #ffb647;
     text-shadow: 0 0 18px rgba(255, 182, 71, 0.6);
     transform: translateY(-2px);
   }
 
+  /* Curved “WELCOME” title at the top of the page. */
   .profile-hero {
     position: absolute;
     top: clamp(58px, 8.5vh, 108px);
@@ -840,6 +880,7 @@
     text-transform: uppercase;
   }
 
+  /* Cloud illustration and the profile stats text inside it. */
   .profile-cloud {
     position: absolute;
     top: clamp(150px, 18vh, 180px);
@@ -862,7 +903,7 @@
 
   .profile-cloud-message {
     position: absolute;
-    inset: 35% 9% 18% 22%;
+    inset: 35% 8% 18% 24%;
     display: flex;
     flex-direction: column;
     gap: 8px;
@@ -895,6 +936,7 @@
     white-space: pre-line;
   }
 
+  /* XP bar shown inside the cloud. */
   .xp-container {
     margin-top: 18px;
     width: 100%;
@@ -952,6 +994,7 @@
     border-radius: 8px;
   }
 
+  /* Achievement board displayed between the cloud and the character. */
   .achievements-section {
     position: absolute;
     top: clamp(42%, 45%, 48%);
@@ -1034,6 +1077,16 @@
     color: #fff;
   }
 
+  /* Small transitions keep the compact responsive states smooth. */
+  .achievement-card,
+  .achievement-icon,
+  .achievement-name,
+  .achievement-desc,
+  .achievement-date,
+  .achievement-badge {
+    transition: transform 0.2s ease, font-size 0.2s ease, padding 0.2s ease, gap 0.2s ease;
+  }
+
   .loading-achievements,
   .no-achievements {
     text-align: center;
@@ -1041,6 +1094,7 @@
     font-weight: 600;
   }
 
+  /* Character at the bottom of the profile page. */
   .profile-character-wrap {
     position: absolute;
     left: 50%;
@@ -1092,6 +1146,7 @@
   .pingpong-ball.is-four { animation-name: pingpong-fall-4; }
   .pingpong-ball.is-mid { animation-name: pingpong-fall-mid; }
 
+  /* Height-based adjustments: useful on smaller laptop screens. */
   @media (max-height: 920px) {
     .profile-hero {
       top: clamp(50px, 7.2vh, 88px);
@@ -1128,7 +1183,7 @@
     }
 
     .profile-cloud-message {
-      inset: 34% 9% 17% 22%;
+      inset: 34% 8% 17% 24%;
       gap: 6px;
       font-size: clamp(0.82rem, 1vw, 0.95rem);
     }
@@ -1142,6 +1197,7 @@
     }
   }
 
+  /* Width-based adjustments: reduce the achievements block and the character. */
   @media (max-width: 980px) {
     .profile-hero {
       top: clamp(46px, 6.8vh, 78px);
@@ -1166,6 +1222,91 @@
     }
   }
 
+  @media (max-width: 820px) {
+    .achievements-section {
+      width: min(760px, 90vw);
+      padding: 14px 14px 16px;
+    }
+
+    .achievements-grid {
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 12px;
+    }
+
+    .achievement-card {
+      gap: 10px;
+      padding: 12px;
+    }
+
+    .achievement-icon {
+      font-size: 2rem;
+    }
+
+    .achievement-name {
+      font-size: 0.96rem;
+    }
+
+    .achievement-desc,
+    .achievement-date {
+      font-size: 0.9rem;
+    }
+
+    .achievement-badge {
+      padding: 2px 8px;
+      font-size: 0.72rem;
+    }
+
+    .profile-character {
+      width: clamp(165px, 27vw, 210px);
+    }
+  }
+
+  @media (max-width: 680px) {
+    .achievements-section {
+      width: min(640px, 88vw);
+      padding: 12px;
+    }
+
+    .achievements-title {
+      margin-bottom: 12px;
+      font-size: clamp(1.15rem, 4vw, 1.45rem);
+    }
+
+    .achievements-grid {
+      grid-template-columns: 1fr;
+      gap: 10px;
+    }
+
+    .achievement-card {
+      gap: 8px;
+      padding: 10px 12px;
+    }
+
+    .achievement-icon {
+      font-size: 1.75rem;
+    }
+
+    .achievement-name {
+      font-size: 0.92rem;
+    }
+
+    .achievement-desc,
+    .achievement-date {
+      font-size: 0.84rem;
+    }
+
+    .achievement-badge {
+      right: 8px;
+      top: 7px;
+      font-size: 0.68rem;
+    }
+
+    .profile-character {
+      width: clamp(140px, 24vw, 180px);
+    }
+  }
+
+  /* Extra breathing room on tall screens. */
   @media (min-height: 1000px) {
     .achievements-section {
       top: clamp(47%, 50%, 52%);
@@ -1176,21 +1317,134 @@
     }
   }
 
-  /* ==================== 08) TEAM/GAME HELPER PAGES ==================== */
-  .screen--landing-classic {
-    background: linear-gradient(180deg, #6b5aa3 0%, #8a75bb 35%, #d3a2c9 65%, #f6d2d5 100%);
+  /* ======================= 07B) FRIENDS SCREEN (friends.html) ====================== */
+  .friends-page {
+    overflow: hidden;
+    padding: clamp(48px, 7vh, 88px) 24px 96px;
+    display: grid;
+    place-items: center;
   }
 
-  .team-return {
-    position: absolute;
-    left: 32px;
-    bottom: 28px;
-    text-decoration: none;
-    color: #39FF14;
-    font-weight: 700;
-    font-size: 0.95rem;
+  .friends-shell {
+    width: min(980px, 92vw);
+    display: grid;
+    gap: 24px;
+    justify-items: center;
+  }
+
+  .friends-hero {
+    text-align: center;
+    color: #5a2a00;
+    text-shadow: 0 3px 16px rgba(255, 255, 255, 0.22);
+  }
+
+  .friends-title {
+    margin: 0;
+    font-size: clamp(2.4rem, 8vw, 5rem);
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    font-weight: 800;
+  }
+
+  .friends-subtitle {
+    margin: 10px 0 0;
+    font-size: clamp(0.95rem, 2.2vw, 1.2rem);
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: rgba(90, 42, 0, 0.78);
+  }
+
+  .friends-board {
+    width: min(880px, 100%);
+    background: rgba(255, 255, 255, 0.82);
+    border: 1px solid rgba(255, 209, 163, 0.9);
+    border-radius: 28px;
+    padding: clamp(20px, 3.5vw, 34px);
+    box-shadow: 0 22px 46px rgba(150, 84, 11, 0.16);
+    backdrop-filter: blur(10px);
+    display: grid;
+    gap: 18px;
+  }
+
+  .friends-board-title {
+    margin: 0;
+    text-align: center;
+    font-size: clamp(1.35rem, 3vw, 2rem);
     letter-spacing: 0.08em;
     text-transform: uppercase;
+    color: #6a3200;
+  }
+
+  .friends-board-copy {
+    margin: 0;
+    text-align: center;
+    color: #8c4700;
+    font-weight: 600;
+    line-height: 1.6;
+  }
+
+  .friends-placeholder-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 14px;
+  }
+
+  .friends-placeholder-card {
+    border-radius: 18px;
+    border: 2px solid rgba(255, 152, 0, 0.78);
+    background: rgba(255, 247, 235, 0.92);
+    padding: 18px;
+    display: grid;
+    gap: 8px;
+    color: #5a2a00;
+  }
+
+  .friends-placeholder-card h3,
+  .friends-placeholder-card p {
+    margin: 0;
+  }
+
+  .friends-placeholder-card h3 {
+    font-size: 1rem;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+  }
+
+  .friends-placeholder-card p {
+    color: #8c4700;
+    line-height: 1.5;
+  }
+
+  @media (max-width: 700px) {
+    .friends-page {
+      padding-top: 40px;
+      padding-bottom: 88px;
+    }
+
+    .profile-friends,
+    .friends-profile-link {
+      right: 18px;
+      bottom: 20px;
+      font-size: 0.88rem;
+    }
+
+    .profile-return {
+      left: 18px;
+      bottom: 20px;
+      font-size: 0.88rem;
+    }
+
+    .friends-board {
+      border-radius: 22px;
+      padding: 18px;
+    }
+  }
+
+  /* =================== 08) TEAM + 3D HELPER PAGES =================== */
+  /* team.html */
+  .team-return {
+    color: #39FF14;
     transition: color 0.2s ease, text-shadow 0.2s ease;
     text-shadow: 0 0 10px rgba(57, 255, 20, 0.5);
   }
@@ -1200,6 +1454,7 @@
     text-shadow: 0 0 20px rgba(0, 255, 65, 0.8), 0 0 30px rgba(0, 255, 65, 0.4);
   }
 
+  /* game.html canvas */
   .webgl {
     position: fixed;
     top: 0;
@@ -1210,7 +1465,7 @@
     outline: none;
   }
 
-  /* ==================== 09) HISTORY PAGES (LAST/TOP) ==================== */
+  /* =================== 09) HISTORY / LEADERBOARD PAGES =================== */
   .history-board {
     width: min(760px, calc(100% - 40px));
     border-radius: 28px;
@@ -1344,7 +1599,8 @@
     }
   }
 
-  /* ======================= 10) LEGAL & PRIVACY ======================= */
+  /* ==================== 10) LEGAL / PRIVACY CONTENT ==================== */
+  /* terms-of-service.html */
   .legal-card {
     position: relative;
     max-width: 760px;
@@ -1385,6 +1641,7 @@
   .legal-content p { margin-bottom: 10px; }
   .legal-content ul { margin: 8px 0 12px 20px; }
 
+  /* privacy-policy.html */
   .privacy-card {
     max-width: 800px;
     width: calc(100% - 40px);
