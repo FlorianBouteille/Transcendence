@@ -49,6 +49,65 @@ INSERT INTO players (id, pseudonym, bio, coins, avatar_url) VALUES
 (20, 'TiltedTina', 'Tilts easily', 100, 'https://example.com/a20.png');
 
 -- =========================================================
+-- friends
+-- =========================================================
+
+-- Pending friend requests (one-way)
+INSERT INTO friends (player_id, friend_id, status) VALUES
+(1, 4, 'pending'),
+(2, 5, 'pending'),
+(3, 6, 'pending'),
+(4, 7, 'pending'),
+(5, 8, 'pending'),
+(6, 9, 'pending'),
+(7, 10, 'pending'),
+(8, 11, 'pending'),
+(9, 12, 'pending'),
+(10, 13, 'pending');
+
+-- Accepted friendships (bidirectional)
+INSERT INTO friends (player_id, friend_id, status) VALUES
+(1, 2, 'accepted'), (2, 1, 'accepted'),
+(1, 3, 'accepted'), (3, 1, 'accepted'),
+(1, 5, 'accepted'), (5, 1, 'accepted'),
+(2, 3, 'accepted'), (3, 2, 'accepted'),
+(2, 4, 'accepted'), (4, 2, 'accepted'),
+(2, 6, 'accepted'), (6, 2, 'accepted'),
+(3, 4, 'accepted'), (4, 3, 'accepted'),
+(3, 7, 'accepted'), (7, 3, 'accepted'),
+(4, 5, 'accepted'), (5, 4, 'accepted'),
+(4, 8, 'accepted'), (8, 4, 'accepted'),
+(5, 6, 'accepted'), (6, 5, 'accepted'),
+(5, 9, 'accepted'), (9, 5, 'accepted'),
+(6, 7, 'accepted'), (7, 6, 'accepted'),
+(6, 10, 'accepted'), (10, 6, 'accepted'),
+(7, 8, 'accepted'), (8, 7, 'accepted'),
+(7, 11, 'accepted'), (11, 7, 'accepted'),
+(8, 9, 'accepted'), (9, 8, 'accepted'),
+(8, 12, 'accepted'), (12, 8, 'accepted'),
+(9, 10, 'accepted'), (10, 9, 'accepted'),
+(9, 13, 'accepted'), (13, 9, 'accepted'),
+(10, 11, 'accepted'), (11, 10, 'accepted'),
+(10, 14, 'accepted'), (14, 10, 'accepted'),
+(11, 12, 'accepted'), (12, 11, 'accepted'),
+(11, 15, 'accepted'), (15, 11, 'accepted'),
+(12, 13, 'accepted'), (13, 12, 'accepted'),
+(12, 16, 'accepted'), (16, 12, 'accepted'),
+(13, 14, 'accepted'), (14, 13, 'accepted'),
+(13, 17, 'accepted'), (17, 13, 'accepted'),
+(14, 15, 'accepted'), (15, 14, 'accepted'),
+(14, 18, 'accepted'), (18, 14, 'accepted'),
+(15, 16, 'accepted'), (16, 15, 'accepted'),
+(15, 19, 'accepted'), (19, 15, 'accepted'),
+(16, 17, 'accepted'), (17, 16, 'accepted'),
+(16, 20, 'accepted'), (20, 16, 'accepted'),
+(17, 18, 'accepted'), (18, 17, 'accepted'),
+(18, 19, 'accepted'), (19, 18, 'accepted'),
+(19, 20, 'accepted'), (20, 19, 'accepted');
+
+
+
+-- =========================================================
 -- games
 -- =========================================================
 INSERT INTO games (mode, start_time, end_time) VALUES
