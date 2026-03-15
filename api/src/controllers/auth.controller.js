@@ -20,6 +20,83 @@ const transporter = nodemailer.createTransport({
 	}
 });
 
+
+/**
+ * @swagger
+ * /register:
+ *   post:
+ *     summary: Register a new user account
+ *     tags:
+ *       - 🔐 Authentication
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - username
+ *               - email
+ *               - password
+ *               - confirmPassword
+ *             properties:
+ *               username:
+ *                 type: string
+ *                 example: "BeanAlice"
+ *               email:
+ *                 type: string
+ *                 format: email
+ *                 example: "bean.alice@example.com"
+ *               password:
+ *                 type: string
+ *                 format: password
+ *                 example: "StrongPass123!"
+ *               confirmPassword:
+ *                 type: string
+ *                 format: password
+ *                 example: "StrongPass123!"
+ *             description: "All fields are required. Password must be at least 10 characters, include uppercase, lowercase, number, and special character."
+ *     responses:
+ *       201:
+ *         description: User successfully registered
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: true
+ *                 user:
+ *                   type: object
+ *                   properties:
+ *                     id:
+ *                       type: integer
+ *                       example: 1
+ *                     email:
+ *                       type: string
+ *                       example: "bean.alice@example.com"
+ *       400:
+ *         description: Validation error (missing field, weak password, or username/email already used)
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 error:
+ *                   type: string
+ *                   example: "Mot de passe faible (min 10 car., 1 maj., 1 min., 1 chiffre, 1 special)"
+ *       500:
+ *         description: Internal server error
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 error:
+ *                   type: string
+ *                   example: "Erreur serveur"
+ */
 export async function register(req, res) {
 	const { username, email, password, confirmPassword } = req.body;
 
@@ -99,6 +176,98 @@ export async function register(req, res) {
 	}
 }
 
+
+/**
+ * @swagger
+ * /login:
+ *   post:
+ *     summary: Authenticate a user and receive auth cookie
+ *     tags:
+ *       - 🔐 Authentication
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - login
+ *               - password
+ *             properties:
+ *               login:
+ *                 type: string
+ *                 description: Username or email of the user
+ *                 example: BeanAlice
+ *               password:
+ *                 type: string
+ *                 description: User password
+ *                 example: secret123
+ *     responses:
+ *       200:
+ *         description: Logged in successfully (with or without 2FA)
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: true
+ *                 requires_2FA:
+ *                   type: boolean
+ *                   description: Indicates if 2FA is required
+ *                   example: false
+ *                 user:
+ *                   type: object
+ *                   description: User info (only if 2FA not required)
+ *                   properties:
+ *                     id:
+ *                       type: integer
+ *                       example: 1
+ *                     username:
+ *                       type: string
+ *                       example: BeanAlice
+ *                     email:
+ *                       type: string
+ *                       example: beanalice@example.com
+ *                     enable_2FA:
+ *                       type: boolean
+ *                       example: false
+ *                 user_id:
+ *                   type: integer
+ *                   description: Returned only if 2FA is required
+ *                   example: 1
+ *       400:
+ *         description: Missing login or password
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 error:
+ *                   type: string
+ *                   example: "Tous les champs sont requis"
+ *       401:
+ *         description: Invalid login credentials
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 error:
+ *                   type: string
+ *                   example: "Mot de passe ou login incorrect"
+ *       500:
+ *         description: Server error
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 error:
+ *                   type: string
+ *                   example: "Erreur serveur"
+ */
 export async function login(req, res) {
 	const { login, password } = req.body;
 
@@ -234,6 +403,37 @@ export async function verify2FA(req, res) {
 	}
 }
 
+/**
+ * @swagger
+ * /logout:
+ *   post:
+ *     summary: Log out the current user
+ *     tags:
+ *       - 🔐 Authentication
+ *     security:
+ *       - BearerAuth: []   # or BasicAuth if you want, depending on your setup
+ *     responses:
+ *       200:
+ *         description: Successfully logged out
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: true
+ *       401:
+ *         description: User not authenticated
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 error:
+ *                   type: string
+ *                   example: "No token, authorization denied"
+ */
 export async function logout(req, res) {
 
 	res.clearCookie("auth_token", { httpOnly: true, sameSite: "strict" }).json({ success: true });

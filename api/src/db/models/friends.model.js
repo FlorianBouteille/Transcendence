@@ -16,11 +16,11 @@ export function friends(sequelize, models) {
 	});
 
 	// Associations
-	friendsTable.belongsTo(models.players, { as: "requester", foreignKey: "player_id", onDelete: "CASCADE" });
-	friendsTable.belongsTo(models.players, { as: "receiver", foreignKey: "friend_id", onDelete: "CASCADE" });
+	friendsTable.belongsTo(models.players, { as: "playerId", foreignKey: "player_id", onDelete: "CASCADE" });
+	friendsTable.belongsTo(models.players, { as: "friendId", foreignKey: "friend_id", onDelete: "CASCADE" });
 
-	models.players.hasMany(friendsTable, { as: "sentRequests", foreignKey: "player_id" });
-	models.players.hasMany(friendsTable, { as: "receivedRequests", foreignKey: "friend_id" });
+	models.players.hasMany(friendsTable, { as: "playerIds", foreignKey: "player_id" });
+	models.players.hasMany(friendsTable, { as: "friendIds", foreignKey: "friend_id" });
 
 	return friendsTable;
 }

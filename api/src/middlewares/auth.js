@@ -5,6 +5,8 @@ import { db } from "../db/index.js";
 export async function checkAuthToken(req, res, next) {
 	const token = req.cookies?.auth_token;
 
+	console.log("token -> ", token);
+
 	if (!token) {
 		return res.status(401).json({ error: "No token, authorization denied" });
 	}
@@ -19,7 +21,7 @@ export async function checkAuthToken(req, res, next) {
 		console.log("✅ User from DB:", user);
 		if (!user) {
 			res.clearCookie("auth_token", { httpOnly: true, sameSite: "strict" });
-			return res.status(401).json({ error: "User no longer exists" });
+			return res.status(401).json({ error: "User doesn't exists" });
 		}
 
 		req.user = user;

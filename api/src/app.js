@@ -3,6 +3,7 @@ import cookieParser from 'cookie-parser';
 import { routes } from "./routes.js";
 import { setupSwagger } from "../docs/openapi.js";
 import { pagination } from "./middlewares/pagination.js";
+import apiLimiter from "./middlewares/rate-limiter.js";
 
 export function createApp() {
 	const app = express();
@@ -22,7 +23,8 @@ export function createApp() {
 	app.get("/api", (req, res) => res.redirect("/api/docs"));
 
 	// Routes
-	app.use("/api", pagination, routes);
+	app.set("trust proxy", 1);
+	app.use("/api", apiLimiter, pagination, routes);
 
 	return app;
 }
