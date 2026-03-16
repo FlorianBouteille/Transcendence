@@ -403,7 +403,6 @@ export async function verify2FA(req, res) {
 	}
 }
 
-<<<<<<< HEAD
 export async function sessionStatus(req, res) {
 	const token = req.cookies?.auth_token;
 
@@ -434,7 +433,6 @@ export async function sessionStatus(req, res) {
 	}
 }
 
-=======
 /**
  * @swagger
  * /logout:
@@ -466,7 +464,6 @@ export async function sessionStatus(req, res) {
  *                   type: string
  *                   example: "No token, authorization denied"
  */
->>>>>>> origin/zak
 export async function logout(req, res) {
 
 	res.clearCookie("auth_token", { httpOnly: true, sameSite: "strict" }).json({ success: true });
