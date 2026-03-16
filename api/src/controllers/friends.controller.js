@@ -1,5 +1,6 @@
 import { fn, col } from 'sequelize';
 import { db } from "../db/index.js";
+import { attachOnlineStatus } from "../services/presence.js";
 
 /**
  * @swagger
@@ -77,7 +78,7 @@ export async function friendsMe(req, res) {
 		});
 
 		return res.json({
-			data: friends.rows,
+			data: attachOnlineStatus(friends.rows.map((friend) => friend.toJSON())),
 			metadata: { total: friends.count, limit, page }
 		});
 
@@ -170,7 +171,7 @@ export async function friendsId(req, res) {
 		});
 
 		return res.json({
-			data: friends.rows,
+			data: attachOnlineStatus(friends.rows.map((friend) => friend.toJSON())),
 			metadata: { total: friends.count, limit, page }
 		});
 
@@ -336,20 +337,59 @@ export async function friendsMeRequestsSent(req, res) {
  */
 export async function friendsMeRequestsSend(req, res) {
 	try {
-		const { friend_id } = req.params;
+		const friendId = Number(req.params.friend_id);
+		const myId = Number(req.user.id);
 
-		if (friend_id == req.user.id)
+		if (!Number.isInteger(friendId) || friendId <= 0)
+			return res.status(400).json({ error: "Invalid friend id" });
+
+		if (friendId === myId)
 			return res.status(400).json({ error: "You cannot add yourself as a friend" });
 
+		const targetPlayer = await db.models.players.findByPk(friendId, { attributes: ['id'] });
+		if (!targetPlayer)
+			return res.status(404).json({ error: "Player not found" });
+
+		const existingOutgoing = await db.models.friends.findOne({
+			where: { player_id: myId, friend_id: friendId }
+		});
+
+		if (existingOutgoing) {
+			if (existingOutgoing.status === 'accepted')
+				return res.status(409).json({ error: "This player is already in your friend list" });
+			if (existingOutgoing.status === 'pending')
+				return res.status(409).json({ error: "Friend request already sent" });
+			if (existingOutgoing.status === 'blocked')
+				return res.status(403).json({ error: "This friendship is blocked" });
+		}
+
+		const existingIncoming = await db.models.friends.findOne({
+			where: { player_id: friendId, friend_id: myId }
+		});
+
+		if (existingIncoming) {
+			if (existingIncoming.status === 'accepted')
+				return res.status(409).json({ error: "This player is already in your friend list" });
+			if (existingIncoming.status === 'pending')
+				return res.status(409).json({ error: "This player already sent you a request" });
+			if (existingIncoming.status === 'blocked')
+				return res.status(403).json({ error: "This friendship is blocked" });
+		}
+
 		const friends = await db.models.friends.create({
-			player_id: req.user.id,
-			friend_id,
+			player_id: myId,
+			friend_id: friendId,
 			status: 'pending'
 		});
 
 		return res.status(201).json({ message: "Friend request sent", id: friends.id });
 
 	} catch (error) {
+		if (error?.name === 'SequelizeUniqueConstraintError')
+			return res.status(409).json({ error: "Friend request already exists" });
+		if (error?.name === 'SequelizeForeignKeyConstraintError')
+			return res.status(404).json({ error: "Player not found" });
+
 		console.error("Error in 'friendsRequestSend' controller:", error);
 		res.status(500).json({ error: "Internal server error" });
 	}

@@ -42,7 +42,6 @@ export class CrownGame
         {
             this.over = true;
             this.socket.emit("first", { playerData: this.player.data, elapsedTime: elapsedTime });
-            console.log('I arrived first !!');
         }
         if (this.player.alive == false)
         {
@@ -53,7 +52,6 @@ export class CrownGame
     }
     showVictoryScreen(data)
     {
-        console.log(data);
         window.location.href = `gameRecap.html?id=${data.gameId}`;
     }
 }

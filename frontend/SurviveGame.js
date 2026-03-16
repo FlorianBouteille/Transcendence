@@ -81,15 +81,9 @@ export class SurviveGame
 
     tick(elapsedTime)
     {
-        if (elapsedTime - Math.floor(elapsedTime) < 0.01)
-        {
-            console.log(elapsedTime);
-        }
         if (this.player.alive === false && !this.hasDied)
         {
             delete this.alivePlayers[this.socket.id];
-            
-            console.log('Je suis mort! Joueurs restants:', Object.keys(this.alivePlayers));
             
             this.socket.emit('died', {
                 playerData: this.player.data,
@@ -114,8 +108,6 @@ export class SurviveGame
     {
         console.log('🏆 Winner:', data.winner);
         console.log('⏱️  Time:', data.elapsedTime, 'seconds');
-        console.log('showing screen');
-        console.log(data);
         window.location.href = `gameRecap.html?id=${data.gameId}`;
     }
 }

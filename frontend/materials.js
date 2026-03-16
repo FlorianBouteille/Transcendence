@@ -3,13 +3,10 @@ import * as THREE from 'three'
 
 const loadingManager = new THREE.LoadingManager()
 loadingManager.onStart = () => {
-    console.log('loading started')
+    console.log('texture loading started')
 }
 loadingManager.onLoad = () => {
-    console.log('loading finished')
-}
-loadingManager.onProgress = () => {
-    console.log('loading progressing')
+    console.log('texture loading finished')
 }
 loadingManager.onError = () => {
     console.log('loading error')

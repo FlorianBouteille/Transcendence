@@ -268,6 +268,33 @@ function sleep(ms) {
 	return new Promise(resolve => setTimeout(resolve, ms));
 }
 
+async function saveGameResultOnce(roomID, gameData) {
+	const game = gameInstances[roomID];
+	if (!game) {
+		return -1;
+	}
+
+	if (game.savedGameId) {
+		return game.savedGameId;
+	}
+
+	if (game.savePromise) {
+		return game.savePromise;
+	}
+
+	game.savePromise = (async () => {
+		const gameId = await sendGameResult(gameData);
+		game.savedGameId = gameId ?? -1;
+		return game.savedGameId;
+	})();
+
+	try {
+		return await game.savePromise;
+	} finally {
+		game.savePromise = null;
+	}
+}
+
 
 function findRoomBySocketId(id) {
 	for (const [roomID, game] of Object.entries(gameInstances)) {
@@ -307,7 +334,10 @@ function initLobbyHandler(socket, io) {
 			gameType: gameType,
 			gameMode: gameMode,
 			gameState: gameMode.initGameState(),
-			hasStarted: false
+			hasStarted: false,
+			hasEnded: false,
+			savedGameId: null,
+			savePromise: null
 		};
 		printGameInstances();
 		socket.emit('gameStarted', { roomId: roomID });
@@ -341,7 +371,10 @@ function initLobbyHandler(socket, io) {
 				gameType: gameType,
 				gameMode: gameMode,
 				gameState: gameMode.initGameState(),
-				hasStarted: false
+				hasStarted: false,
+				hasEnded: false,
+				savedGameId: null,
+				savePromise: null
 			};
 
 			for (let i = 10; i > 0; i--) {
@@ -390,6 +423,9 @@ function initLobbyHandler(socket, io) {
 			gameMode: gameMode,
 			gameState: gameMode.initGameState(),
 			hasStarted: false,
+			hasEnded: false,
+			savedGameId: null,
+			savePromise: null,
 			roomers: [],
 			readyPlayers: [],
 			host: socket.id
@@ -562,6 +598,8 @@ function initLobbyHandler(socket, io) {
 	socket.on('joinRoom', (data) => {
 		const { roomId, userId, username } = data;
 		const roomID = roomId;
+		const normalizedUserId = Number(userId);
+		const normalizedUsername = typeof username === 'string' ? username.trim() : '';
 
 		if (!gameInstances[roomID]) {
 			console.log('❌ Room inexistante:', roomID);
@@ -580,13 +618,19 @@ function initLobbyHandler(socket, io) {
 			return;
 		}
 
+		if (!Number.isInteger(normalizedUserId) || normalizedUserId <= 0 || !normalizedUsername || normalizedUsername === 'Player') {
+			console.log('❌ joinRoom refusé: identité invalide', { socketId: socket.id, roomID, userId, username });
+			socket.emit('unauthorizedJoin');
+			return;
+		}
+
 		// Stocker les infos utilisateur sur la socket
 		socket.roomID = roomID;
-		socket.userId = userId;
-		socket.username = username;
+		socket.userId = normalizedUserId;
+		socket.username = normalizedUsername;
 		socket.join(roomID);
-		addPlayer(socket.id, roomID, userId, username);
-		console.log(`✅ Player ${username} (DB ID: ${userId}, Socket: ${socket.id}) a rejoint la room ${roomID}`);
+		addPlayer(socket.id, roomID, normalizedUserId, normalizedUsername);
+		console.log(`✅ Player ${normalizedUsername} (DB ID: ${normalizedUserId}, Socket: ${socket.id}) a rejoint la room ${roomID}`);
 
 		socket.emit('roomJoined', {
 			roomID: roomID,
@@ -613,6 +657,10 @@ function initLobbyHandler(socket, io) {
 	socket.on('first', async (data) => {
 		console.log('🏆 Premier joueur arrivé:', socket.id, 'en', data.elapsedTime, 'secondes');
 		const game = gameInstances[socket.roomID];
+		if (!game || game.hasEnded) {
+			return;
+		}
+		game.hasEnded = true;
 		//console.log(game);
 		// Logger le contenu de chaque joueur
 		//console.log('\n📊 Contenu de tous les joueurs:');
@@ -649,7 +697,7 @@ function initLobbyHandler(socket, io) {
 		};
 
 		//// ENVOYER LES DONNEES A LA DB !!!
-		gameData.gameId = await sendGameResult(gameData);
+		gameData.gameId = await saveGameResultOnce(socket.roomID, gameData);
 		console.log(gameData);
 		io.to(socket.roomID).emit('gameEnd', gameData);
 	});
@@ -688,6 +736,10 @@ function initLobbyHandler(socket, io) {
 
 		if (alivePlayers.length <= 1)
 		{
+			if (game.hasEnded) {
+				return;
+			}
+			game.hasEnded = true;
 			let winnerId;
 			if (alivePlayers.length == 1) {
 				winnerId = alivePlayers[0];
@@ -714,7 +766,7 @@ function initLobbyHandler(socket, io) {
 			};
 
 			// ENREGISTRER LA PARTIE DANS LA DB !!!!!!
-			gameData.gameId = await sendGameResult(gameData);
+			gameData.gameId = await saveGameResultOnce(socket.roomID, gameData);
 
 			console.log('🏆 Sending gameEnd with:', gameData);
 

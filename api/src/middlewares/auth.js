@@ -1,6 +1,7 @@
 import jwt from "jsonwebtoken";
 import { JWT_SECRET } from "../config.js";
 import { db } from "../db/index.js";
+import { markUserOnline } from "../services/presence.js";
 
 export async function checkAuthToken(req, res, next) {
 	const token = req.cookies?.auth_token;
@@ -25,6 +26,7 @@ export async function checkAuthToken(req, res, next) {
 		}
 
 		req.user = user;
+		markUserOnline(user.id);
 
 		next();
 	} catch (err) {

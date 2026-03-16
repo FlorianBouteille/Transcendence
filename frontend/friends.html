@@ -15,31 +15,47 @@
 		<div class="friends-shell">
 			<header class="friends-hero">
 				<h1 class="friends-title">Friends</h1>
-				<p class="friends-subtitle">ADD, DELETE, SEE YOUR FRIENDS HERE</p>
+				<p class="friends-subtitle">ADD, ACCEPT, TRACK ONLINE STATUS</p>
 			</header>
-<!--
 			<section class="friends-board" aria-labelledby="friends-board-title">
 				<h2 id="friends-board-title" class="friends-board-title">Your friends area</h2>
 				<p class="friends-board-copy">
-					This page now uses the same orange profile theme and background, without the ping-pong balls.
+					Search a player by pseudonym, send a request, and manage incoming requests.
 				</p>
+
+				<form id="add-friend-form" class="auth-form" autocomplete="off">
+					<label for="friend-pseudonym">Friend pseudonym</label>
+					<input
+						id="friend-pseudonym"
+						name="friendPseudonym"
+						class="auth-input"
+						type="text"
+						maxlength="50"
+						required
+						placeholder="Friend pseudonym"
+					/>
+					<button type="submit" id="add-friend-btn" class="btn btn--primary">Send request</button>
+				</form>
+
+				<p id="friends-feedback" class="friends-board-copy" aria-live="polite"></p>
 
 				<div class="friends-placeholder-grid">
 					<article class="friends-placeholder-card">
-						<h3>Friends list</h3>
-						<p>Reserve this block for accepted friends and their online status.</p>
+						<h3>Friends</h3>
+						<ul id="friends-list"></ul>
 					</article>
 					<article class="friends-placeholder-card">
-						<h3>Pending requests</h3>
-						<p>Use this section for incoming and outgoing friend invitations.</p>
+						<h3>Received requests</h3>
+						<ul id="requests-received-list"></ul>
 					</article>
 					<article class="friends-placeholder-card">
-						<h3>Quick actions</h3>
-						<p>Add search, invite, remove or message actions here when the feature is ready.</p>
-					</article> -->
+						<h3>Sent requests</h3>
+						<ul id="requests-sent-list"></ul>
+					</article>
 				</div>
 			</section>
 		</div>
 	</main>
+	<script type="module" src="./friends.js"></script>
 </body>
 </html>

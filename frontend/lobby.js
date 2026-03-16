@@ -84,7 +84,6 @@ window.addEventListener('beforeunload', () => {
 	socket.emit('leaveQueue');
 });
 socket.on('gameStarted', ({ roomId }) => {
-	console.log('Game found! Room:', roomId);
 	window.location.href = `game.html?room=${roomId}`;
 });
 
@@ -121,7 +120,6 @@ document.getElementById('create-room-btn').onclick = () => {
 	socket.emit('createPrivateRoom', { roomCode, gameType });
 	showView('room-view');
 	document.getElementById('room-code').textContent = roomCode;
-	console.log('Room created with code:', roomCode);
 };
 
 
@@ -150,7 +148,6 @@ document.getElementById('join-room-btn').onclick = () => {
 };
 
 socket.on('roomJoinedSuccess', (data) => {
-	console.log('Rejoint la room:', data.roomCode);
 	document.getElementById('room-code').textContent = data.roomCode;
 	showView('room-view');
 });
@@ -194,7 +191,6 @@ document.getElementById('confirm-join-btn').onclick = () => {
 	}
 
 	socket.emit('joinPrivateRoom', { roomCode: roomCode });
-	console.log('Attempting to join room:', roomCode);
 };
 document.getElementById('back-btn-2').onclick = () => {
 	socket.emit('leavePrivate');
@@ -332,9 +328,7 @@ document.getElementById('start-game-btn').addEventListener('click', (e) => {
 });
 
 socket.on('start', (msg) => {
-	console.log('🎮 ready to start !');
 	if (msg == 'ok') {
-		console.log('✅ msg ok ! Redirection vers le jeu...');
 		window.location.href = '/game.html';
 	}
 });

@@ -3,6 +3,7 @@ import nodemailer from "nodemailer";
 import jwt from "jsonwebtoken";
 import { db } from "../db/index.js";
 import { JWT_SECRET } from "../config.js";
+import { markUserOnline, markUserOffline } from "../services/presence.js";
 
 const SALT_ROUNDS = 10;
 
@@ -332,6 +333,7 @@ export async function login(req, res) {
 		});
 
 		// const token = Buffer.from(`${user.id}:${Date.now()}`).toString('base64');
+		markUserOnline(user.id);
 
 		res.json({
 			success: true,
@@ -386,6 +388,7 @@ export async function verify2FA(req, res) {
 		pending2FACodes.delete(parseInt(user_id));
 
 		const token = Buffer.from(`${user.id}:${Date.now()}`).toString('base64');
+		markUserOnline(user.id);
 
 		res.json({
 			success: true,
@@ -400,6 +403,38 @@ export async function verify2FA(req, res) {
 	} catch (err) {
 		console.error("2FA verify error:", err);
 		res.status(500).json({ error: "Erreur serveur" });
+	}
+}
+
+export async function sessionStatus(req, res) {
+	const token = req.cookies?.auth_token;
+
+	if (!token) {
+		return res.status(200).json({ loggedIn: false });
+	}
+
+	try {
+		const decoded = jwt.verify(token, JWT_SECRET);
+		const user = await db.models.userAccounts.findByPk(decoded.id);
+
+		if (!user) {
+			res.clearCookie("auth_token", { httpOnly: true, sameSite: "strict" });
+			return res.status(200).json({ loggedIn: false });
+		}
+
+		markUserOnline(user.id);
+
+		return res.status(200).json({
+			loggedIn: true,
+			user: {
+				id: user.id,
+				username: user.username,
+				email: user.email
+			}
+		});
+	} catch (err) {
+		res.clearCookie("auth_token", { httpOnly: true, sameSite: "strict" });
+		return res.status(200).json({ loggedIn: false });
 	}
 }
 
@@ -435,6 +470,15 @@ export async function verify2FA(req, res) {
  *                   example: "No token, authorization denied"
  */
 export async function logout(req, res) {
+	const token = req.cookies?.auth_token;
+
+	if (token) {
+		try {
+			const decoded = jwt.verify(token, JWT_SECRET);
+			markUserOffline(decoded.id);
+		} catch {
+		}
+	}
 
 	res.clearCookie("auth_token", { httpOnly: true, sameSite: "strict" }).json({ success: true });
 }
