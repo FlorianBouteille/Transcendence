@@ -249,6 +249,16 @@ export async function gamesSave(req, res) {
 		const end_time = format(new Date(gameData.endTime), 'yyyy-MM-dd HH:mm:ss');
 		// const duration = format(new Date(gameData.elapsedTime * 1000), 'HH:mm:ss');
 
+		const existingGame = await db.models.games.findOne({
+			where: { roomId },
+			attributes: ['id']
+		});
+
+		if (existingGame) {
+			console.log(`ℹ️ Game already saved for room ${roomId} (game_id=${existingGame.id})`);
+			return res.status(200).json({ message: "Game already saved", game_id: existingGame.id });
+		}
+
 		const transaction = await db.sequelize.transaction();
 
 		try {
@@ -295,6 +305,18 @@ export async function gamesSave(req, res) {
 		}
 
 	} catch (error) {
+		if (error?.name === 'SequelizeUniqueConstraintError' && error?.errors?.some((item) => item.path === 'roomId')) {
+			const existingGame = await db.models.games.findOne({
+				where: { roomId: req.body?.roomId },
+				attributes: ['id']
+			});
+
+			if (existingGame) {
+				console.log(`ℹ️ Duplicate save ignored for room ${req.body?.roomId} (game_id=${existingGame.id})`);
+				return res.status(200).json({ message: "Game already saved", game_id: existingGame.id });
+			}
+		}
+
 		console.error("Error in 'gamesSave' function:", error);
 		return res.status(500).json({ error: "Internal server error" });
 	}

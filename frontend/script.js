@@ -86,12 +86,10 @@ socket.on('connect_error', (error) => {
 });
 
 socket.on('roomNotFound', () => {
-	console.log('❌ Room introuvable, redirection vers le lobby');
 	window.location.href = 'lobby.html';
 });
 
 socket.on('unauthorizedJoin', () => {
-	console.log('❌ Session invalide, redirection vers login');
 	window.location.href = 'already.html';
 });
 
@@ -135,7 +133,6 @@ function createPlatforms(platformsData) {
 			platform = new BouncyPlatform(scene, new THREE.Vector3(data.position.x, data.position.y, data.position.z), data.size.x, data.size.y, data.size.z, data.strenght, materials[data.material], data.randColor);
 		if (platform) {
 			platformsFromBack.push(platform);
-			console.log('Platform type: ', data.type, 'push!');
 		}
 	});
 }
@@ -413,7 +410,6 @@ const tick = () => {
 		movingPlatformsFromBack[i].update(elapsedTime);
 	}
 	// Mettre à jour tous les joueurs distants (interpolation + animation)
-	console.log(Object.keys(remotePlayers).length);
 	Object.values(remotePlayers).forEach(remotePlayer => {
 		remotePlayer.update(deltaTime);
 	});
