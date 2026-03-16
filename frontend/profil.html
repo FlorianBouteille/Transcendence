@@ -13,6 +13,8 @@
 	<main id="profile-main" class="screen screen--legacy screen--profile profile-page hidden">
 		<a class="profile-return" href="index.html">return</a>
 		<a class="profile-friends" href="friends.html">friends</a>
+		<img id="profile-avatar" class="profile-avatar" src="" alt="Profile Picture">
+		<a href="edit_profil.html" class="edit-profile-btn">Edit Profile</a>
 		<div id="pingpong-rain" class="pingpong-rain" aria-hidden="true"></div>
 		<section class="profile-hero">
 			<svg class="profile-arc" viewBox="0 0 500 240" role="img" aria-hidden="true">
@@ -27,12 +29,10 @@
 
 		<div id="cloud-bg" class="profile-cloud" aria-label="Profil">
 			<img src="perso_color/cloud.png" alt="" aria-hidden="true">
-			<div id="cloud-message">
-				<img id="profile-avatar" class="profile-avatar" src="" alt="Profile Picture">
+			<div id="cloud-message" class="profile-cloud-message">
 				<p class="cloud-title" id="profile-pseudonym">Loading...</p>
 				<p class="cloud-text" id="profile-bio"></p>
 				<p class="cloud-stats" id="profile-stats"></p>
-				<a href="edit_profil.html" class="edit-profile-btn">✏️ Edit Profile</a>
 				<div class="xp-container">
 					<div class="xp-header">
 						<span class="level-badge" id="profile-level">Level 1</span>
@@ -45,12 +45,6 @@
 			</div>
 		</div>
 
-		<!-- Espace pour les personnages -->
-		<div id="personnage-container">
-			<img id="personnage-img" src="" alt="Personnage">
-		</div>
-		<img id="podium" src="perso_color/podium.png" alt="Podium">
-
 		<!-- Achievements Section -->
 		<div class="achievements-section">
 			<h2 class="achievements-title">🏆 Achievements</h2>
@@ -59,18 +53,10 @@
 			</div>
 		</div>
 
-		<div id="personnage-container" class="profile-character-wrap">
-			<img id="personnage-img" class="profile-character" src="" alt="Personnage">
+		<div class="profile-character-wrap">
+			<img id="personnage-img" class="profile-character" src="" alt="Personnage principal">
 		</div>
 	</main>
-<!-- 		<div class="profile-stage">
-			<div id="personnage-container" class="profile-character-wrap">
-				<img id="personnage-img" class="profile-character" src="" alt="Personnage">
-			</div>
-			<img id="podium" class="profile-podium" src="perso_color/podium.png" alt="Podium">
-		</div>
-	</main>
--->
 	<script defer>
 		document.addEventListener("DOMContentLoaded", async () => {
 			const main = document.getElementById("profile-main");
@@ -93,16 +79,13 @@
 				const totalGames = Number(data.allGames || 0);
 				const login = data.username || data.login || data.pseudonym || "PLAYER";
 				const winrate = totalGames > 0 ? ((wins / totalGames) * 100).toFixed(1) : "0.0";
-				// 	document.getElementById("profile-welcome").textContent = `WELCOME ${String(login).toUpperCase()}`;
-				// document.getElementById("profile-bio").textContent = data.bio || "Ready for the next match?";
-				// document.getElementById("profile-stats").textContent =
-				// 	`Games: ${totalGames} • Wins: ${wins}\nWinrate: ${winrate}%`;
+				document.getElementById("profile-welcome").textContent = `WELCOME ${String(login).toUpperCase()}`;
 
 				// Set avatar
 				document.getElementById("profile-avatar").src = data.avatar_url || DEFAULT_AVATAR;
 
 				document.getElementById("profile-pseudonym").textContent = data.pseudonym;
-				document.getElementById("profile-bio").textContent = data.bio;
+				document.getElementById("profile-bio").textContent = data.bio || "Hi there!";
 				document.getElementById("profile-stats").textContent =
 					`Games: ${data.allGames} • Wins: ${data.wins}\nWinrate: ${winrate}%`;
 				// Afficher l'XP et le niveau
@@ -189,7 +172,7 @@
             'perso_color/alien_21.png',
             'perso_color/alien_22.png',
             'perso_color/alien_23.png',
-            'perso_color/perso_24.png'
+            'perso_color/alien_24.png'
         ];
 
 		const personnageAleatoire = personnages[Math.floor(Math.random() * personnages.length)];
