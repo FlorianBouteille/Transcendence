@@ -32,10 +32,6 @@ routes.put("/users/me", checkAuthToken, usersMeDelete);
 
 // ---------- Profiles ----------
 routes.get("/profiles", prfls.profiles);
-routes.get("/profiles/:id", checkAuthToken , prfls.profilesId);
-routes.get("/profiles/:id/history", checkAuthToken, prfls.profilesIdHistory);
-
-routes.use("/profiles/me", checkAuthToken);
 
 routes.get("/profiles/me", prfls.profilesMe);
 routes.get("/profiles/me/history", prfls.profilesMeHistory);
@@ -43,12 +39,16 @@ routes.get("/profiles/me/history", prfls.profilesMeHistory);
 routes.put("/profiles/me/pseudonym", prfls.profilesMePseudonym);
 routes.put("/profiles/me/bio", prfls.profilesMeBio);
 
+routes.get("/profiles/:id" , prfls.profilesId);
+routes.get("/profiles/:id/history", prfls.profilesIdHistory);
+
 
 // ---------- Friends ----------
-routes.get("/friends/:id", frds.friendsId);
 routes.get("/friends/me", frds.friendsMe);
 routes.get("/friends/me/requests/received", frds.friendsMeRequestsReceived);
 routes.get("/friends/me/requests/sent", frds.friendsMeRequestsSent);
+
+routes.get("/friends/:id", frds.friendsId);
 
 routes.post("/friends/me/requests/:friend_id", frds.friendsMeRequestsSend);
 

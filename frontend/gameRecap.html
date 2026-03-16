@@ -195,7 +195,7 @@
       try {
         if (!gameId) throw new Error("Missing game id");
 
-        const response = await fetch(`api/games/${gameId}`, { credentials: "include" });
+        const response = await fetch(`/api/games/${gameId}`, { credentials: "include" });
         if (!response.ok) throw new Error(`HTTP ${response.status}`);
 
         const payload = await response.json();

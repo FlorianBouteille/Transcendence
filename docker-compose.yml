@@ -9,8 +9,8 @@ services:
     depends_on:
       - frontend
     ports:
-      - "${NGINX_PORT:-8080}:443"
-      - "${NGINX_HTTP_PORT:-8081}:80"
+      - "${NGINX_PORT:-8443}:443"
+      - "8080:80"
     networks:
       - transcendence
 
@@ -21,8 +21,6 @@ services:
     restart: unless-stopped
     depends_on:
       - backend
-    ports:
-      - "5173:5173"
     networks:
       - transcendence
     volumes:
