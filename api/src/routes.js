@@ -16,6 +16,9 @@ routes.post("/login", login);
 routes.post("/2fa/verify", verify2FA);
 routes.post("/logout", logout);
 
+// ---------- Server ----------
+routes.post("/games", gamesSave);
+
 // ---------- Authentication check ----------
 routes.use("/", checkAuthToken);
 
@@ -29,10 +32,6 @@ routes.put("/users/me", checkAuthToken, usersMeDelete);
 
 // ---------- Profiles ----------
 routes.get("/profiles", prfls.profiles);
-routes.get("/profiles/:id", checkAuthToken , prfls.profilesId);
-routes.get("/profiles/:id/history", checkAuthToken, prfls.profilesIdHistory);
-
-routes.use("/profiles/me", checkAuthToken);
 
 routes.get("/profiles/me", prfls.profilesMe);
 routes.get("/profiles/me/history", prfls.profilesMeHistory);
@@ -40,12 +39,19 @@ routes.get("/profiles/me/history", prfls.profilesMeHistory);
 routes.put("/profiles/me/pseudonym", prfls.profilesMePseudonym);
 routes.put("/profiles/me/bio", prfls.profilesMeBio);
 
+routes.get("/profiles/:id", prfls.profilesId);
+routes.get("/profiles/:id/history", prfls.profilesIdHistory);
+
+routes.post("/profiles/me/avatar", prfls.profilesMeAvatar);
+routes.delete("/profiles/me/avatar", prfls.profilesMeAvatarDelete);
+
 
 // ---------- Friends ----------
-routes.get("/friends/:id", frds.friendsId);
 routes.get("/friends/me", frds.friendsMe);
 routes.get("/friends/me/requests/received", frds.friendsMeRequestsReceived);
 routes.get("/friends/me/requests/sent", frds.friendsMeRequestsSent);
+
+routes.get("/friends/:id", frds.friendsId);
 
 routes.post("/friends/me/requests/:friend_id", frds.friendsMeRequestsSend);
 
@@ -59,9 +65,7 @@ routes.delete("/friends/me/requests/:friend_id", frds.friendsMeRequestsReject)
 routes.get("/games", gamesHistory);
 routes.get("/games/:id", parseParams({ id: 'int' }), gamesIdHistory);
 
-routes.post("/games", gamesSave);
-
 // ---------- Achievements ----------
 routes.get("/achievements", getAllAchievements);
-routes.get("/achievements/me", checkAuthToken, getMyAchievements);
-routes.get("/profiles/:id/achievements", checkAuthToken, getPlayerAchievements);
+routes.get("/achievements/me", getMyAchievements);
+routes.get("/profiles/:id/achievements", getPlayerAchievements);

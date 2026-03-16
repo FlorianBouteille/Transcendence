@@ -82,6 +82,8 @@
 					credentials: "include" // send JWT cookie
 				});
 
+				console.log(response);
+
 				if (!response.ok) {
 					window.location.href = "already.html";
 					return;
@@ -96,11 +98,11 @@
 				// 	document.getElementById("profile-welcome").textContent = `WELCOME ${String(login).toUpperCase()}`;
 				// document.getElementById("profile-bio").textContent = data.bio || "Ready for the next match?";
 				// document.getElementById("profile-stats").textContent =
-				// 	`Games: ${totalGames} • Wins: ${wins}\nWinrate: ${winrate}%`; 		
-				
+				// 	`Games: ${totalGames} • Wins: ${wins}\nWinrate: ${winrate}%`;
+
 				// Set avatar
 				document.getElementById("profile-avatar").src = data.avatar_url || DEFAULT_AVATAR;
-				
+
 				document.getElementById("profile-pseudonym").textContent = data.pseudonym;
 				document.getElementById("profile-bio").textContent = data.bio;
 				document.getElementById("profile-stats").textContent =
@@ -134,7 +136,7 @@
 
 		async function fetchAchievements() {
 			try {
-				const response = await fetch("http://localhost:8080/api/achievements/me", {
+				const response = await fetch("/api/achievements/me", {
 					method: "GET",
 					credentials: "include"
 				});

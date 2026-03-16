@@ -528,9 +528,9 @@ export async function profilesMeAvatar(req, res) {
 		);
 
 		await transaction.commit();
-		return res.json({ 
+		return res.json({
 			message: "Avatar updated successfully",
-			avatar_url 
+			avatar_url
 		});
 
 	} catch (err) {

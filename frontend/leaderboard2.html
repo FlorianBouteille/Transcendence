@@ -72,7 +72,7 @@
         let currentSort = "xp";
 
         async function getPlayers() {
-            const response = await fetch("http://localhost:8080/api/profiles", { credentials: "include" });
+            const response = await fetch("/api/profiles", { credentials: "include" });
             const players = await response.json();
             return players;
         }
@@ -174,4 +174,4 @@
         });
     </script>
 </body>
-</html> 
+</html>

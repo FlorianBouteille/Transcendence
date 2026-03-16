@@ -284,7 +284,6 @@
 	</div>
 
 	<script>
-		const API = "http://localhost:8080/api";
 		const DEFAULT_AVATAR = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ccircle cx='50' cy='50' r='50' fill='%23ffb647'/%3E%3Ccircle cx='50' cy='40' r='15' fill='%235a2a00'/%3E%3Cpath d='M 25 70 Q 50 85 75 70' stroke='%235a2a00' stroke-width='5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E";
 
 		function showMsg(id, text, isError) {
@@ -296,12 +295,12 @@
 		// Pre-fill current values
 		(async () => {
 			try {
-				const res = await fetch(`${API}/profiles/me`, { credentials: "include" });
+				const res = await fetch(`api/profiles/me`, { credentials: "include" });
 				if (!res.ok) { window.location.href = "login.html"; return; }
 				const data = await res.json();
 				document.getElementById("new-pseudo").value = data.pseudonym || "";
 				document.getElementById("new-bio").value = data.bio || "";
-				
+
 				// Set avatar preview
 				const avatarPreview = document.getElementById("avatar-preview");
 				avatarPreview.src = data.avatar_url || DEFAULT_AVATAR;
@@ -331,13 +330,13 @@
 			const reader = new FileReader();
 			reader.onload = async (event) => {
 				const base64 = event.target.result;
-				
+
 				// Update preview
 				document.getElementById("avatar-preview").src = base64;
 
 				// Upload to server
 				try {
-					const res = await fetch(`${API}/profiles/me/avatar`, {
+					const res = await fetch("api/profiles/me/avatar", {
 						method: "POST",
 						credentials: "include",
 						headers: { "Content-Type": "application/json" },
@@ -356,7 +355,7 @@
 		async function deleteAvatar() {
 			if (!confirm("Delete your profile picture?")) return;
 			try {
-				const res = await fetch(`${API}/profiles/me/avatar`, {
+				const res = await fetch("api/profiles/me/avatar", {
 					method: "DELETE",
 					credentials: "include"
 				});
@@ -375,7 +374,7 @@
 			const pseudonym = document.getElementById("new-pseudo").value.trim();
 			if (!pseudonym) { showMsg("msg-pseudo", "Pseudonym cannot be empty.", true); return; }
 			try {
-				const res = await fetch(`${API}/profiles/me/pseudonym`, {
+				const res = await fetch("api/profiles/me/pseudonym", {
 					method: "PUT",
 					credentials: "include",
 					headers: { "Content-Type": "application/json" },
@@ -383,7 +382,14 @@
 				});
 				const data = await res.json();
 				if (!res.ok) showMsg("msg-pseudo", data.error || "Error.", true);
-				else showMsg("msg-pseudo", data.message || "Pseudonym updated!", false);
+				else {
+					showMsg("msg-pseudo", data.message || "Pseudonym updated!", false);
+					const user = JSON.parse(localStorage.getItem('user'));
+					if (user) {
+						user.username = pseudonym;
+						localStorage.setItem('user', JSON.stringify(user));
+					}
+				}
 			} catch (e) {
 				showMsg("msg-pseudo", "Network error.", true);
 			}
@@ -393,7 +399,7 @@
 			const bio = document.getElementById("new-bio").value.trim();
 			if (!bio) { showMsg("msg-bio", "Bio cannot be empty.", true); return; }
 			try {
-				const res = await fetch(`${API}/profiles/me/bio`, {
+				const res = await fetch("api/profiles/me/bio", {
 					method: "PUT",
 					credentials: "include",
 					headers: { "Content-Type": "application/json" },
@@ -416,7 +422,7 @@
 				return;
 			}
 			try {
-				const res = await fetch(`${API}/users/me/password`, {
+				const res = await fetch("api/users/me/password", {
 					method: "PUT",
 					credentials: "include",
 					headers: { "Content-Type": "application/json" },
