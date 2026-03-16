@@ -2558,20 +2558,26 @@ p {
   color: #1e1630;
 }
 
-.legal-content {
-  max-height: 55vh;
+.legal-content,
+  .privacy-content {
   overflow-y: auto;
-  padding-right: 8px;
-  line-height: 1.6;
-  font-size: calc(0.95rem * var(--legal-font-scale));
   color: #1e1630;
+  font-size: calc(0.95rem * var(--legal-font-scale));
 }
 
-.legal-content section {
+.legal-content {
+  max-height: 55vh;
+  padding-right: 8px;
+  line-height: 1.6;
+}
+
+.legal-content section,
+  .privacy-content section {
   margin-bottom: 18px;
 }
 
-.legal-content h2 {
+.legal-content h2,
+  .privacy-content h2 {
   font-size: calc(0.9rem * var(--legal-font-scale));
   letter-spacing: 0.12em;
   text-transform: uppercase;
@@ -2621,23 +2627,8 @@ p {
 
 .privacy-content {
   max-height: 52vh;
-  overflow-y: auto;
   padding-right: 10px;
-  color: #1e1630;
   line-height: 1.55;
-  font-size: calc(0.95rem * var(--legal-font-scale));
-}
-
-.privacy-content section {
-  margin-bottom: 18px;
-}
-
-.privacy-content h2 {
-  font-size: calc(0.9rem * var(--legal-font-scale));
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-  color: #5a4a82;
-  margin-bottom: 6px;
 }
 
 .privacy-content p {
