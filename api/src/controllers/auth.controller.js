@@ -403,7 +403,6 @@ export async function verify2FA(req, res) {
 	}
 }
 
-<<<<<<< HEAD
 export async function sessionStatus(req, res) {
 	const token = req.cookies?.auth_token;
 
@@ -434,39 +433,6 @@ export async function sessionStatus(req, res) {
 	}
 }
 
-=======
-/**
- * @swagger
- * /logout:
- *   post:
- *     summary: Log out the current user
- *     tags:
- *       - 🔐 Authentication
- *     security:
- *       - BearerAuth: []   # or BasicAuth if you want, depending on your setup
- *     responses:
- *       200:
- *         description: Successfully logged out
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 success:
- *                   type: boolean
- *                   example: true
- *       401:
- *         description: User not authenticated
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 error:
- *                   type: string
- *                   example: "No token, authorization denied"
- */
->>>>>>> origin/zak
 export async function logout(req, res) {
 
 	res.clearCookie("auth_token", { httpOnly: true, sameSite: "strict" }).json({ success: true });
