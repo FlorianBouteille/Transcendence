@@ -50,6 +50,7 @@ export async function profiles(req, res) {
 				'bio',
 				'xp',
 				'level',
+				'avatar_url',
 				[fn('COUNT', col('playerStats.id')), 'allGames'],
 				[db.sequelize.literal(`COUNT(CASE WHEN playerStats.position = 1 THEN 1 END)`), 'wins'],
 				[db.sequelize.literal(`(SELECT COUNT(*) FROM player_achievements WHERE player_achievements.player_id = players.id)`), 'achievementCount']
@@ -101,6 +102,7 @@ export async function profilesMe(req, res) {
 				'bio',
 				'xp',
 				'level',
+				'avatar_url',
 				[fn('COUNT', col('playerStats.id')), 'allGames'],
 				[db.sequelize.literal(`COUNT(CASE WHEN playerStats.position = 1 THEN 1 END)`), 'wins']
 			],
@@ -232,6 +234,7 @@ export async function profilesId(req, res) {
 				'bio',
 				'xp',
 				'level',
+				'avatar_url',
 				[fn('COUNT', col('playerStats.id')), 'allGames'],
 				[db.sequelize.literal(`COUNT(CASE WHEN playerStats.position = 1 THEN 1 END)`), 'wins']
 			],
@@ -451,6 +454,130 @@ export async function profilesMeBio(req, res) {
 	} catch (err) {
 		await transaction.rollback();
 		console.error("Error updating bio:", err);
+		return res.status(500).json({ error: "Internal server error" });
+	}
+}
+
+/**
+ * @swagger
+ * /profiles/me/avatar:
+ *   post:
+ *     summary: Upload or update avatar
+ *     description: Upload a new avatar image for the current player. Accepts base64 encoded image.
+ *     tags:
+ *       - Profiles
+ *     security:
+ *       - BearerAuth: []
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - avatar
+ *             properties:
+ *               avatar:
+ *                 type: string
+ *                 description: Base64 encoded image (JPEG, PNG, GIF)
+ *                 example: "data:image/png;base64,iVBORw0KGgo..."
+ *     responses:
+ *       200:
+ *         description: Avatar updated successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                 avatar_url:
+ *                   type: string
+ *       400:
+ *         description: Invalid image data
+ *       500:
+ *         description: Internal server error
+ */
+export async function profilesMeAvatar(req, res) {
+	const { avatar } = req.body;
+
+	if (!avatar || typeof avatar !== 'string')
+		return res.status(400).json({ error: "Avatar image is required" });
+
+	// Validate base64 image format
+	const matches = avatar.match(/^data:image\/(png|jpeg|jpg|gif);base64,(.+)$/);
+	if (!matches)
+		return res.status(400).json({ error: "Invalid image format. Use base64 encoded PNG, JPEG or GIF" });
+
+	const extension = matches[1];
+	const base64Data = matches[2];
+
+	// Check base64 size (limit to ~5MB)
+	if (base64Data.length > 7000000)
+		return res.status(400).json({ error: "Image too large. Maximum 5MB" });
+
+	const transaction = await db.sequelize.transaction();
+
+	try {
+		// Store as data URL in database
+		const avatar_url = avatar;
+
+		await db.models.players.update(
+			{ avatar_url },
+			{ where: { id: req.user.id }, transaction }
+		);
+
+		await transaction.commit();
+		return res.json({ 
+			message: "Avatar updated successfully",
+			avatar_url 
+		});
+
+	} catch (err) {
+		await transaction.rollback();
+		console.error("Error updating avatar:", err);
+		return res.status(500).json({ error: "Internal server error" });
+	}
+}
+
+/**
+ * @swagger
+ * /profiles/me/avatar:
+ *   delete:
+ *     summary: Delete avatar
+ *     description: Remove the current player's avatar and revert to default.
+ *     tags:
+ *       - Profiles
+ *     security:
+ *       - BearerAuth: []
+ *     responses:
+ *       200:
+ *         description: Avatar deleted successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *       500:
+ *         description: Internal server error
+ */
+export async function profilesMeAvatarDelete(req, res) {
+	const transaction = await db.sequelize.transaction();
+
+	try {
+		await db.models.players.update(
+			{ avatar_url: null },
+			{ where: { id: req.user.id }, transaction }
+		);
+
+		await transaction.commit();
+		return res.json({ message: "Avatar deleted successfully" });
+
+	} catch (err) {
+		await transaction.rollback();
+		console.error("Error deleting avatar:", err);
 		return res.status(500).json({ error: "Internal server error" });
 	}
 }

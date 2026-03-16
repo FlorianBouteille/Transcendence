@@ -1,0 +1,440 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+	<meta charset="UTF-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+	<title>Edit Profile | ft_transcendence</title>
+	<style>
+		*,
+		*::before,
+		*::after {
+			margin: 0;
+			padding: 0;
+			box-sizing: border-box;
+		}
+
+		:root {
+			font-family: "Trebuchet MS", "Segoe UI", sans-serif;
+			color-scheme: light;
+		}
+
+		body {
+			min-height: 100vh;
+			background: linear-gradient(180deg, #ff8a3d 0%, #ffb647 40%, #ffe4a1 70%, #fff6e6 100%);
+			display: flex;
+			flex-direction: column;
+			align-items: center;
+			justify-content: center;
+			padding: 32px 16px 48px;
+			color: #2d1b0a;
+		}
+
+		.nav-link {
+			position: fixed;
+			top: 20px;
+			left: 24px;
+			font-weight: 700;
+			font-size: 0.9rem;
+			text-transform: uppercase;
+			letter-spacing: 0.06em;
+			color: #5a2a00;
+			text-decoration: none;
+			transition: opacity 0.18s;
+		}
+
+		.nav-link:hover {
+			opacity: 0.65;
+		}
+
+		h1 {
+			font-size: clamp(1.6rem, 3vw, 2.4rem);
+			letter-spacing: 0.07em;
+			text-transform: uppercase;
+			font-weight: 700;
+			color: #5a2a00;
+			text-shadow: 0 4px 14px rgba(255, 255, 255, 0.45);
+			margin-bottom: 28px;
+		}
+
+		.edit-card {
+			background: rgba(255, 255, 255, 0.55);
+			backdrop-filter: blur(8px);
+			border-radius: 20px;
+			padding: 36px 40px;
+			max-width: 480px;
+			width: 100%;
+			box-shadow: 0 8px 32px rgba(90, 42, 0, 0.14);
+			display: flex;
+			flex-direction: column;
+			gap: 28px;
+		}
+
+		.form-section h2 {
+			font-size: 1rem;
+			text-transform: uppercase;
+			letter-spacing: 0.06em;
+			color: #5a2a00;
+			margin-bottom: 12px;
+			padding-bottom: 6px;
+			border-bottom: 2px solid rgba(90, 42, 0, 0.2);
+		}
+
+		.form-group {
+			display: flex;
+			flex-direction: column;
+			gap: 6px;
+			margin-bottom: 12px;
+		}
+
+		label {
+			font-size: 0.82rem;
+			font-weight: 700;
+			text-transform: uppercase;
+			letter-spacing: 0.04em;
+			color: #5a2a00;
+		}
+
+		input,
+		textarea {
+			padding: 10px 14px;
+			border: 2px solid rgba(90, 42, 0, 0.25);
+			border-radius: 10px;
+			background: rgba(255, 255, 255, 0.7);
+			font-size: 0.95rem;
+			color: #2d1b0a;
+			font-family: inherit;
+			transition: border-color 0.18s;
+			outline: none;
+		}
+
+		input:focus,
+		textarea:focus {
+			border-color: #a04a00;
+		}
+
+		textarea {
+			resize: vertical;
+			min-height: 80px;
+		}
+
+		.btn-submit {
+			padding: 10px 24px;
+			background: #5a2a00;
+			color: #fff6e6;
+			border: none;
+			border-radius: 20px;
+			font-size: 0.88rem;
+			font-weight: 700;
+			letter-spacing: 0.05em;
+			text-transform: uppercase;
+			cursor: pointer;
+			transition: background 0.18s, transform 0.13s;
+			align-self: flex-start;
+		}
+
+		.btn-submit:hover {
+			background: #a04a00;
+			transform: scale(1.04);
+		}
+
+		.msg {
+			font-size: 0.85rem;
+			font-weight: 600;
+			padding: 8px 12px;
+			border-radius: 8px;
+			display: none;
+		}
+
+		.msg.success {
+			display: block;
+			background: rgba(80, 180, 80, 0.18);
+			color: #1a5e1a;
+		}
+
+		.msg.error {
+			display: block;
+			background: rgba(200, 50, 50, 0.15);
+			color: #7a1010;
+		}
+
+		.hint {
+			font-size: 0.75rem;
+			color: #7a4a10;
+			margin-top: 2px;
+		}
+
+		.avatar-preview {
+			width: 120px;
+			height: 120px;
+			border-radius: 50%;
+			object-fit: cover;
+			border: 3px solid rgba(90, 42, 0, 0.3);
+			margin: 0 auto 16px;
+			display: block;
+			background: rgba(255, 255, 255, 0.5);
+		}
+
+		.avatar-upload-btn {
+			display: inline-block;
+			padding: 8px 20px;
+			background: rgba(90, 42, 0, 0.12);
+			color: #5a2a00;
+			border: 2px solid rgba(90, 42, 0, 0.25);
+			border-radius: 16px;
+			font-size: 0.82rem;
+			font-weight: 600;
+			text-transform: uppercase;
+			letter-spacing: 0.04em;
+			cursor: pointer;
+			transition: all 0.18s;
+			margin-right: 8px;
+		}
+
+		.avatar-upload-btn:hover {
+			background: rgba(90, 42, 0, 0.2);
+			border-color: #5a2a00;
+		}
+
+		.btn-delete {
+			background: rgba(200, 50, 50, 0.12);
+			color: #7a1010;
+			border-color: rgba(200, 50, 50, 0.25);
+		}
+
+		.btn-delete:hover {
+			background: rgba(200, 50, 50, 0.2);
+			border-color: #7a1010;
+		}
+
+		input[type="file"] {
+			display: none;
+		}
+
+		.avatar-buttons {
+			display: flex;
+			justify-content: center;
+			gap: 8px;
+			flex-wrap: wrap;
+		}
+	</style>
+</head>
+
+<body>
+	<a class="nav-link" href="profil.html">← back</a>
+
+	<h1>Edit Profile</h1>
+
+	<div class="edit-card">
+
+		<!-- Avatar -->
+		<div class="form-section">
+			<h2>Profile Picture</h2>
+			<img id="avatar-preview" class="avatar-preview" src="" alt="Profile Picture">
+			<div class="avatar-buttons">
+				<label for="avatar-file" class="avatar-upload-btn">📷 Upload Photo</label>
+				<input type="file" id="avatar-file" accept="image/png,image/jpeg,image/jpg,image/gif">
+				<button class="avatar-upload-btn btn-delete" onclick="deleteAvatar()">🗑️ Remove</button>
+			</div>
+			<div id="msg-avatar" class="msg"></div>
+		</div>
+
+		<!-- Pseudonym -->
+		<div class="form-section">
+			<h2>Pseudonym</h2>
+			<div class="form-group">
+				<label for="new-pseudo">New pseudonym</label>
+				<input type="text" id="new-pseudo" placeholder="Enter new pseudonym" maxlength="32" />
+			</div>
+			<div id="msg-pseudo" class="msg"></div>
+			<button class="btn-submit" onclick="updatePseudo()">Save pseudonym</button>
+		</div>
+
+		<!-- Bio -->
+		<div class="form-section">
+			<h2>Bio</h2>
+			<div class="form-group">
+				<label for="new-bio">Bio</label>
+				<textarea id="new-bio" placeholder="Tell something about yourself..." maxlength="200"></textarea>
+			</div>
+			<div id="msg-bio" class="msg"></div>
+			<button class="btn-submit" onclick="updateBio()">Save bio</button>
+		</div>
+
+		<!-- Password -->
+		<div class="form-section">
+			<h2>Password</h2>
+			<div class="form-group">
+				<label for="old-password">Current password</label>
+				<input type="password" id="old-password" placeholder="Current password" />
+			</div>
+			<div class="form-group">
+				<label for="new-password">New password</label>
+				<input type="password" id="new-password" placeholder="New password" />
+				<span class="hint">Min 10 chars, 1 uppercase, 1 lowercase, 1 digit, 1 special character</span>
+			</div>
+			<div class="form-group">
+				<label for="confirm-password">Confirm new password</label>
+				<input type="password" id="confirm-password" placeholder="Confirm new password" />
+			</div>
+			<div id="msg-password" class="msg"></div>
+			<button class="btn-submit" onclick="updatePassword()">Save password</button>
+		</div>
+
+	</div>
+
+	<script>
+		const API = "http://localhost:8080/api";
+		const DEFAULT_AVATAR = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ccircle cx='50' cy='50' r='50' fill='%23ffb647'/%3E%3Ccircle cx='50' cy='40' r='15' fill='%235a2a00'/%3E%3Cpath d='M 25 70 Q 50 85 75 70' stroke='%235a2a00' stroke-width='5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E";
+
+		function showMsg(id, text, isError) {
+			const el = document.getElementById(id);
+			el.textContent = text;
+			el.className = "msg " + (isError ? "error" : "success");
+		}
+
+		// Pre-fill current values
+		(async () => {
+			try {
+				const res = await fetch(`${API}/profiles/me`, { credentials: "include" });
+				if (!res.ok) { window.location.href = "login.html"; return; }
+				const data = await res.json();
+				document.getElementById("new-pseudo").value = data.pseudonym || "";
+				document.getElementById("new-bio").value = data.bio || "";
+				
+				// Set avatar preview
+				const avatarPreview = document.getElementById("avatar-preview");
+				avatarPreview.src = data.avatar_url || DEFAULT_AVATAR;
+			} catch (e) {
+				window.location.href = "already.html";
+			}
+		})();
+
+		// Avatar file input handler
+		document.getElementById("avatar-file").addEventListener("change", async (e) => {
+			const file = e.target.files[0];
+			if (!file) return;
+
+			// Validate file size (5MB max)
+			if (file.size > 5 * 1024 * 1024) {
+				showMsg("msg-avatar", "Image too large. Maximum 5MB.", true);
+				return;
+			}
+
+			// Validate file type
+			if (!file.type.match(/^image\/(png|jpeg|jpg|gif)$/)) {
+				showMsg("msg-avatar", "Invalid format. Use PNG, JPEG or GIF.", true);
+				return;
+			}
+
+			// Convert to base64
+			const reader = new FileReader();
+			reader.onload = async (event) => {
+				const base64 = event.target.result;
+				
+				// Update preview
+				document.getElementById("avatar-preview").src = base64;
+
+				// Upload to server
+				try {
+					const res = await fetch(`${API}/profiles/me/avatar`, {
+						method: "POST",
+						credentials: "include",
+						headers: { "Content-Type": "application/json" },
+						body: JSON.stringify({ avatar: base64 })
+					});
+					const data = await res.json();
+					if (!res.ok) showMsg("msg-avatar", data.error || "Error uploading.", true);
+					else showMsg("msg-avatar", "Avatar updated!", false);
+				} catch (err) {
+					showMsg("msg-avatar", "Network error.", true);
+				}
+			};
+			reader.readAsDataURL(file);
+		});
+
+		async function deleteAvatar() {
+			if (!confirm("Delete your profile picture?")) return;
+			try {
+				const res = await fetch(`${API}/profiles/me/avatar`, {
+					method: "DELETE",
+					credentials: "include"
+				});
+				const data = await res.json();
+				if (!res.ok) showMsg("msg-avatar", data.error || "Error.", true);
+				else {
+					showMsg("msg-avatar", "Avatar deleted.", false);
+					document.getElementById("avatar-preview").src = DEFAULT_AVATAR;
+				}
+			} catch (e) {
+				showMsg("msg-avatar", "Network error.", true);
+			}
+		}
+
+		async function updatePseudo() {
+			const pseudonym = document.getElementById("new-pseudo").value.trim();
+			if (!pseudonym) { showMsg("msg-pseudo", "Pseudonym cannot be empty.", true); return; }
+			try {
+				const res = await fetch(`${API}/profiles/me/pseudonym`, {
+					method: "PUT",
+					credentials: "include",
+					headers: { "Content-Type": "application/json" },
+					body: JSON.stringify({ pseudonym })
+				});
+				const data = await res.json();
+				if (!res.ok) showMsg("msg-pseudo", data.error || "Error.", true);
+				else showMsg("msg-pseudo", data.message || "Pseudonym updated!", false);
+			} catch (e) {
+				showMsg("msg-pseudo", "Network error.", true);
+			}
+		}
+
+		async function updateBio() {
+			const bio = document.getElementById("new-bio").value.trim();
+			if (!bio) { showMsg("msg-bio", "Bio cannot be empty.", true); return; }
+			try {
+				const res = await fetch(`${API}/profiles/me/bio`, {
+					method: "PUT",
+					credentials: "include",
+					headers: { "Content-Type": "application/json" },
+					body: JSON.stringify({ bio })
+				});
+				const data = await res.json();
+				if (!res.ok) showMsg("msg-bio", data.error || "Error.", true);
+				else showMsg("msg-bio", data.message || "Bio updated!", false);
+			} catch (e) {
+				showMsg("msg-bio", "Network error.", true);
+			}
+		}
+
+		async function updatePassword() {
+			const oldPassword = document.getElementById("old-password").value;
+			const newPassword = document.getElementById("new-password").value;
+			const confirmPassword = document.getElementById("confirm-password").value;
+			if (!oldPassword || !newPassword || !confirmPassword) {
+				showMsg("msg-password", "All password fields are required.", true);
+				return;
+			}
+			try {
+				const res = await fetch(`${API}/users/me/password`, {
+					method: "PUT",
+					credentials: "include",
+					headers: { "Content-Type": "application/json" },
+					body: JSON.stringify({ oldPassword, newPassword, confirmPassword })
+				});
+				const data = await res.json();
+				if (!res.ok) showMsg("msg-password", data.error || "Error.", true);
+				else {
+					showMsg("msg-password", data.message || "Password updated!", false);
+					document.getElementById("old-password").value = "";
+					document.getElementById("new-password").value = "";
+					document.getElementById("confirm-password").value = "";
+				}
+			} catch (e) {
+				showMsg("msg-password", "Network error.", true);
+			}
+		}
+	</script>
+</body>
+
+</html>

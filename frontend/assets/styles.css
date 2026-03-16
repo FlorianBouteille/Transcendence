@@ -1831,18 +1831,12 @@ p {
   display: block;
 }
 
-.profile-cloud-message {
-  position: absolute;
-  inset: 35% 8% 18% 24%;
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-  text-align: center;
-  color: #5a2a00;
-  text-shadow: 0 2px 10px rgba(255, 255, 255, 0.55);
-  pointer-events: none;
-  font-size: clamp(0.95rem, 1.2vw, 1.15rem);
-  font-weight: 600;
+.cloud-title {
+  font-size: clamp(1rem, 1.4vw, 1.35rem);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  font-weight: 700;
+  color: orange;
 }
 
 .cloud-text {
@@ -2923,6 +2917,10 @@ p {
   text-transform: uppercase;
 }
 
+.lowercase{
+  text-transform: lowercase;
+}
+
 .tracking-\[0\.12em\]{
   letter-spacing: 0.12em;
 }
@@ -2936,6 +2934,10 @@ p {
   color: currentColor;
 }
 
+.outline{
+  outline-style: solid;
+}
+
 .blur{
   --tw-blur: blur(8px);
   filter: var(--tw-blur) var(--tw-brightness) var(--tw-contrast) var(--tw-grayscale) var(--tw-hue-rotate) var(--tw-invert) var(--tw-saturate) var(--tw-sepia) var(--tw-drop-shadow);
@@ -2943,6 +2945,10 @@ p {
 
 .filter{
   filter: var(--tw-blur) var(--tw-brightness) var(--tw-contrast) var(--tw-grayscale) var(--tw-hue-rotate) var(--tw-invert) var(--tw-saturate) var(--tw-sepia) var(--tw-drop-shadow);
+}
+
+.backdrop-filter{
+  backdrop-filter: var(--tw-backdrop-blur) var(--tw-backdrop-brightness) var(--tw-backdrop-contrast) var(--tw-backdrop-grayscale) var(--tw-backdrop-hue-rotate) var(--tw-backdrop-invert) var(--tw-backdrop-opacity) var(--tw-backdrop-saturate) var(--tw-backdrop-sepia);
 }
 
 .transition{
