@@ -8,21 +8,21 @@ export function setupSwagger(app) {
 			info: {
 				title: "Game API",
 				version: "1.0.0",
-				description: "API for Fall Guys-like game",
+				description: "**Notice:** To test protected endpoints, please login via /login first. The JWT cookie will be automatically stored in your browser session."
 			},
+			tags: [{
+				name: "🔐 Authentication",
+				description: "Login/logout endpoints. Must authenticate to test protected routes."
+			}],
 			servers: [{
 					url: "http://localhost:8080/api",
 				},],
 			components: {
 				securitySchemes: {
-					BearerAuth: {               // JWT auth for protected routes
+					BearerAuth: {
 						type: "http",
 						scheme: "bearer",
 						bearerFormat: "JWT",
-					},
-					BasicAuth: {                // Basic auth for login testing
-						type: "http",
-						scheme: "basic",
 					},
 				},
 			},
@@ -34,5 +34,7 @@ export function setupSwagger(app) {
 	const swaggerSpec = swaggerJsdoc(options);
 
 	// Serve Swagger UI at /api/docs
-	app.use("/api/docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec));
-}
+	app.use("/api/docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec, { swaggerOptions: { withCredentials: true } }));
+
+};
+

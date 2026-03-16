@@ -1,40 +1,59 @@
 import { Router } from "express";
-import { register, login, verify2FA, logout, sessionStatus } from "./controllers/auth.controller.js";
+import { checkAuthToken } from "./middlewares/auth.js";
+import { register, login, verify2FA, logout } from "./controllers/auth.controller.js";
 import { usersMePassword, usersMe2fa, usersMeDelete } from "./controllers/users.controller.js";
 import * as prfls from "./controllers/profiles.controller.js";
+import * as frds from "./controllers/friends.controller.js";
 import { gamesHistory, gamesIdHistory, gamesSave } from "./controllers/games.controller.js";
 import { getAllAchievements, getMyAchievements, getPlayerAchievements } from "./controllers/achievements.controller.js";
-import { checkPlayerId } from "./middlewares/check_player_id.js"
 import { parseParams } from "./middlewares/params.js";
-import { checkAuthToken } from "./middlewares/auth.js";
 
 export const routes = Router();
 
 // ---------- Authentication ----------
-routes.get("/me", checkAuthToken, (req, res) => res.status(200).json(req.user));
-routes.get("/session", sessionStatus);
-
 routes.post("/register", register);
 routes.post("/login", login);
 routes.post("/2fa/verify", verify2FA);
 routes.post("/logout", logout);
+
+// ---------- Authentication check ----------
+routes.use("/", checkAuthToken);
+
+routes.get("/me", (req, res) => res.status(200).json(req.user));
 
 // ---------- Users ----------
 routes.put("/users/me/password", checkAuthToken, usersMePassword);
 routes.put("/users/me/2fa", checkAuthToken, usersMe2fa);
 routes.put("/users/me", checkAuthToken, usersMeDelete);
 
+
 // ---------- Profiles ----------
 routes.get("/profiles", prfls.profiles);
-routes.get("/profiles/me", checkAuthToken, prfls.profilesMe);
-routes.get("/profiles/me/history", checkAuthToken, prfls.profilesMeHistory);
-routes.get("/profiles/:id", checkAuthToken, prfls.profilesId);
+routes.get("/profiles/:id", checkAuthToken , prfls.profilesId);
 routes.get("/profiles/:id/history", checkAuthToken, prfls.profilesIdHistory);
 
-routes.put("/profiles/me/pseudonym", checkAuthToken, prfls.profilesMePseudonym);
-routes.put("/profiles/me/bio", checkAuthToken, prfls.profilesMeBio);
-routes.post("/profiles/me/avatar", checkAuthToken, prfls.profilesMeAvatar);
-routes.delete("/profiles/me/avatar", checkAuthToken, prfls.profilesMeAvatarDelete);
+routes.use("/profiles/me", checkAuthToken);
+
+routes.get("/profiles/me", prfls.profilesMe);
+routes.get("/profiles/me/history", prfls.profilesMeHistory);
+
+routes.put("/profiles/me/pseudonym", prfls.profilesMePseudonym);
+routes.put("/profiles/me/bio", prfls.profilesMeBio);
+
+
+// ---------- Friends ----------
+routes.get("/friends/:id", frds.friendsId);
+routes.get("/friends/me", frds.friendsMe);
+routes.get("/friends/me/requests/received", frds.friendsMeRequestsReceived);
+routes.get("/friends/me/requests/sent", frds.friendsMeRequestsSent);
+
+routes.post("/friends/me/requests/:friend_id", frds.friendsMeRequestsSend);
+
+routes.put("/friends/me/requests/:friend_id", frds.friendsMeRequestsAccept);
+
+routes.delete("/friends/me/:friend_id", frds.friendsMeDelete);
+routes.delete("/friends/me/requests/:friend_id", frds.friendsMeRequestsReject)
+
 
 // ---------- Games ----------
 routes.get("/games", gamesHistory);

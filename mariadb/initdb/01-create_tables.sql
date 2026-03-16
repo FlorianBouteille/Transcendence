@@ -25,6 +25,20 @@ CREATE TABLE players (
 	FOREIGN KEY (id) REFERENCES userAccounts(id) ON DELETE CASCADE
 );
 
+-- Friends table
+CREATE TABLE friends (
+	id INT AUTO_INCREMENT PRIMARY KEY,
+	player_id INT NOT NULL,
+	friend_id INT NOT NULL,
+	`status` ENUM('pending', 'accepted') NOT NULL DEFAULT 'pending',
+	created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+	updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+	UNIQUE KEY unique_request (player_id, friend_id),
+	CONSTRAINT check_no_self_friend CHECK (player_id <> friend_id),
+	FOREIGN KEY (player_id) REFERENCES players(id) ON DELETE CASCADE,
+	FOREIGN KEY (friend_id) REFERENCES players(id) ON DELETE CASCADE
+);
+
 -- Games table
 CREATE TABLE games (
 	id INT AUTO_INCREMENT PRIMARY KEY,
