@@ -562,6 +562,8 @@ function initLobbyHandler(socket, io) {
 	socket.on('joinRoom', (data) => {
 		const { roomId, userId, username } = data;
 		const roomID = roomId;
+		const normalizedUserId = Number(userId);
+		const normalizedUsername = typeof username === 'string' ? username.trim() : '';
 
 		if (!gameInstances[roomID]) {
 			console.log('❌ Room inexistante:', roomID);
@@ -580,13 +582,19 @@ function initLobbyHandler(socket, io) {
 			return;
 		}
 
+		if (!Number.isInteger(normalizedUserId) || normalizedUserId <= 0 || !normalizedUsername || normalizedUsername === 'Player') {
+			console.log('❌ joinRoom refusé: identité invalide', { socketId: socket.id, roomID, userId, username });
+			socket.emit('unauthorizedJoin');
+			return;
+		}
+
 		// Stocker les infos utilisateur sur la socket
 		socket.roomID = roomID;
-		socket.userId = userId;
-		socket.username = username;
+		socket.userId = normalizedUserId;
+		socket.username = normalizedUsername;
 		socket.join(roomID);
-		addPlayer(socket.id, roomID, userId, username);
-		console.log(`✅ Player ${username} (DB ID: ${userId}, Socket: ${socket.id}) a rejoint la room ${roomID}`);
+		addPlayer(socket.id, roomID, normalizedUserId, normalizedUsername);
+		console.log(`✅ Player ${normalizedUsername} (DB ID: ${normalizedUserId}, Socket: ${socket.id}) a rejoint la room ${roomID}`);
 
 		socket.emit('roomJoined', {
 			roomID: roomID,

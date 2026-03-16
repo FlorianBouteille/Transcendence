@@ -35,12 +35,50 @@ let checkpointsCreated = false
 let gameType = null
 
 const user = JSON.parse(localStorage.getItem('user'));
-const userId = user?.id || -1;
-const username = user?.username || 'Player';
+const fallbackUserId = Number(user?.id) || -1;
+const fallbackUsername = user?.username || 'Player';
 
-socket.on('connect', () => {
+let userId = fallbackUserId;
+let username = fallbackUsername;
+
+async function resolveAuthenticatedIdentity() {
+	try {
+		const response = await fetch('/api/me', {
+			method: 'GET',
+			credentials: 'include'
+		});
+
+		if (!response.ok) {
+			return { userId: fallbackUserId, username: fallbackUsername };
+		}
+
+		const me = await response.json();
+		const resolvedUserId = Number(me?.id) || fallbackUserId;
+		const resolvedUsername = me?.username || fallbackUsername;
+
+		return { userId: resolvedUserId, username: resolvedUsername };
+	} catch {
+		return { userId: fallbackUserId, username: fallbackUsername };
+	}
+}
+
+function isValidIdentity(id, name) {
+	return Number.isInteger(id) && id > 0 && typeof name === 'string' && name.trim().length > 0 && name !== 'Player';
+}
+
+socket.on('connect', async () => {
 	console.log('✅ Connecté au serveur');
-	socket.emit('joinRoom', { roomId, userId, username});
+	const identity = await resolveAuthenticatedIdentity();
+	userId = identity.userId;
+	username = identity.username;
+
+	if (!isValidIdentity(userId, username)) {
+		console.warn('❌ Identité invalide pour rejoindre la room, redirection login');
+		window.location.href = 'already.html';
+		return;
+	}
+
+	socket.emit('joinRoom', { roomId, userId, username });
 });
 
 socket.on('connect_error', (error) => {
@@ -50,6 +88,11 @@ socket.on('connect_error', (error) => {
 socket.on('roomNotFound', () => {
 	console.log('❌ Room introuvable, redirection vers le lobby');
 	window.location.href = 'lobby.html';
+});
+
+socket.on('unauthorizedJoin', () => {
+	console.log('❌ Session invalide, redirection vers login');
+	window.location.href = 'already.html';
 });
 
 

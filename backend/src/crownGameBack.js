@@ -169,7 +169,7 @@ function generateMiddleWay(platforms, platformIdCounter) {
 function generateDodgeBlocks(platforms, platformIdCounter) {
 	let colo = generateColor();
 	for (let i = 0; i < 4; i++) {
-		let delay = Math.round(Math.random() * i * 4) + 1;
+		let delay = Math.round(Math.random() * i * 4) + 3;
 		let speed = Math.round(Math.random() * 3) + 6;
 
 		platforms.push({
@@ -187,7 +187,7 @@ function generateDodgeBlocks(platforms, platformIdCounter) {
 	}
 	colo = generateColor()
 	for (let i = 0; i < 4; i++) {
-		let delay = Math.round(Math.random() * i * 4) + 2;
+		let delay = Math.round(Math.random() * i * 4) + 6;
 		let speed = Math.round(Math.random() * 3) + 6;
 
 		platforms.push({
@@ -206,7 +206,7 @@ function generateDodgeBlocks(platforms, platformIdCounter) {
 	colo = generateColor()
 
 	for (let i = 0; i < 4; i++) {
-		let delay = Math.round(Math.random() * i * 4) + 3;
+		let delay = Math.round(Math.random() * i * 4) + 9;
 		let speed = Math.round(Math.random() * 3) + 6;
 
 		platforms.push({
@@ -241,16 +241,16 @@ function generateBouncyPlatform(platforms, platformIdCounter) {
 
 	const siz = [
 		{ x: 3, y: 0.5, z: 3 },
+		{ x: 2.8, y: 0.5, z: 2.8 },
 		{ x: 2.6, y: 0.5, z: 2.6 },
-		{ x: 2.3, y: 0.5, z: 2.3 },
+		{ x: 2.4, y: 0.5, z: 2.4 },
+		{ x: 2.2, y: 0.5, z: 2.2 },
 		{ x: 2, y: 0.5, z: 2 },
+		{ x: 1.9, y: 0.5, z: 1.9 },
+		{ x: 1.8, y: 0.5, z: 1.8 },
 		{ x: 1.8, y: 0.5, z: 1.8 },
 		{ x: 1.7, y: 0.5, z: 1.7 },
-		{ x: 1.6, y: 0.5, z: 1.6 },
-		{ x: 1.5, y: 0.5, z: 1.5 },
-		{ x: 1.4, y: 0.5, z: 1.4 },
-		{ x: 1.3, y: 0.5, z: 1.3 },
-		{ x: 1.2, y: 0.5, z: 1.2 }
+		{ x: 1.6, y: 0.5, z: 1.6 }
 	];
 
 	const colo = generateColor();

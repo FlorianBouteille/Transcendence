@@ -1,4 +1,4 @@
-import { fn, col } from 'sequelize';
+import { fn, col, Op } from 'sequelize';
 import { db } from "../db/index.js";
 
 /**
@@ -40,10 +40,13 @@ import { db } from "../db/index.js";
 export async function profiles(req, res) {
 	try {
 		const { pseudonym, limit = 50, page = 1 } = req.query;
+		const normalizedPseudonym = typeof pseudonym === 'string' ? pseudonym.trim() : '';
 
 		const profiles = await db.models.players.findAll({
 			subQuery: false,
-			where : pseudonym ? { pseudonym } : undefined,
+			where: normalizedPseudonym
+				? { pseudonym: { [Op.like]: `%${normalizedPseudonym}%` } }
+				: undefined,
 			attributes: [
 				'id',
 				'pseudonym',
@@ -56,9 +59,10 @@ export async function profiles(req, res) {
 				[db.sequelize.literal(`(SELECT COUNT(*) FROM player_achievements WHERE player_achievements.player_id = players.id)`), 'achievementCount']
 			],
 			include: [
-				{ model: db.models.playerStats, as: 'playerStats', required: true, attributes: [] }
+				{ model: db.models.playerStats, as: 'playerStats', required: false, attributes: [] }
 			],
 			group: ['players.id'],
+			order: [['id', 'ASC']],
 			limit,
 			offset: (page - 1) * limit,
 			distinct: true
@@ -67,7 +71,7 @@ export async function profiles(req, res) {
 		if (!profiles.length)
 			return res.json({ msg: "No profiles found"});
 
-		return res.json({ data: profiles, metadata: { limit, page, pseudonym } });
+		return res.json({ data: profiles, metadata: { limit, page, pseudonym: normalizedPseudonym } });
 
 	} catch (error) {
 		console.error('Error in \'profiles\' controller:', error);
