@@ -85,19 +85,19 @@
 						<button class="menu-button game-btn" id="crown" aria-describedby="crown-tooltip">
 							Get the Crown !
 						</button>
-							<button type="button" class="mode-help-icon" aria-label="Crown mode info">i</button>
-							<div id="crown-tooltip" class="mode-tooltip" role="tooltip">
-								Reach the finish line first to win the crown.
-							</div>
+						<button type="button" class="mode-help-icon" aria-label="Crown mode info">i</button>
+						<div id="crown-tooltip" class="mode-tooltip" role="tooltip">
+							Reach the finish line first to win the crown.
+						</div>
 					</div>
 					<div class="game-mode-row">
 						<button class="menu-button game-btn" id="survive" aria-describedby="survive-tooltip">
 							Survive
 						</button>
-							<button type="button" class="mode-help-icon" aria-label="Survive mode info">i</button>
-							<div id="survive-tooltip" class="mode-tooltip" role="tooltip">
-								Stay on the platforms as long as you can. Fall, and you're out!
-							</div>
+						<button type="button" class="mode-help-icon" aria-label="Survive mode info">i</button>
+						<div id="survive-tooltip" class="mode-tooltip" role="tooltip">
+							Stay on the platforms as long as you can. Fall, and you're out!
+						</div>
 					</div>
 				</div>
 			</div>
@@ -149,7 +149,7 @@
 				<button id="ready-btn" class="ready-button">READY</button>
 				<button id="leave-room-btn" class="back-button">Leave Room</button>
 			</div>
-				<div id="queue-view" class="lobby-box hidden">
+			<div id="queue-view" class="lobby-box hidden">
 				<h2>🔍 Searching for players...</h2>
 				<div id="countdown-timer">10</div>
 				<div class="lobby-status">
@@ -160,13 +160,34 @@
 			</div>
 
 		</div>
-		
+
 		<a class="lobby-return" href="index.html">Return</a>
 	</main>
-	
+
 	<div id="notification" class="notification hidden">
 		<span id="notification-message"></span>
 	</div>
+	<script defer>
+		document.addEventListener("DOMContentLoaded", async () => {
+			try {
+				const response = await fetch("/api/profiles/me", {
+					method: "GET",
+					credentials: "include"
+				});
+
+				console.log(response);
+
+				if (!response.ok) {
+					window.location.href = "already.html";
+					return;
+				}
+			}
+			catch (error) {
+				console.error(error);
+				window.location.href = "already.html"
+			}
+		});
+	</script>
 
 	<script type="module" src="./lobby.js"></script>
 </body>

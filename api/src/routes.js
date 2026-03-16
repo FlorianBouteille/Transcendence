@@ -39,8 +39,11 @@ routes.get("/profiles/me/history", prfls.profilesMeHistory);
 routes.put("/profiles/me/pseudonym", prfls.profilesMePseudonym);
 routes.put("/profiles/me/bio", prfls.profilesMeBio);
 
-routes.get("/profiles/:id" , prfls.profilesId);
+routes.get("/profiles/:id", prfls.profilesId);
 routes.get("/profiles/:id/history", prfls.profilesIdHistory);
+
+routes.post("/profiles/me/avatar", prfls.profilesMeAvatar);
+routes.delete("/profiles/me/avatar", prfls.profilesMeAvatarDelete);
 
 
 // ---------- Friends ----------
