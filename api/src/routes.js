@@ -16,6 +16,9 @@ routes.post("/login", login);
 routes.post("/2fa/verify", verify2FA);
 routes.post("/logout", logout);
 
+// ---------- Server ----------
+routes.post("/games", gamesSave);
+
 // ---------- Authentication check ----------
 routes.use("/", checkAuthToken);
 
@@ -59,9 +62,7 @@ routes.delete("/friends/me/requests/:friend_id", frds.friendsMeRequestsReject)
 routes.get("/games", gamesHistory);
 routes.get("/games/:id", parseParams({ id: 'int' }), gamesIdHistory);
 
-routes.post("/games", gamesSave);
-
 // ---------- Achievements ----------
 routes.get("/achievements", getAllAchievements);
-routes.get("/achievements/me", checkAuthToken, getMyAchievements);
-routes.get("/profiles/:id/achievements", checkAuthToken, getPlayerAchievements);
+routes.get("/achievements/me", getMyAchievements);
+routes.get("/profiles/:id/achievements", getPlayerAchievements);
