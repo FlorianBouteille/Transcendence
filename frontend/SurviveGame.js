@@ -108,6 +108,10 @@ export class SurviveGame
     {
         console.log('🏆 Winner:', data.winner);
         console.log('⏱️  Time:', data.elapsedTime, 'seconds');
-        window.location.href = `gameRecap.html?id=${data.gameId}`;
+        if (data.winner == this.socket.id)
+            window.location.href = `gameRecap.html?id=${data.gameId}`;
+        else
+            window.location.href = `gameFailed.html?id=${data.gameId}`;
+            
     }
 }

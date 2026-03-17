@@ -482,3 +482,14 @@ export async function logout(req, res) {
 
 	res.clearCookie("auth_token", { httpOnly: true, sameSite: "strict" }).json({ success: true });
 }
+
+export function authStatus(req, res) {
+	const token = req.cookies?.auth_token;
+	if (!token) return res.status(200).json({ authenticated: false });
+	try {
+		jwt.verify(token, JWT_SECRET);
+		res.status(200).json({ authenticated: true });
+	} catch {
+		res.status(200).json({ authenticated: false });
+	}
+}

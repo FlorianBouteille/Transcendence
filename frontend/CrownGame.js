@@ -50,8 +50,12 @@ export class CrownGame
         }
         this.updateUi(elapsedTime);
     }
+
     showVictoryScreen(data)
     {
-        window.location.href = `gameRecap.html?id=${data.gameId}`;
+        if (data.winner == this.socket.id)
+            window.location.href = `gameRecap.html?id=${data.gameId}`;
+        else
+            window.location.href = `gameFailed.html?id=${data.gameId}`;
     }
 }

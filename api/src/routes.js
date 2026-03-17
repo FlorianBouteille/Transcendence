@@ -1,6 +1,6 @@
 import { Router } from "express";
 import { checkAuthToken } from "./middlewares/auth.js";
-import { register, login, verify2FA, logout } from "./controllers/auth.controller.js";
+import { register, login, verify2FA, logout, authStatus } from "./controllers/auth.controller.js";
 import { usersMePassword, usersMe2fa, usersMeDelete } from "./controllers/users.controller.js";
 import * as prfls from "./controllers/profiles.controller.js";
 import * as frds from "./controllers/friends.controller.js";
@@ -18,6 +18,9 @@ routes.post("/logout", logout);
 
 // ---------- Server ----------
 routes.post("/games", gamesSave);
+
+// ---------- Auth status (always 200, no 401) ----------
+routes.get("/auth/status", authStatus);
 
 // ---------- Authentication check ----------
 routes.use("/", checkAuthToken);
