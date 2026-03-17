@@ -5,3 +5,5 @@ export const JWT_SECRET = "bbb194bce7e3598582ab37e7c4896a83ad945fba5bf0513c23b7b
 
 export const API_RATE_LIMIT_WINDOW_MS = Number(process.env.API_RATE_LIMIT_WINDOW_MS || 60000);
 export const API_RATE_LIMIT_MAX = Number(process.env.API_RATE_LIMIT_MAX || 120);
+export const API_BODY_LIMIT = process.env.API_BODY_LIMIT || "10mb";
+
