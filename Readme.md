@@ -213,7 +213,7 @@ The project includes the following implemented features:
 - Leaderboard and ranking display.
 - Lobby system for solo, random multiplayer, and private room flows.
 - Real-time multiplayer communication using Socket.IO.
-- A complete browser-based 3D game experience.
+- A complete browser-based 3D game experience.i
 - Multiple game modes, including a second playable mode.
 - Responsive frontend pages and reusable UI/design system components.
 - Public REST API for authentication, profiles, friends, match history, and achievements.
@@ -326,3 +326,63 @@ The frontend work included:
 - Creating responsive layouts for different screen sizes
 - Improving readability and maintainability of the style files
 - Connecting pages through navigation links and interface logic
+
+# Mhanarte - Project Manager (PM) & Backend Developer,
+
+## Overview
+
+As PM, I coordinated the backend architecture and ensured the different services stayed consistent and deployable throughout the project. On the technical side, I focused on moving game logic server-side, securing the infrastructure, building the profile system, and designing the full lobby and matchmaking flow.
+
+## Project Management Responsibilities
+
+Organized and tracked tasks across the team, maintaining a shared overview of what was in progress and what was blocking.
+Coordinated communication between frontend, backend and game development tracks.
+Maintained the Docker Compose setup and ensured the stack stayed functional across environments.
+
+## Backend Architecture — Game Server Refactor
+
+The original game logic (platforms, players, physics, timing) ran entirely in the browser. I moved it server-side to enforce a single source of truth and enable real multiplayer.
+
+Extracted game state management (player positions, platform cycles, timers, eliminations) out of the frontend and into a dedicated Node.js game server.
+Built a WebSocket-based communication layer between the server and clients so each player receives authoritative updates in real time.
+Implemented GameMode as a base class with CrownMode and SurviveMode as separate game-specific implementations, unified through a gameModeFactory.
+Each game instance runs independently server-side, handling its own tick loop, player lifecycle and end conditions.
+
+## Lobby & Matchmaking System
+
+I designed and implemented the full pre-game flow from room creation to game launch.
+
+Solo mode: immediate game start with no waiting.
+Random matchmaking: players are queued and automatically grouped when enough participants are ready.
+Private rooms: a room code is generated and shared; only players with the code can join.
+Built the lobby UI logic (lobby.js) to reflect room state in real time via WebSocket events.
+Handled edge cases: player disconnection before game start, room expiry, duplicate joins.
+
+## Game Separation
+
+Both games (Crown and Survive) originally shared too much coupled logic. I cleanly separated them:
+
+Each game mode has its own server-side class (CrownMode.js, SurviveMode.js) with independent rules, win conditions and state.
+The factory pattern (gameModeFactory.js) allows the game server to instantiate the right mode based on the room configuration without duplicating infrastructure code.
+
+## HTTPS & Infrastructure
+
+Configured Nginx as a reverse proxy with SSL termination, routing traffic to the frontend, API and WebSocket backend under a single HTTPS entry point.
+Set up self-signed certificate generation in the Docker build, ensuring HTTPS works out of the box without external dependencies.
+Enforced HTTP → HTTPS redirect at the Nginx level.
+
+## Profile System — Uploads & Edits
+
+Built the avatar upload endpoint (POST /api/profiles/me/avatar): accepts a base64-encoded image, validates format and size, stores it as a data URL in the database.
+Added endpoints for editing pseudonym and bio (PUT /api/profiles/me/pseudonym, PUT /api/profiles/me/bio) with proper validation and transactional writes.
+Implemented the edit_profil.html page with live preview, client-side size/format validation, and clean error handling (including explicit 413 feedback when the payload is too large).
+Aligned the Sequelize model (LONGTEXT) with the MariaDB schema to support large image payloads without truncation.
+
+## Main Technologies Used
+
+Node.js / Express.js (REST API)
+Socket.IO (real-time game communication)
+MariaDB + Sequelize ORM
+Nginx (reverse proxy, SSL, routing)
+Docker / Docker Compose
+JavaScript (ES modules, frontend game integration)

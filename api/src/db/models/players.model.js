@@ -9,7 +9,7 @@ export function players(sequelize, models) {
 		coins: { type: DataTypes.INTEGER, defaultValue: 0 },
 		xp: { type: DataTypes.INTEGER, defaultValue: 0 },
 		level: { type: DataTypes.INTEGER, defaultValue: 0 },
-		avatar_url: { type: DataTypes.STRING(255) },
+		avatar_url: { type: DataTypes.TEXT('long') },
 		created_at: { type: DataTypes.DATE, defaultValue: DataTypes.NOW },
 		updated_at: { type: DataTypes.DATE, defaultValue: DataTypes.NOW }
 	}, {
@@ -18,18 +18,18 @@ export function players(sequelize, models) {
 	});
 
 	// Associations
-	playersTable.belongsTo(models.userAccounts, {as: 'userAccounts', foreignKey: "id", onDelete: "CASCADE" });
-	models.userAccounts.hasOne(playersTable, {as: 'players', foreignKey: "id" });
-	
+	playersTable.belongsTo(models.userAccounts, { as: 'userAccounts', foreignKey: "id", onDelete: "CASCADE" });
+	models.userAccounts.hasOne(playersTable, { as: 'players', foreignKey: "id" });
+
 	// Many-to-many relationship with achievements
 	if (models.achievements) {
-		playersTable.belongsToMany(models.achievements, { 
-			through: 'player_achievements', 
+		playersTable.belongsToMany(models.achievements, {
+			through: 'player_achievements',
 			foreignKey: 'player_id',
 			otherKey: 'achievement_id',
 			as: 'achievements'
 		});
 	}
-	
+
 	return playersTable;
 }

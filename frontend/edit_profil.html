@@ -314,9 +314,9 @@
 			const file = e.target.files[0];
 			if (!file) return;
 
-			// Validate file size (5MB max)
-			if (file.size > 5 * 1024 * 1024) {
-				showMsg("msg-avatar", "Image too large. Maximum 5MB.", true);
+			// Validate file size (10MB max)
+			if (file.size > 10 * 1024 * 1024) {
+				showMsg("msg-avatar", "Image too heavy. Maximum 10MB.", true);
 				return;
 			}
 
@@ -342,8 +342,16 @@
 						headers: { "Content-Type": "application/json" },
 						body: JSON.stringify({ avatar: base64 })
 					});
-					const data = await res.json();
-					if (!res.ok) showMsg("msg-avatar", data.error || "Error uploading.", true);
+
+					if (res.status === 413) {
+						showMsg("msg-avatar", "Image too large. Maximum 10MB.", true);
+						return;
+					}
+
+					const contentType = res.headers.get("content-type") || "";
+					const data = contentType.includes("application/json") ? await res.json() : null;
+
+					if (!res.ok) showMsg("msg-avatar", data?.error || "Error uploading.", true);
 					else showMsg("msg-avatar", "Avatar updated!", false);
 				} catch (err) {
 					showMsg("msg-avatar", "Network error.", true);

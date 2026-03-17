@@ -111,7 +111,9 @@ export class SurviveGame
         if (data.winner == this.socket.id)
             window.location.href = `gameRecap.html?id=${data.gameId}`;
         else
+        {
             window.location.href = `gameFailed.html?id=${data.gameId}`;
+        }
             
     }
 }

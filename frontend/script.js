@@ -269,6 +269,8 @@ function onKey(event) {
 		keys.d = (event.type === 'keydown')
 	if (event.code === 'Space')
 		keys.space = (event.type === 'keydown')
+	if (event.code === 'KeyQ')
+		window.location.href = "lobby.html";
 
 	// Envoyer l'input au serveur
 	// socket.emit('playerInput', {

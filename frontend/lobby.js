@@ -107,6 +107,8 @@ document.getElementById('room-code').addEventListener('click', () => {
 });
 document.getElementById('back-btn-1').onclick = () => {
 	showView('main-menu');
+	document.getElementById('game-choice').classList.remove('hidden');
+
 };
 
 
@@ -241,8 +243,8 @@ document.getElementById('random-btn').onclick = () => {
 };
 document.getElementById('cancel-queue-btn').onclick = () => {
 	socket.emit('leaveQueue');
-	document.getElementById('game-choice').classList.remove('hidden');
 	showView('main-menu');
+	document.getElementById('game-choice').classList.remove('hidden');
 };
 
 socket.on('queueUpdate', ({ count }) => {

@@ -446,7 +446,7 @@ function initLobbyHandler(socket, io) {
 
 	socket.on('joinPrivateRoom', (data) => {
 		const roomID = 'PRIVATE_' + data.roomCode;
-		if (!gameInstances[roomID] || gameInstances[roomID].playing) {
+		if (!gameInstances[roomID] || gameInstances[roomID].hasStarted) {
 			console.log('Room id:', roomID, ' dosen t exist');
 			socket.emit('roomInexistant', { roomCode: data.roomCode });
 			return;
