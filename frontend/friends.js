@@ -96,6 +96,21 @@ function isOnline(friend) {
 	);
 }
 
+function applyStatusDotStyles(statusDot, friend) {
+	const online = isOnline(friend);
+
+	statusDot.style.display = 'inline-block';
+	statusDot.style.width = '10px';
+	statusDot.style.height = '10px';
+	statusDot.style.minWidth = '10px';
+	statusDot.style.borderRadius = '999px';
+	statusDot.style.flexShrink = '0';
+	statusDot.style.backgroundColor = online ? '#22c55e' : '#9ca3af';
+	statusDot.style.boxShadow = online ? '0 0 6px rgba(34, 197, 94, 0.7)' : 'none';
+	statusDot.setAttribute('aria-label', online ? 'Online' : 'Offline');
+	statusDot.setAttribute('title', online ? 'Online' : 'Offline');
+}
+
 function emptyStateItem(text) {
 	const li = document.createElement('li');
 	li.textContent = text;
@@ -156,15 +171,18 @@ function renderFriends(friends) {
 
 		const left = document.createElement('div');
 		left.className = 'friends-list-left';
+		left.style.display = 'flex';
+		left.style.alignItems = 'center';
+		left.style.gap = '10px';
 
 		const statusDot = document.createElement('span');
 		statusDot.className = `friends-status-dot${isOnline(friend) ? '' : ' is-offline'}`;
-		statusDot.setAttribute('aria-label', isOnline(friend) ? 'Online' : 'Offline');
-		statusDot.setAttribute('title', isOnline(friend) ? 'Online' : 'Offline');
+		applyStatusDotStyles(statusDot, friend);
 
 		const name = document.createElement('p');
 		name.className = 'friends-list-name';
 		name.textContent = `${friend.pseudonym} (lvl ${friend.level ?? 0})`;
+		name.style.margin = '0';
 
 		left.appendChild(statusDot);
 		left.appendChild(name);
