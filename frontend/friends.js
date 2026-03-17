@@ -257,15 +257,23 @@ async function searchProfileByPseudonym(pseudonym) {
 	return response.data[0];
 }
 
+async function ensureCurrentUserId() {
+	if (currentUserId) {
+		return currentUserId;
+	}
+
+	const meRes = await apiFetch('/me');
+	currentUserId = Number(meRes?.id) || null;
+	return currentUserId;
+}
+
 async function refreshAll() {
-	const [meRes, friendsRes, receivedRes, sentRes] = await Promise.all([
-		apiFetch('/me'),
+	const [friendsRes, receivedRes, sentRes] = await Promise.all([
 		apiFetch('/friends/me'),
 		apiFetch('/friends/me/requests/received'),
 		apiFetch('/friends/me/requests/sent')
 	]);
 
-	currentUserId = Number(meRes?.id) || null;
 	friendIds = new Set((friendsRes?.data || []).map((friend) => Number(friend.id)).filter(Boolean));
 	sentRequestIds = new Set((sentRes?.data || []).map((friend) => Number(friend.id)).filter(Boolean));
 	receivedRequestIds = new Set((receivedRes?.data || []).map((friend) => Number(friend.id)).filter(Boolean));
@@ -294,7 +302,8 @@ addFriendForm.addEventListener('submit', async (event) => {
 		}
 
 		const targetId = Number(target.id);
-		if (currentUserId && targetId === currentUserId) {
+		const myUserId = await ensureCurrentUserId();
+		if (myUserId && targetId === myUserId) {
 			setFeedback('You cannot add yourself as a friend.');
 			return;
 		}
