@@ -1,6 +1,7 @@
 const wraps = Array.from(document.querySelectorAll(".alien-wrap"));
 const states = [];
 let last = performance.now();
+const speedFactor = Number(window.ALIEN_SPEED_FACTOR) > 0 ? Number(window.ALIEN_SPEED_FACTOR) : 1;
 
 function rand(amount) {
   return (Math.random() * 2 - 1) * amount;
@@ -16,7 +17,7 @@ function initAlien(wrap) {
   const w = img ? parseFloat(styles.width) || 90 : 90;
   const h = img ? parseFloat(styles.height) || w : w;
 
-  const speed = 180 + Math.random() * 1800;
+  const speed = (180 + Math.random() * 1800) * speedFactor;
   const angle = Math.random() * Math.PI * 2;
   const vx = Math.cos(angle) * speed;
   const vy = Math.sin(angle) * speed;
@@ -55,24 +56,24 @@ function tick(now) {
 
     if (s.x <= 0) {
       s.x = 0;
-      s.vx = Math.abs(s.vx) + rand(60);
+      s.vx = Math.abs(s.vx) + rand(60 * speedFactor);
     }
     if (s.x >= maxX) {
       s.x = maxX;
-      s.vx = -Math.abs(s.vx) + rand(60);
+      s.vx = -Math.abs(s.vx) + rand(60 * speedFactor);
     }
     if (s.y <= 0) {
       s.y = 0;
-      s.vy = Math.abs(s.vy) + rand(60);
+      s.vy = Math.abs(s.vy) + rand(60 * speedFactor);
     }
     if (s.y >= maxY) {
       s.y = maxY;
-      s.vy = -Math.abs(s.vy) + rand(60);
+      s.vy = -Math.abs(s.vy) + rand(60 * speedFactor);
     }
 
     if (now >= s.nextJitter) {
-      s.vx = clamp(s.vx + rand(140), -320, 320);
-      s.vy = clamp(s.vy + rand(140), -320, 320);
+      s.vx = clamp(s.vx + rand(140 * speedFactor), -320 * speedFactor, 320 * speedFactor);
+      s.vy = clamp(s.vy + rand(140 * speedFactor), -320 * speedFactor, 320 * speedFactor);
       s.nextJitter = now + 600 + Math.random() * 900;
     }
 

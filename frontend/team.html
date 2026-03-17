@@ -6,10 +6,44 @@
   <title>Transcendence</title>
   <link rel="stylesheet" href="./assets/styles.css">
 	<link rel="icon" href="./static/favicon.ico">
-</head>
+  <style>
+    .team-return {
+      z-index: 120;
+    }
+
+    .screen--landing-classic .alien {
+      width: 165px;
+    }
+  </style>
+  </head>
 <body>
-  <main class="screen screen--legacy screen--landing-classic">
+  <main class="screen screen--legacy screen--landing-classic overflow-hidden">
     <a class="team-return" href="index.html">return</a>
+
+		<div class="alien-wrap" data-alien>
+			<img class="alien" src="/perso_color/alien_alban_ok.png" alt="Alien violet">
+		</div>
+
+		<div class="alien-wrap" data-alien>
+			<img class="alien" src="/perso_color/alien_max_ok.png" alt="Alien violet">
+		</div>
+
+		<div class="alien-wrap" data-alien>
+			<img class="alien" src="/perso_color/alien_flo_ok.png" alt="Alien jaune">
+		</div>
+
+		<div class="alien-wrap" data-alien>
+			<img class="alien" src="/perso_color/alien_enzo_ok.png" alt="Alien vert">
+		</div>
+
+		<div class="alien-wrap" data-alien>
+			<img class="alien" src="/perso_color/alien_zak_ok.png" alt="Alien vert">
+		</div>
+
   </main>
+  <script>
+    window.ALIEN_SPEED_FACTOR = 0.6;
+  </script>
+  <script src="./alienMovie.js"></script>
 </body>
 </html>

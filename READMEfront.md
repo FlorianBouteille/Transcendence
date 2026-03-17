@@ -23,13 +23,6 @@ consistent.
 - JavaScript for page logic and dynamic interactions
 - Three.js for 3D and game-related visual components
 
-## Main Frontend Responsibilities
-- Create the main user-facing pages of the application.
-- Build a coherent visual identity across the whole platform.
-- Handle navigation between pages through HTML links and page-specific scripts.
-- Display user-oriented features such as profile data, achievements, history, rankings, and game access.
-- Provide the visual layer for real-time and game-related interactions.
-
 ## Styling Architecture
 The styling system is organized into source files with distinct roles:
 
@@ -67,7 +60,7 @@ This organization makes the frontend easier to maintain, cleaner to read, and mo
 - `leaderboard.html`, `leaderboard2.html`, `last_games.html`: ranking and history pages
 - `gameRecap.html`, `gameFailed.html`: post-game recap screens
 
-## Frontend Contributions
+## Frontend Contributions/perso
 The frontend work included:
 - Creating and structuring the main HTML pages of the application
 - Building reusable UI sections and page-specific layouts
