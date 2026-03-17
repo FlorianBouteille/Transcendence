@@ -35,6 +35,11 @@
           <input class="auth-input" type="password" id="confirmPassword" name="confirmPassword" placeholder="Enter your password again..." required />
         </label>
 
+		<label>
+			<span>Activer la 2FA</span>
+			<input type="checkbox" name="enable_2FA" id="auth-field">
+		</label>
+
         <button class="auth-submit" type="submit">Sign up</button>
         <p id="message" class="auth-helper"></p>
       </form>
@@ -53,13 +58,14 @@
 			const email = document.getElementById('email').value;
 			const password = document.getElementById('password').value;
 			const confirmPassword = document.getElementById('confirmPassword').value;
+			const enable_2FA = document.getElementById('auth-field').checked;
 			const message = document.getElementById('message');
 
 			try {
 				const response = await fetch('/api/register', {
 					method: 'POST',
 					headers: {'Content-Type' : 'application/json'},
-					body: JSON.stringify({username, email, password, confirmPassword})
+					body: JSON.stringify({username, email, password, confirmPassword, enable_2FA})
 				});
 
 				const data = await response.json();
