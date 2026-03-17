@@ -99,7 +99,7 @@ const transporter = nodemailer.createTransport({
  *                   example: "Erreur serveur"
  */
 export async function register(req, res) {
-	const { username, email, password, confirmPassword } = req.body;
+	const { username, email, password, confirmPassword, enable_2FA } = req.body;
 
 	if (!username || !email || !password || !confirmPassword) {
 		return res.status(400).json({ error: "Tous les champs sont requis" });
@@ -146,12 +146,14 @@ export async function register(req, res) {
 
 		const password_hash = await bcrypt.hash(password, SALT_ROUNDS);
 
+		const enable2FA = enable_2FA ? 1 : 0;
 		// Create user
 		const user = await db.models.userAccounts.create(
 			{
 				username,
 				email,
-				password_hash
+				password_hash,
+				enable_2FA : enable2FA
 			},
 			{ transaction }
 		);
