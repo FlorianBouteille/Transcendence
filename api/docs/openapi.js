@@ -14,9 +14,9 @@ export function setupSwagger(app) {
 				name: "🔐 Authentication",
 				description: "Login/logout endpoints. Must authenticate to test protected routes."
 			}],
-			servers: [{
-					url: "http://localhost:8080/api",
-				},],
+			servers: [
+				{ url: "https://localhost:8443/api" }
+			],
 			components: {
 				securitySchemes: {
 					BearerAuth: {
