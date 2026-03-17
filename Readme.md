@@ -78,6 +78,147 @@ total = 11pts
 
 ## Total module points : 23pts 
 
+# Database Schema
+
+The application uses a relational MariaDB schema centered around user accounts, player profiles, social relationships, match persistence, and achievements.
+
+## Entity Relationship Overview
+
+```mermaid
+erDiagram
+	userAccounts ||--|| players : "owns profile"
+	players ||--o{ friends : "sends"
+	players ||--o{ friends : "receives"
+	games ||--o{ playerStats : "contains"
+	players ||--o{ playerStats : "has stats in"
+	players ||--o{ items : "owns"
+	players ||--|| leaderboard : "ranked in"
+	players ||--o{ player_achievements : "unlocks"
+	achievements ||--o{ player_achievements : "awarded as"
+
+	userAccounts {
+		INT id PK
+		VARCHAR username
+		VARCHAR email
+		VARCHAR password_hash
+		BOOLEAN enable_2FA
+		DATETIME created_at
+		DATETIME updated_at
+	}
+
+	players {
+		INT id PK, FK
+		VARCHAR pseudonym
+		TEXT bio
+		INT xp
+		INT level
+		INT coins
+		LONGTEXT avatar_url
+	}
+
+	friends {
+		INT id PK
+		INT player_id FK
+		INT friend_id FK
+		ENUM status
+		DATETIME created_at
+	}
+
+	games {
+		INT id PK
+		VARCHAR roomId
+		VARCHAR mode
+		DATETIME start_time
+		DATETIME end_time
+	}
+
+	playerStats {
+		INT id PK
+		INT player_id FK
+		INT game_id FK
+		INT chrono
+		INT position
+		BOOLEAN eliminated
+	}
+
+	achievements {
+		INT id PK
+		VARCHAR achievement_name
+		VARCHAR achievement_description
+		VARCHAR icon
+		VARCHAR category
+	}
+
+	player_achievements {
+		INT id PK
+		INT player_id FK
+		INT achievement_id FK
+		DATETIME acquired_at
+	}
+
+	items {
+		INT id PK
+		INT player_id FK
+		VARCHAR item_name
+		VARCHAR item_type
+		DATETIME acquired_at
+	}
+
+	leaderboard {
+		INT id PK
+		INT player_id FK
+		INT total_score
+		INT global_rank
+		DATETIME last_update
+	}
+```
+
+## Main Tables and Relationships
+
+- `userAccounts` stores authentication data and account-level settings.
+- `players` extends each account with gameplay-facing profile data.
+- `friends` models player-to-player social links and request status.
+- `games` stores each persisted match.
+- `playerStats` links players to games and stores per-match results.
+- `achievements` stores achievement definitions.
+- `player_achievements` links achievements to players.
+- `leaderboard` stores ranking-related aggregate data.
+- `items` stores unlockable or collectible player inventory data.
+
+## Key Fields and Data Types
+
+| Table | Key fields | Purpose |
+|---|---|---|
+| `userAccounts` | `id INT`, `username VARCHAR(50)`, `email VARCHAR(100)`, `password_hash VARCHAR(255)`, `enable_2FA BOOLEAN` | Authentication and account identity |
+| `players` | `id INT`, `pseudonym VARCHAR(50)`, `bio TEXT`, `xp INT`, `level INT`, `avatar_url LONGTEXT` | Public player profile and progression |
+| `friends` | `player_id INT`, `friend_id INT`, `status ENUM('pending','accepted')` | Friend requests and accepted friendships |
+| `games` | `id INT`, `roomId VARCHAR(255)`, `mode VARCHAR(100)`, `start_time DATETIME`, `end_time DATETIME` | Match persistence |
+| `playerStats` | `player_id INT`, `game_id INT`, `chrono INT`, `position INT`, `eliminated BOOLEAN` | Per-player match results |
+| `achievements` | `achievement_name VARCHAR(50)`, `achievement_description VARCHAR(200)`, `category VARCHAR(50)` | Achievement catalogue |
+| `player_achievements` | `player_id INT`, `achievement_id INT`, `acquired_at DATETIME` | Achievement ownership |
+| `leaderboard` | `player_id INT`, `total_score INT`, `global_rank INT` | Ranking data |
+| `items` | `player_id INT`, `item_name VARCHAR(100)`, `item_type VARCHAR(50)` | Player inventory / unlockables |
+
+
+# Features List
+
+The project includes the following implemented features:
+
+- User registration, login, logout, and protected account access.
+- Two-factor authentication (2FA) for additional account security.
+- Player profile management with pseudonym, bio, avatar, XP, and level progression.
+- Friends system with friend search, friend requests, accepted friendships, and request management.
+- Match history and game statistics persistence.
+- Achievements and gamification systems tied to player progression.
+- Leaderboard and ranking display.
+- Lobby system for solo, random multiplayer, and private room flows.
+- Real-time multiplayer communication using Socket.IO.
+- A complete browser-based 3D game experience.
+- Multiple game modes, including a second playable mode.
+- Responsive frontend pages and reusable UI/design system components.
+- Public REST API for authentication, profiles, friends, match history, and achievements.
+- Dockerized multi-service deployment with frontend, API, backend, nginx, and MariaDB.
+
 
 # Roles
 
