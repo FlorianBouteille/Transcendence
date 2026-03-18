@@ -53,8 +53,7 @@
 					// Supprimer le user_id temporaire
 					localStorage.removeItem('pending_2fa_user_id');
 
-					// Stocker le token et user
-					localStorage.setItem('token', data.token);
+					// Stocker le user (token est dans le cookie)
 					localStorage.setItem('user', JSON.stringify(data.user));
 
 					messageEl.textContent = `Verification reussie! Bienvenue ${data.user.username}`;

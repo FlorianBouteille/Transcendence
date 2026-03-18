@@ -389,12 +389,25 @@ export async function verify2FA(req, res) {
 		// Code valide - supprimer et generer le token
 		pending2FACodes.delete(parseInt(user_id));
 
-		const token = Buffer.from(`${user.id}:${Date.now()}`).toString('base64');
+		// --- JWT token ---
+		const token = jwt.sign(
+			{ id: user.id, username: user.username },
+			JWT_SECRET,
+			{ expiresIn: "1h" }
+		);
+
+		// --- Send token via cookie ---
+		res.cookie("auth_token", token, {
+			httpOnly: true,
+			sameSite: "strict",
+			maxAge: 60 * 60 * 1000 // 1 hour
+		});
+
 		markUserOnline(user.id);
 
 		res.json({
 			success: true,
-			token,
+			requires_2FA: false,
 			user: {
 				id: user.id,
 				username: user.username,
