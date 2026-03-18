@@ -11,8 +11,40 @@
       z-index: 120;
     }
 
+    .screen--landing-classic .nav-link {
+      position: absolute;
+      z-index: 120;
+      text-decoration: none;
+      color: #6b5aa3;
+      font-weight: 600;
+      font-size: 0.95rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      transition: color 0.2s ease, text-shadow 0.2s ease;
+      text-shadow: 0 0 10px rgba(57, 255, 20, 0.5);
+    }
+
+    .screen--landing-classic .nav-link:hover {
+      color: #39ff14;
+      text-shadow: 0 0 20px rgba(0, 255, 65, 0.8), 0 0 30px rgba(0, 255, 65, 0.4);
+    }
+
     .screen--landing-classic .alien {
       width: 165px;
+    }
+
+    .screen--landing-classic .orbit-link {
+      width: 235px;
+      height: 235px;
+    }
+
+    .screen--landing-classic .orbit-text {
+      width: 235px;
+      height: 235px;
+    }
+
+    .screen--landing-classic .orbit-text text {
+      font-size: 14px;
     }
   </style>
   </head>
@@ -39,7 +71,75 @@
 		<div class="alien-wrap" data-alien>
 			<img class="alien" src="/perso_color/alien_zak_ok.png" alt="Alien vert">
 		</div>
+		    <a class="nav-link orbit-link relative mid-mid-right" style="color: #9A01D6;" aria-label="Terms of service">
+		      <svg class="orbit-text" viewBox="0 0 200 200" role="img" aria-hidden="true">
+        <defs>
+          <path id="orbit-terms" d="M 100,100 m -70,0 a 70,70 0 1,1 140,0 a 70,70 0 1,1 -140,0" />
+        </defs>
+        <text>
+          <textPath href="#orbit-terms" startOffset="0%">• Alban Neumann • Developer • </textPath>
+        </text>
+      </svg>
+      <svg class="icon h-6 w-6 absolute text-current" aria-hidden="true">
+        <use href="/assets/icons.svg#icon-alien"></use>
+      </svg>
+    </a>
 
+		    <a class="nav-link orbit-link relative bottom-mid-left" style="left: 70%; top: 15%; color: #FFE802;" href="privacy-policy.html" aria-label="Privacy Policy">
+		      <svg class="orbit-text" viewBox="0 0 200 200" role="img" aria-hidden="true">
+        <defs>
+          <path id="orbit-privacy" d="M 100,100 m -70,0 a 70,70 0 1,1 140,0 a 70,70 0 1,1 -140,0" />
+        </defs>
+        <text>
+          <textPath href="#orbit-privacy" startOffset="0%">Florian Bouteille • Product Owner •</textPath>
+        </text>
+      </svg>
+      <svg class="icon h-6 w-6 absolute text-current" aria-hidden="true">
+        <use href="/assets/icons.svg#icon-alien"></use>
+      </svg>
+    </a>
+
+	    <div class="nav-link orbit-link" style="left: 40%; top: 55%; color: #FF3FA4;" aria-label="Max Dev">
+      <svg class="orbit-text" viewBox="0 0 200 200" role="img" aria-hidden="true">
+        <defs>
+          <path id="orbit-max" d="M 100,100 m -70,0 a 70,70 0 1,1 140,0 a 70,70 0 1,1 -140,0" />
+        </defs>
+        <text>
+          <textPath href="#orbit-max" startOffset="0%">Maxime Hanarte • Project Manager • Max • Dev • </textPath>
+        </text>
+      </svg>
+      <svg class="icon h-6 w-6 absolute text-current" aria-hidden="true">
+        <use href="/assets/icons.svg#icon-alien"></use>
+      </svg>
+    </div>
+
+	    <div class="nav-link orbit-link" style="left: 14%; top: 34%; color: #67FF32;" aria-label="Enzo Dev">
+      <svg class="orbit-text" viewBox="0 0 200 200" role="img" aria-hidden="true">
+        <defs>
+          <path id="orbit-enzo" d="M 100,100 m -70,0 a 70,70 0 1,1 140,0 a 70,70 0 1,1 -140,0" />
+        </defs>
+        <text>
+          <textPath href="#orbit-enzo" startOffset="0%">Enzo Nzuguem Tiko • Developer • Enzo • </textPath>
+        </text>
+      </svg>
+      <svg class="icon h-6 w-6 absolute text-current" aria-hidden="true">
+        <use href="/assets/icons.svg#icon-alien"></use>
+      </svg>
+    </div>
+
+	    <div class="nav-link orbit-link" style="right: 50%; top: 26%; color: #FF9502;" aria-label="Zak Dev">
+      <svg class="orbit-text" viewBox="0 0 200 200" role="img" aria-hidden="true">
+        <defs>
+          <path id="orbit-zak" d="M 100,100 m -70,0 a 70,70 0 1,1 140,0 a 70,70 0 1,1 -140,0" />
+        </defs>
+        <text>
+          <textPath href="#orbit-zak" startOffset="0%">Zakaria Meliani • Technical lead • </textPath>
+        </text>
+      </svg>
+      <svg class="icon h-6 w-6 absolute text-current" aria-hidden="true">
+        <use href="/assets/icons.svg#icon-alien"></use>
+      </svg>
+    </div>
   </main>
   <script>
     window.ALIEN_SPEED_FACTOR = 0.6;

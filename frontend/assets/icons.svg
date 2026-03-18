@@ -35,4 +35,11 @@
   <symbol id="icon-arrow-left" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
     <path d="m15 18-6-6 6-6"/>
   </symbol>
+  <symbol id="icon-alien" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M12 3c-4.8 0-8 3.6-8 8.1 0 6.3 4.9 9.9 8 9.9s8-3.6 8-9.9C20 6.6 16.8 3 12 3Z"/>
+    <path d="M9.2 14.2c.7.9 1.7 1.3 2.8 1.3s2.1-.4 2.8-1.3"/>
+    <ellipse cx="8.5" cy="11" rx="1.5" ry="2.2" transform="rotate(28 8.5 11)"/>
+    <ellipse cx="15.5" cy="11" rx="1.5" ry="2.2" transform="rotate(-28 15.5 11)"/>
+    <path d="M12 3v2.2"/>
+  </symbol>
 </svg>
