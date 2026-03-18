@@ -44,12 +44,13 @@ Then anyone on the network can open a browser and visit the url 'http://[postnum
 ## Web
 
 - A front-end framework (Tailwind) = 1pt
+- A back-end framework (Express) = 1pt
 - Real time features (Websockets) = 2pt
 - A public API to interact with the database = 2pt
 - an ORM for the database = 1pt
 - Custom-made design system with reusable components = 1pt
 
-Total = 7pts
+Total = 8pts
 
 ## Accessibility
 
@@ -76,7 +77,7 @@ Total = 4pts
 
 total = 11pts 
 
-## Total module points : 23pts 
+## Total module points : 24pts 
 
 # Database Schema
 
@@ -242,7 +243,7 @@ I also led the game design and implemented most of the client-side gameplay expe
 - Built the 3D visual/gameplay layer in the browser with Three.js.
 - Worked on front-end game logic and rendering to ensure a smooth and readable player experience.
 
-### Main Technologies Used
+## Main Technologies Used
 
 - JavaScript (ES modules)
 - Three.js (3D rendering and scene logic)
@@ -386,3 +387,22 @@ MariaDB + Sequelize ORM
 Nginx (reverse proxy, SSL, routing)
 Docker / Docker Compose
 JavaScript (ES modules, frontend game integration)
+
+# Enzuguem – Backend Developer
+
+## Overview
+
+    • Implemented user registration, including full validation of username, email, and strong password policies.
+    • Developed login system with email or username support and secure password comparison using bcrypt.
+    • Built Two-Factor Authentication (2FA): generation of 6-digit codes, expiration handling, verification, and email delivery via Nodemailer.
+    • Implemented JWT-based session management with httpOnly cookies for secure authentication.
+    • Developed logout functionality to clear authentication cookies.
+    • Developed frontend scripts for login, registration, and 2FA flows to interact with backend APIs, including proper error handling and redirections.
+    • Ensured security best practices, including password hashing, 2FA optionality, and protection against duplicate accounts.
+
+## Modules Implemented:
+
+    • Web – Backend Framework (Minor): Used Express to structure backend APIs, handle routing, manage authentication flows, and generate JWT tokens. This module provides a secure and scalable backend architecture, supporting all account management features including 2FA.
+    • User Management – 2FA (Minor): Complete Two-Factor Authentication system, including code generation, expiration handling, verification, and integration with frontend forms. This enhances account security and ensures that only authorized users can log in.
+    • ORM / Database Management (Minor): Used Sequelize ORM to manage the PostgreSQL database, ensuring data consistency through transactions. All user accounts and associated player profiles are reliably created, updated, and queried via this ORM layer.
+This setup ensures a secure, maintainable, and user-friendly authentication module, covering registration, login, 2FA verification, and persistent data management. All modules were implemented by the backend developers, following practices for security, performance, and integration with the frontend.
