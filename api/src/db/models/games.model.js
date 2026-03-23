@@ -4,13 +4,20 @@ import { DataTypes } from "sequelize";
 export function games(sequelize) {
 	const gamesTable = sequelize.define("games", {
 		id: { type: DataTypes.INTEGER, autoIncrement: true, primaryKey: true },
-		roomId: { type: DataTypes.STRING(100), unique: true },
+		roomId: { type: DataTypes.STRING(100) },
 		mode: { type: DataTypes.STRING(100) },
 		start_time: { type: DataTypes.DATE, defaultValue: DataTypes.NOW },
 		end_time: { type: DataTypes.DATE }
 	}, {
 		tableName: "games",
-		timestamps: false
+		timestamps: false,
+		indexes: [
+			{
+				name: 'unique_room_start_time',
+				unique: true,
+				fields: ['roomId', 'start_time']
+			}
+		]
 	});
 
 	return gamesTable;

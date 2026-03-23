@@ -2,7 +2,6 @@ import { userAccounts } from "./user-accounts.model.js";
 import { players } from "./players.model.js";
 import { games } from "./games.model.js";
 import { playerStats } from "./player-stats.model.js";
-import { items } from "./items.model.js";
 import { leaderboard } from "./leaderboard.model.js";
 import { achievements } from "./achievements.model.js";
 import { playerAchievements } from "./player-achievements.model.js";
@@ -20,7 +19,6 @@ export async function initModels(sequelize, { sync = false, alter = false, force
 	// Dependent models with associations
 	modelsInst.players = players(sequelize, modelsInst);
 	modelsInst.playerStats = playerStats(sequelize, modelsInst);
-	modelsInst.items = items(sequelize, modelsInst);
 	modelsInst.leaderboard = leaderboard(sequelize, modelsInst);
 	modelsInst.playerAchievements = playerAchievements(sequelize, modelsInst);
 	modelsInst.friends = friends(sequelize, modelsInst);

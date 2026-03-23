@@ -133,6 +133,14 @@ function removePlayer(id, roomID) {
 
 		delete game.players[id];
 		delete playerGameTypes[id];
+		if (game.playing)
+		{
+			if (Object.keys(game.players).length === 0)
+			{
+				delete gameInstances[room];
+				console.log(`🗑️ Room ${room} supprimée (vide)`);
+			}
+		}
 	} else {
 		// Solo/Random
 		delete game.players[id];
@@ -199,6 +207,16 @@ function everyOneLoaded(id, roomID) {
 
 	gameInstances[roomID].players[id].loaded = true;
 
+	const game = gameInstances[roomID];
+	if (game.hasStarted && game.type === 'private') {
+		const expectedCount = game.roomers?.length  || 0;
+		const loadedCount = Object.values(game.players).filter(p => p.loaded).length;
+		if (loadedCount < expectedCount) {
+			return false;
+		}
+	}
+
+	//solo & random
 	for (const player of Object.values(gameInstances[roomID].players)) {
 		if (player.loaded === false) {
 			return false;
@@ -423,6 +441,7 @@ function initLobbyHandler(socket, io) {
 			gameMode: gameMode,
 			gameState: gameMode.initGameState(),
 			hasStarted: false,
+			playing: false,
 			hasEnded: false,
 			savedGameId: null,
 			savePromise: null,
@@ -453,6 +472,7 @@ function initLobbyHandler(socket, io) {
 		}
 
 		gameInstances[roomID].roomers.push(socket.id);
+		socket.roomID = roomID;
 		socket.join(roomID);
 		socket.emit('roomJoinedSuccess', { roomCode: data.roomCode });
 		io.to(roomID).emit('lobbyUpdate', {
@@ -798,4 +818,10 @@ async function sendGameResult(gameData) {
 	}
 }
 
-export { addPlayer, removePlayer, initGameServer, everyOneLoaded, updatePosition, initLobbyHandler };
+function updatePrivate(roomID)
+{
+	if (gameInstances[roomID].type === 'private')
+		gameInstances[roomID].playing = true;
+}
+
+export { addPlayer, removePlayer, initGameServer, everyOneLoaded, updatePosition, initLobbyHandler, updatePrivate };

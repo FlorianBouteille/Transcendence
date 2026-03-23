@@ -111,14 +111,14 @@ INSERT INTO friends (player_id, friend_id, status) VALUES
 -- games
 -- =========================================================
 INSERT INTO games (mode, start_time, end_time) VALUES
-('Door Dash', '2026-02-01 10:00:00', '2026-02-01 10:07:00'),
-('Hex-A-Gone', '2026-02-01 10:10:00', '2026-02-01 10:18:00'),
-('Slime Climb', '2026-02-01 10:20:00', '2026-02-01 10:30:00'),
-('Jump Club', '2026-02-01 10:35:00', '2026-02-01 10:42:00'),
-('Roll Out', '2026-02-01 10:45:00', '2026-02-01 10:55:00'),
-('Tail Tag', '2026-02-01 11:00:00', '2026-02-01 11:08:00'),
-('Fruit Chute', '2026-02-01 11:10:00', '2026-02-01 11:17:00'),
-('Fall Ball', '2026-02-01 11:20:00', '2026-02-01 11:35:00');
+('Survive', '2026-02-01 10:00:00', '2026-02-01 10:07:00'),
+('Get the crown', '2026-02-01 10:10:00', '2026-02-01 10:18:00'),
+('Get the crown', '2026-02-01 10:20:00', '2026-02-01 10:30:00'),
+('Get the crown', '2026-02-01 10:35:00', '2026-02-01 10:42:00'),
+('Survive', '2026-02-01 10:45:00', '2026-02-01 10:55:00'),
+('Survive', '2026-02-01 11:00:00', '2026-02-01 11:08:00'),
+('Get the crown', '2026-02-01 11:10:00', '2026-02-01 11:17:00'),
+('Survive', '2026-02-01 11:20:00', '2026-02-01 11:35:00');
 
 -- =========================================================
 -- playerStats
@@ -174,31 +174,6 @@ INSERT INTO playerStats (player_id, game_id, chrono, position, eliminated) VALUE
 (9, 8, 910, 2, NULL),
 (13, 8, 920, 3, NULL),
 (17, 8, 930, 4, NULL);
-
--- =========================================================
--- items
--- =========================================================
-INSERT INTO items (player_id, item_name, item_type) VALUES
-(1, 'Bean Crown', 'Cosmetic'),
-(2, 'Rubber Helmet', 'Cosmetic'),
-(3, 'Chaos Cape', 'Cosmetic'),
-(4, 'Spin Shoes', 'Cosmetic'),
-(5, 'Edge Gloves', 'Cosmetic'),
-(6, 'Clown Shoes', 'Cosmetic'),
-(7, 'Grab Mittens', 'Cosmetic'),
-(8, 'Spring Boots', 'Cosmetic'),
-(9, 'Physics Goggles', 'Cosmetic'),
-(10, 'Jelly Suit', 'Cosmetic'),
-(11, 'Boxing Outfit', 'Cosmetic'),
-(12, 'Sleepy Hat', 'Cosmetic'),
-(13, 'Momentum Jacket', 'Cosmetic'),
-(14, 'Nudge Pads', 'Cosmetic'),
-(15, 'Wrong Way Sign', 'Cosmetic'),
-(16, 'Push Gloves', 'Cosmetic'),
-(17, 'Speed Visor', 'Cosmetic'),
-(18, 'Ragdoll Cape', 'Cosmetic'),
-(19, 'Slip Shoes', 'Cosmetic'),
-(20, 'Tilt Crown', 'Cosmetic');
 
 -- =========================================================
 -- leaderboard

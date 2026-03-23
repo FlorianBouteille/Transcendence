@@ -245,17 +245,24 @@ export async function gamesSave(req, res) {
 		// Retrieve and format gameData
 		const roomId = gameData.roomId;
 		const mode = gameData.gameType;
-		const start_time = format(new Date(gameData.startTime), 'yyyy-MM-dd HH:mm:ss');
-		const end_time = format(new Date(gameData.endTime), 'yyyy-MM-dd HH:mm:ss');
+		const parsedStartTime = new Date(gameData.startTime);
+		const parsedEndTime = new Date(gameData.endTime);
+
+		if (Number.isNaN(parsedStartTime.getTime()) || Number.isNaN(parsedEndTime.getTime())) {
+			return res.status(400).json({ error: "Invalid startTime or endTime." });
+		}
+
+		const start_time = format(parsedStartTime, 'yyyy-MM-dd HH:mm:ss.SSS');
+		const end_time = format(parsedEndTime, 'yyyy-MM-dd HH:mm:ss.SSS');
 		// const duration = format(new Date(gameData.elapsedTime * 1000), 'HH:mm:ss');
 
 		const existingGame = await db.models.games.findOne({
-			where: { roomId },
+			where: { roomId, start_time },
 			attributes: ['id']
 		});
 
 		if (existingGame) {
-			console.log(`ℹ️ Game already saved for room ${roomId} (game_id=${existingGame.id})`);
+			console.log(`ℹ️ Game already saved for room ${roomId} at ${start_time} (game_id=${existingGame.id})`);
 			return res.status(200).json({ message: "Game already saved", game_id: existingGame.id });
 		}
 
@@ -305,14 +312,24 @@ export async function gamesSave(req, res) {
 		}
 
 	} catch (error) {
-		if (error?.name === 'SequelizeUniqueConstraintError' && error?.errors?.some((item) => item.path === 'roomId')) {
+		if (
+			error?.name === 'SequelizeUniqueConstraintError' &&
+			error?.errors?.some((item) => item.path === 'roomId' || item.path === 'start_time')
+		) {
+			const parsedStartTime = new Date(req.body?.startTime);
+			const start_time = Number.isNaN(parsedStartTime.getTime())
+				? null
+				: format(parsedStartTime, 'yyyy-MM-dd HH:mm:ss.SSS');
+
 			const existingGame = await db.models.games.findOne({
-				where: { roomId: req.body?.roomId },
+					where: start_time
+						? { roomId: req.body?.roomId, start_time }
+						: { roomId: req.body?.roomId },
 				attributes: ['id']
 			});
 
 			if (existingGame) {
-				console.log(`ℹ️ Duplicate save ignored for room ${req.body?.roomId} (game_id=${existingGame.id})`);
+					console.log(`ℹ️ Duplicate save ignored for room ${req.body?.roomId}${start_time ? ` at ${start_time}` : ''} (game_id=${existingGame.id})`);
 				return res.status(200).json({ message: "Game already saved", game_id: existingGame.id });
 			}
 		}

@@ -42,10 +42,11 @@ CREATE TABLE friends (
 -- Games table
 CREATE TABLE games (
 	id INT AUTO_INCREMENT PRIMARY KEY,
-	roomId VARCHAR(255) UNIQUE,
+	roomId VARCHAR(255),
 	mode VARCHAR(100),
-	start_time DATETIME DEFAULT CURRENT_TIMESTAMP,
-	end_time DATETIME
+	start_time DATETIME(3) DEFAULT CURRENT_TIMESTAMP(3),
+	end_time DATETIME(3),
+	UNIQUE KEY unique_room_start_time (roomId, start_time)
 );
 
 -- PlayerStats table
@@ -59,17 +60,6 @@ CREATE TABLE playerStats (
 	FOREIGN KEY (player_id) REFERENCES players(id) ON DELETE CASCADE,
 	FOREIGN KEY (game_id) REFERENCES games(id) ON DELETE CASCADE
 );
-
--- Items table
-CREATE TABLE items (
-	id INT AUTO_INCREMENT PRIMARY KEY,
-	player_id INT NOT NULL,
-	item_name VARCHAR(100) NOT NULL,
-	item_type VARCHAR(50),
-	acquired_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-	FOREIGN KEY (player_id) REFERENCES players(id) ON DELETE CASCADE
-);
-
 CREATE TABLE achievements (
 	id INT AUTO_INCREMENT PRIMARY KEY,
 	achievement_name VARCHAR(50) NOT NULL,

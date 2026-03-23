@@ -1,7 +1,7 @@
 import express from "express";
 import http from "http";
 import { Server } from "socket.io";
-import { removePlayer, initGameServer, everyOneLoaded, updatePosition, initLobbyHandler } from './gameServer.js';
+import { removePlayer, initGameServer, everyOneLoaded, updatePosition, initLobbyHandler, updatePrivate } from './gameServer.js';
 // import { WebSocketServer } from "ws";
 
 const app = express();
@@ -37,6 +37,8 @@ io.on("connection", (socket) => {
 		console.log(`📩 Reçu gameLoaded de ${socket.id}`);
 		if (everyOneLoaded(socket.id, socket.roomID) == true) {
 			const timestamp = Date.now();
+				//mettre un truc genre "playing a true"
+				updatePrivate(socket.roomID);
 			io.to(socket.roomID).emit('startClock', timestamp);
 		}
 	});
